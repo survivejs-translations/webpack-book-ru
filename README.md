@@ -24,7 +24,7 @@ Webpack — сборщик модулей, который решает важн�
 * Отправить электронное письмо на [info@survivejs.com](mailto:info@survivejs.com)
 * Спросить меня что угодно о webpack или React на [SurviveJS AmA](https://github.com/survivejs/ama/issues)
 
-Если вы задаёте вопросы на [Stack Overflow](https://stackoverflow.com/search?q=survivejs), добавляйте тег [**survivejs**](https://stackoverflow.com/questions/tagged/survivejs) для них, чтобы я узнал о них. Вы также можете использовать хештег **#survivejs** в Twitter.
+Если вы задаёте вопросы на [Stack Overflow](https://stackoverflow.com/search?q=survivejs), добавляйте тег [**survivejs**](https://stackoverflow.com/questions/tagged/survivejs) для них, чтобы я узнал о них. Вы также можете использовать хештег [**#survivejs**](https://twitter.com/hashtag/survivejs?src=hash) в Twitter.
 
 ## Уведомления о новых версиях
 

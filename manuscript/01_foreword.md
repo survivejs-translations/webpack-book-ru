@@ -1,11 +1,11 @@
-# Foreword
+# Предисловие
 
-It’s a funny story how I started with webpack. Before getting addicted to JavaScript, I also developed in Java. I tried GWT (Google Web Toolkit) in that time. GWT is a Java-to-JavaScript Compiler, which has a great feature: [code splitting](http://www.gwtproject.org/doc/latest/DevGuideCodeSplitting.html). I liked this feature and missed it in existing JavaScript tooling. I made [a pull request](https://github.com/medikoo/modules-webmake/issues/7) to an existing module bundler, but it did not go through. Webpack was born.
+Это забавная история, как я начал работать с webpack. До того как я пристрастился к JavaScript, я также разрабатывал на Java. Я пробовал GWT (Google Web Toolkit) в то время. GWT — компилятор кода Java в код JavaScript, у которого есть отличная возможность — [разделение кода](http://www.gwtproject.org/doc/latest/DevGuideCodeSplitting.html) (code splitting). Мне понравилась эта возможность и я скучал по ней в существующем инструменте JavaScript. Я открыл [ишью](https://github.com/medikoo/modules-webmake/issues/7) в существующий упаковщик модулей, но далее этого дело не пошло. Webpack появился на свет.
 
-Somehow the Instagram frontend team discovered an early version of webpack and started to use it for instagram.com. Pete Hunt, Facebook employee managing the Instagram web team, gave [the first significant talk about webpack](https://www.youtube.com/watch?v=VkTCL6Nqm6Y) at OSCON 2014. The talk boosted the popularity of webpack. One of the reasons for adoption of webpack by Instagram was **code splitting**.
+Как-то раз команда Instagram открыла для себя раннюю версию webpack и начала использовать её для instagram.com. Пит Хант (Pete Hunt), сотрудник Facebook, управляющий группой веб-разработчиков в Instagram, [выступил с первым крупным докладом про webpack](https://www.youtube.com/watch?v=VkTCL6Nqm6Y) на конференции OSCON в 2014. Этот доклад повысил популярность webpack. Одной из причин принятия Webpack в Instagram было **разделение кода**.
 
-I have been following this book since its early stages. It was once a combined React and webpack book. It has grown since then and become a book of its own filled with content.
+Я слежу за данной книгой с ранних этапов. Когда-то она совмещала React и Webpack. С тех пор она расширилась и стала отдельной книгой, посвящённой только Webpack. 
 
-Juho is an important part of the webpack documentation team for the webpack documentation, so he knows best what complements the official documentation. He has used this knowledge to create a book that supplies you with a deep understanding of webpack and teaches you to use the tool to its full potential.
+Юхо (Juho) составляет важную часть в команде документации webpack, поэтому он лучше знает, как дополнить официальную документацию. Он использовал эти значения при написании книги, которая даёт вам глубокое понимание webpack и учит вас использовать весь потенциал этого инструмента.
 
-Tobias Koppers
+Тобиас Копперс (Tobias Koppers)

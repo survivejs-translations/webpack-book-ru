@@ -1,13 +1,13 @@
-# Preface
+# Предисловие
 
-The book you are reading right now goes years back. It all started with a comment I made on Christian Alfoni’s blog in 2014. I had recently discovered webpack and React, and I felt there was a need for a cookbook about the topics. The work began with a GitHub wiki in early 2015.
+Книга, которую вы сейчас читаете, поддерживается уже несколько лет. Она началась с моего комментария в блоге Кристиана Альфони (Christian Alfoni) в 2014 году. В том время я недавно открыл для себя webpack и React, и чувствовал необходимость в книге с готовыми решениями (рецептами) по этим темам. Работа началась с вики на GitHub в начале 2015 года.
 
-After a while, I realized this should become an *actual* book and tried pitching it to a known publisher. As they weren’t interested yet and I felt the book needed to happen, I started the **SurviveJS** effort. The book warped into "SurviveJS - Webpack and React", my first self-published book. It combined the two topics into one single book.
+Спустя какое-то время, я понял, это должно стать *настоящей* книгой и отправил её на рассмотрение одному известному издателю. Поскольку они не были ещё заинтересованы в этом, мне хотелось, чтобы книга увидела свет, поэтому я начал работу над **SurviveJS**. В итоге книга превратилась в "SurviveJS - Webpack and React", мою первую книгу, выпущенную самиздатом. Она совмещала две темы в одной книге.
 
-Because a book focusing only on a single technology can stand taller, I ended up splitting the book into two separate ones in 2016. The current edition represents the webpack portion of it, and it has grown significantly due to this greater focus. The journey has not been a short one, but it has been possible thanks to community support and continued interest in the topic.
+Поскольку книга, нацеленная только на одну технологию, может стоять выше, я закончил разделение книги на две отдельные в 2016 году. В текущем издании представлена часть про webpack, и благодаря этому значительно больше уделено внимание ему. Путь к разделению был длинным, но он получился благодаря поддержке сообщества и постоянному интересу к данной теме.
 
-During these years webpack has transformed as a project. Instead of relying on a single prolific author, a core team including myself has grown around the project, and has attracted more people to support the effort.
+В течение этих лет webpack изменялся как проект. Вместо одного-единственного плодовитого автора, основная группа, включая меня, сплотилась вокруг проекта и привлекла много людей для поддержки усилий по его разработке.
 
-There is an [open collective campaign](https://opencollective.com/webpack) to help the project to succeed financially. Also, I am donating 30% of the book earnings to Tobias as he has more than earned it. By supporting the book, you help webpack development as most of the profit goes to its core team.
+Существует [открытая коллективная кампания](https://opencollective.com/webpack) для финансовой помощи проекта. Кроме того, я жертвую 30% дохода от книги Тобиасу (Tobias), который он по праву заслужил. Поддерживая книгу, вы помогаете разработке webpack, поскольку большая часть прибыли поступает в его основную команду.
 
-Juho Vepsäläinen
+Юхо Вепшаляйнен (Juho Vepsäläinen)

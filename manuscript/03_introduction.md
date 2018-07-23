@@ -1,101 +1,100 @@
-# Introduction
 
-[Webpack](https://webpack.js.org/) simplifies web development by solving a fundamental problem: bundling. It takes in various assets, such as JavaScript, CSS, and HTML, and transforms them into a format that’s convenient to consume through a browser. Doing this well takes a significant amount of pain away from web development.
+# Введение
 
-It's not the easiest tool to learn due to its configuration-driven approach, but it's incredibly powerful. The purpose of this guide is to help you get started with webpack and then go beyond the basics.
+[Webpack](https://webpack.js.org/) упрощает веб-разработку, решая фундаментальную проблему — сборку проекта. Он принимает различные ресурсы, такие как JavaScript, CSS и HTML, и преобразует их в формат, удобный для использования в браузере. Выполнение этой задачи хорошо снимает значительную боль в веб-разработке.
 
-## What Is Webpack
+Это не самый простой инструмент для изучения из-за его подхода, основанный на конфигурации, но он невероятно мощный. Цель этого руководства — помочь вам начать работу с webpack, а затем выйти за пределы этих основ.
 
-Web browsers are designed to consume HTML, CSS, and JavaScript. As a project grows, tracking and configuring all of these files becomes too complicated to manage without help. Webpack was designed to address these problems. Managing complexity is one of the fundamental issues of web development, and solving this problem well helps significantly.
+## Что такое Webpack
 
-Webpack isn’t the only available bundler, and a collection of different tools have emerged. Task runners, such as Grunt and Gulp, are good examples of higher-level tools. Often the problem is that you need to write the workflows by hand. Pushing that issue to a bundler, such as webpack, is a step forward.
+Веб-браузеры предназначены для использования HTML, CSS и JavaScript. По мере роста проекта отслеживание и конфигурация всех этих файлов становится слишком сложной для управления без посторонней помощи. Webpack был разработан для решения этих проблем. Управление сложностью — одна из основных проблем веб-разработки, и решение этой проблемы хорошо значительно поможет в этом деле.
 
-{pagebreak}
-
-### How Webpack Changes The Situation
-
-Webpack takes another route. It allows you to treat your project as a dependency graph. You could have an *index.js* in your project that pulls in the dependencies the project needs through the standard `require` or `import` statements. You can refer to your style files and other assets the same way if you want.
-
-Webpack does all the preprocessing for you and gives you the bundles you specify through configuration and your code. This declarative approach is versatile, but it's difficult to learn.
-
-Webpack becomes an indispensable tool after you begin to understand how it works. This book has been designed to get through that initial learning curve and even go further.
-
-## What Will You Learn
-
-This book has been designed to complement [the official documentation of webpack](https://webpack.js.org/). This book can be considered a companion to it. This book has been designed to get through that initial learning curve and go even further.
-
-The book teaches you to develop a composable webpack configuration for both development and production purposes. Advanced techniques covered by the book allow you to get the most out of webpack 4.
+Webpack — не единственный доступный сборщик, кроме него есть набор других инструментов. Менеджеры задач, такие как Grunt и Gulp, являются хорошими примерами инструментов более высокого уровня. Часто проблема заключается в том, что вам нужно писать рабочие процессы вручную. Откладывание этой проблемы на сборщик, такой как webpack, представляет собой шаг вперёд.
 
 {pagebreak}
 
-## How Is The Book Organized
+### Как Webpack меняет ситуацию
 
-The book starts by explaining what webpack is. After that, you will find multiple chapters that discuss webpack from a different viewpoint. As you go through these chapters, you will develop your own webpack configuration while at the same time learning essential techniques.
+Webpack выбрал другой путь. Он позволяет обращаться с вашим проектом как с графиком зависимостей. У вас может быть *index.js* в вашем проекте, который тянет зависимости, требуемые вашему проекту, с помощью стандартных выражений `require` или `import`. Если вы хотите, вы можете обращаться со своими файлам со стилям и другими ресурсами аналогичным образом.
 
-The book has been split into the following parts:
+Webpack делает всю предварительную обработку для вас и создаёт вам бандлы, которые вы указываете с помощью конфигурации и вашего кода. Этот декларативный подход универсален, но его трудно изучить.
 
-* **Developing** gets you up and running with webpack. This part goes through features such as automatic browser refresh and explains how to compose your configuration so that it remains maintainable.
-* **Styling** puts heavy emphasis on styling related topics. You will learn how to load styles with webpack and how to introduce techniques such as autoprefixing into your setup.
-* **Loading** explains webpack’s loader definitions in detail and shows you how to load assets such as images, fonts, and JavaScript.
-* **Building** introduces source maps and the ideas of bundle and code splitting. You will learn to tidy up your build.
-* **Optimizing** pushes your build to production quality level and introduces many smaller tweaks to make it smaller. You will learn to tune webpack for performance.
-* **Output** discusses webpack’s output related techniques. Despite its name, it’s not only for the web. You see how to manage multiple page setups with webpack and pick up the basic idea of Server Side Rendering.
-* **Techniques** discusses several specific ideas including dynamic loading, web workers, internationalization, deploying your applications, and consuming npm packages through webpack.
-* **Extending** shows how to extend webpack with loaders and plugins.
+Webpack станет для вас незаменимым инструментом после того, как вы начнете понимать, как он работает. Эта книга была специально написана для того, чтобы пройти эту начальную кривую обучения и даже пойти ещё дальше.
 
-Finally, there is a short conclusion chapter that recaps the main points of the book. It contains checklists of techniques from this book that allow you to methodically go through your projects.
+## Что вы узнаете
 
-The appendices at the end of the book cover secondary topics and sometimes dig deeper into the main ones. You can approach them in any order you want depending on your interest.
+Эта книга была разработана для дополнения [официальной документации webpack] (https://webpack.js.org/). Эту книгу можно считать компаньоном. Эта книга была разработана, чтобы пройти эту начальную кривую обучения и пойти еще дальше.
 
-The *Troubleshooting* appendix at the end covers what to do when webpack gives you an error. It covers a process, so you know what to do and how to debug the problem. When in doubt, study the appendix. If you are unsure of a term and its meaning, see the *Glossary* at the end of the book.
+Эта книга учит разработке компонуемой конфигурации webpack как для разработки, так и для продакшена. Продвинутые методы, затрагиваемые книгой, позволяют вам максимально использовать webpack 4.
 
-## Who Is The Book For
+## Как организована книга?
 
-You should have basic knowledge of JavaScript, Node, and npm. If you know something about webpack, that’s great. By reading this book, you deepen your understanding of these tools.
+Книга начинается с объяснения того, что такое webpack. После этого вы найдёте несколько глав, каждая из которых обсуждает webpack с другой точки зрения. По мере чтения этих разделов вы разработаете свою собственную конфигурацию webpack и одновременно научитесь необходимым методам.
 
-If you don’t know much about the topic, consider going carefully through the early parts. You can scan the rest to pick the bits you find worthwhile. If you know webpack already, skim and choose the techniques you find valuable.
+Книга разделена на следующие части:
 
-In case you know webpack well already, there is still something in the book for you. Skim through it and see if you can pick up new techniques. Especially read the summaries at the end of the chapters and the concluding chapter of the book.
+* **Разработка** начинает знакомить вас с webpack. Эта часть проходит через такие возможности, как автоматическое обновление браузера, и объясняет, как составить конфигурацию, чтобы она оставалась поддерживаемой.
+* **Стилизация** уделяет большое внимание темам, связанным со стилизацией. Вы узнаете, как загружать стили с помощью webpack и как внедрять такие техники, как автоматическое добавление префиксов к вашей настройке.
+* **Загрузка** подробно объясняет определения загрузчика webpack и показывает, как загружать такие объекты, как изображения, шрифты и JavaScript.
+* **Сборка** знакомит с исходными картами и идеями разделения пакетов и кодов. Вы научитесь очищать свою сборку.
+* **Оптимизация** подталкивает вашу сборку к уровню качества продукции и вводит множество небольших настроек для её уменьшения. Вы научитесь настраивать webpack для производительности.
+* **Вывод** обсуждает методы, связанные с выводом webpack. Несмотря на свое название, это не только для Интернета. Вы увидите, как управлять несколькими настройками страниц с помощью webpack и подбирать основную идею отрисовки на стороне сервера.
+* **Методы** обсуждают несколько конкретных идей, включая динамическую загрузку, web workers, интернационализацию, развёртывание ваших приложений и использование npm-пакетов через webpack.
+* **Расширение** показывает, как расширить webpack с помощью загрузчиков и плагинов.
 
-## Book Versioning
+Наконец, есть короткая заключительная глава, в которой перечислены основные моменты книги. Она содержит контрольные перечни методов из этой книги, которые позволяют вам методично пройтись по вашим проектам.
 
-Given this book receives a fair amount of maintenance and improvements due to the pace of innovation, there's a versioning scheme in place. Release notes for each new version are maintained at [the book blog](https://survivejs.com/blog/). You can also use GitHub *compare* tool for this purpose. Example:
+Приложения в конце книги охватывают второстепенные темы и иногда копают глубже в основные. Вы можете подойти к ним в любом порядке, в зависимости от вашего интереса.
+
+Приложение *Устранение неполадок* в конце охватывает, что делать, когда вы получаете ошибку от webpack. Она охватывает процесс, поэтому вы знаете, что делать и как отлаживать проблему. В случае сомнений изучите приложение. Если вы не уверены в термине и его значении, посмотрите *Глоссарий* в конце книги.
+
+## Для кого эта книга
+
+У вас должны быть базовые знания JavaScript, Node и npm. Если вы что-то знаете о webpack, это здорово. Читая эту книгу, вы улучшите понимание этих инструментов.
+
+Если вы мало знаете об этой теме, подумайте о том, чтобы тщательно изучить ранние части. Вы можете отсканировать остаток, чтобы выбрать часть, которую считаете нужной. Если вы уже знаете webpack, пропускайте и выбирайте те методы, которые вы посчитаете интересными.
+
+Если вы уже хорошо знаете webpack, для вас всё ещё есть кое-что интересное в этой книге. Полистайте её и посмотрите, сможете ли вы найти новые техники, о которых не знаете. Особенно читайте резюме в конце глав и заключительную главу книги.
+
+## Версионирование книги
+
+Учитывая, что эта книга получает достаточное количество поддержки и улучшений в связи с темпами инноваций, существует схема управления версиями. Примечания к выпуску для каждой новой версии хранятся в [блоге книги](https://survivejs.com/blog/). Для этой цели вы также можете использовать инструмент сравнения (*compare*) в GitHub. Например:
 
 ```
 https://github.com/survivejs/webpack-book/compare/v2.1.7...v2.4.1
 ```
 
-The page shows you the individual commits that went to the project between the given version range. You can also see the lines that have changed in the book.
+На странице показаны коммиты, которые были отправлены в проект между заданным диапазоном версий. Вы также можете увидеть изменённые строки в книге.
 
-The current version of the book is **2.4.1**.
+Текущая версия книги **2.4.1**.
 
-## Getting Support
+## Получение поддержки
 
-If you run into trouble or have questions related to the content, there are several options:
+Если у вас возникают проблемы или возникают вопросы, связанные с контентом, существует несколько вариантов:
 
-* Contact me through [GitHub Issue Tracker](https://github.com/survivejs/webpack-book/issues).
-* Join me at [Gitter Chat](https://gitter.im/survivejs/webpack).
-* Send me an email at [info@survivejs.com](mailto:info@survivejs.com).
-* Ask me anything about webpack at [SurviveJS AmA](https://github.com/survivejs/ama/issues).
+* Свяжитесь со мной через [трекер ишию в GitHub](https://github.com/survivejs/webpack-book/issues).
+* Присоединяйтесь ко мне в [Gitter Chat] (https://gitter.im/survivejs/webpack).
+* Отправьте мне письмо на [info@survivejs.com](mailto: info@survivejs.com).
+* Спросите меня о webpack в [SurviveJS AmA](https://github.com/survivejs/ama/issues).
 
-If you post questions to Stack Overflow, tag them using **survivejs**. You can use the hashtag **#survivejs** on Twitter for the same result.
+Если вы отправляете вопросы в Stack Overflow, пометьте их, используя **survivejs**. Вы можете использовать хештег **#survivejs** в Twitter для получения того же результата.
 
-## Additional Material
+## Дополнительный материал
 
-You can find more related material from the following sources:
+Вы можете найти более смежные материалы из следующих источников:
 
-* Join the [mailing list](https://eepurl.com/bth1v5) for occasional updates.
-* Follow [@survivejs](https://twitter.com/survivejs) on Twitter.
-* Subscribe to the [blog RSS](https://survivejs.com/atom.xml) to get access interviews and more.
-* Subscribe to the [Youtube channel](https://www.youtube.com/channel/UCvUR-BJcbrhmRQZEEr4_bnw).
-* Check out [SurviveJS related presentation slides](https://presentations.survivejs.com/).
+* Присоединитесь к [списку рассылки](https://eepurl.com/bth1v5) для периодических обновлений.
+* Следуйте за [@survivejs](https://twitter.com/survivejs) в Twitter.
+* Подпишитесь на [блог RSS](https://survivejs.com/atom.xml), чтобы получить доступ к интервью и многое другое.
+* Подпишитесь на [Youtube-канал](https://www.youtube.com/channel/UCvUR-BJcbrhmRQZEEr4_bnw).
+* Посмотрите [презентации, связанные с SurveiveJS] (https://presentations.survivejs.com/).
 
-## Acknowledgments
+## Благодарности
 
-Big thanks to [Christian Alfoni](http://www.christianalfoni.com/) for helping me craft the first version of this book. This is what inspired the entire SurviveJS effort. The version you see now is a complete rewrite.
+Большое спасибо [Christian Alfoni](http://www.christianalfoni.com/) за помощь в создании первой версии этой книги. Именно это вдохновило приложить все усилия на SurviveJS. Версия, которую вы видите сейчас — это полная переработка.
 
-This book wouldn’t be half as good as it's without patient editing and feedback by my editors [Jesús Rodríguez](https://github.com/Foxandxss), [Artem Sapegin](https://github.com/sapegin), and [Pedr Browne](https://github.com/Undistraction). Thank you.
+Эта книга не была бы такой же хорошей, как без редактирования и отзывов моих редакторов [Хесус Родригес] (https://github.com/Foxandxss), [Artem Sapegin] (https://github.com/sapegin), и [Pedr Browne](https://github.com/Undistraction). Спасибо.
 
-This book wouldn’t have been possible without the original "SurviveJS - Webpack and React" effort. Anyone who contributed to it deserves my thanks. You can check that book for more accurate attributions.
+Эта книга не была бы возможна без оригинальной работы «SurviveJS - Webpack and React». Любой, кто внес свой вклад в неё, заслуживает моей благодарности. Вы можете проверить ту книгу для просмотра более полного списка участников.
 
-Thanks to Mike "Pomax" Kamermans, Cesar Andreu, Dan Palmer, Viktor Jančík, Tom Byrer, Christian Hettlage, David A. Lee, Alexandar Castaneda, Marcel Olszewski, Steve Schwartz, Chris Sanders, Charles Ju, Aditya Bhardwaj, Rasheed Bustamam, José Menor, Ben Gale, Jake Goulding, Andrew Ferk, gabo, Giang Nguyen, @Coaxial, @khronic, Henrik Raitasola, Gavin Orland, David Riccitelli, Stephen Wright, Majky Bašista, Gunnari Auvinen, Jón Levy, Alexander Zaytsev, Richard Muller, Ava Mallory (Fiverr), Sun Zheng’an, Nancy (Fiverr), Aluan Haddad, Steve Mao, Craig McKenna, Tobias Koppers, Stefan Frede, Vladimir Grenaderov, Scott Thompson, Rafael De Leon, Gil Forcada Codinachs, Jason Aller, @pikeshawn, Stephan Klinger, Daniel Carral, Nick Yianilos, Stephen Bolton, Felipe Reis, Rodolfo Rodriguez, Vicky Koblinski, Pyotr Ermishkin, Ken Gregory, Dmitry Kaminski, John Darryl Pelingo, Brian Cui, @st-sloth, Nathan Klatt, Muhamadamin Ibragimov, Kema Akpala, Roberto Fuentes, Eric Johnson, Luca Poldelmengo, Giovanni Iembo, Dmitry Anderson , and many others who have contributed direct feedback for this book!
+Спасибо Mike "Pomax" Kamermans, Cesar Andreu, Dan Palmer, Viktor Jančík, Tom Byrer, Christian Hettlage, David A. Lee, Alexandar Castaneda, Marcel Olszewski, Steve Schwartz, Chris Sanders, Charles Ju, Aditya Bhardwaj, Rasheed Bustamam, José Menor, Ben Gale, Jake Goulding, Andrew Ferk, gabo, Giang Nguyen, @Coaxial, @khronic, Henrik Raitasola, Gavin Orland, David Riccitelli, Stephen Wright, Majky Bašista, Gunnari Auvinen, Jón Levy, Alexander Zaytsev, Richard Muller, Ava Mallory (Fiverr), Sun Zheng’an, Nancy (Fiverr), Aluan Haddad, Steve Mao, Craig McKenna, Tobias Koppers, Stefan Frede, Vladimir Grenaderov, Scott Thompson, Rafael De Leon, Gil Forcada Codinachs, Jason Aller, @pikeshawn, Stephan Klinger, Daniel Carral, Nick Yianilos, Stephen Bolton, Felipe Reis, Rodolfo Rodriguez, Vicky Koblinski, Pyotr Ermishkin, Ken Gregory, Dmitry Kaminski, John Darryl Pelingo, Brian Cui, @st-sloth, Nathan Klatt, Muhamadamin Ibragimov, Kema Akpala, Roberto Fuentes, Eric Johnson, Luca Poldelmengo, Giovanni Iembo, Dmitry Anderson и многим другим, которые оказали непосредственную обратную связь к этой книги!

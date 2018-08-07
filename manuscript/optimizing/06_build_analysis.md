@@ -100,7 +100,7 @@ Entrypoints:
       main.d5d711b1.css
 ```
 
-You can increase the limit or remove the configuration to get rid of the warning. An attractive option would be to replace React with a lighter alternative as discussed in the *Consuming Packages* chapter.
+You can increase the limit or remove the configuration to get rid of the warning. An attractive option would be to replace React with a lighter alternative as discussed in the *Обработка пакетов* chapter.
 
 {pagebreak}
 

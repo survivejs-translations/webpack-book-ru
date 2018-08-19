@@ -1,26 +1,26 @@
-# Separating CSS
+# Разделение CSS
 
-Even though there is a nice build set up now, where did all the CSS go? As per configuration, it has been inlined to JavaScript! Even though this can be convenient during development, it doesn't sound ideal.
+Несмотря на то, что теперь есть хорошая сборка, куда делся весь CSS? Согласно конфигурации, он был встроен в JavaScript! Несмотря на то, что это может быть удобно во время разработки, это не кажется идеальным.
 
-The current solution doesn't allow cache CSS. You can also get a **Flash of Unstyled Content** (FOUC). FOUC happens because the browser takes a while to load JavaScript and the styles would be applied only then. Separating CSS to a file of its own avoids the problem by letting the browser to manage it separately.
+Текущее решение не позволяет кешировать CSS. Вы также можете получить **Flash of Unstyled Content** (FOUC). FOUC происходит потому, что браузеру требуется некоторое время для загрузки JavaScript, и стили будут применяться только тогда. Разделение CSS на собственный файл позволяет избежать проблемы, дав браузеру возможность управлять им по отдельности.
 
-Webpack provides a means to generate a separate CSS bundles using [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin) (MCEP). It can aggregate multiple CSS files into one. For this reason, it comes with a loader that handles the extraction process. The plugin then picks up the result aggregated by the loader and emits a separate file.
+Webpack предоставляет средства для генерации отдельных CSS-бандлов, используя [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin) (MCEP). Этот пакет может объединить несколько файлов CSS в один. По этой причине он поставляется с загрузчиком, который обрабатывает процесс извлечения. Затем плагин рассматривает результат, объединенный загрузчиком, и создает отдельный файл.
 
-Due to this process, `MiniCssExtractPlugin` comes with overhead during the compilation phase. It doesn't work with Hot Module Replacement (HMR) yet. Given the plugin is used only for production, that is not a problem.
+Благодаря этому процессу `MiniCssExtractPlugin` поставляется с накладными расходами во время этапа компиляции. Он пока не работает с горячей перезагрузкой модуля (HMR). Учитывая, что плагин используется только для продакшена, это не проблема.
 
-W> It can be potentially dangerous to use inline styles within JavaScript in production as it represents an attack vector. **Critical path rendering** embraces the idea and inlines the critical CSS to the initial HTML payload improving the perceived performance of the site. In limited contexts inlining a small amount of CSS can be a viable option to speed up the initial load (fewer requests).
+W> Может быть потенциально опасно использовать встроенные стили внутри JavaScript в продакшене, поскольку он представляет способ атаки. **Предоставление критического пути (Critical path rendering)** подхватывает эту идею и вставляет критический CSS в начальный HTML-разметку, улучшая предполагаемую производительность сайта. В ограниченном числе случаев внедрение небольшого количества CSS можно рассматривать как вполне жизнеспособный вариант ускорения начальной загрузки сайта (за счёт уменьшения количества запросов).
 
-## Setting Up `MiniCssExtractPlugin`
+## Настройка `MiniCssExtractPlugin`
 
-Install the plugin first:
+Сначала установите плагин:
 
 ```bash
 npm install mini-css-extract-plugin --save-dev
 ```
 
-`MiniCssExtractPlugin` includes a loader, `MiniCssExtractPlugin.loader` that marks the assets to be extracted. Then a plugin performs its work based on this annotation.
+`MiniCssExtractPlugin` включает в себя загрузчик` MiniCssExtractPlugin.loader`, который помечает ресурсы для извлечения. Затем плагин выполняет свою работу на основе такой маркировки.
 
-Add the configuration below to the beginning of your configuration:
+Добавьте данную конфигурацию ниже в начало вашей конфигурации:
 
 **webpack.parts.js**
 
@@ -28,7 +28,7 @@ Add the configuration below to the beginning of your configuration:
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 exports.extractCSS = ({ include, exclude, use = [] }) => {
-  // Output extracted CSS to a file
+  // Вывод извлечённого CSS в файл
   const plugin = new MiniCssExtractPlugin({
     filename: "[name].css",
   });
@@ -52,15 +52,15 @@ exports.extractCSS = ({ include, exclude, use = [] }) => {
 };
 ```
 
-That `[name]` placeholder uses the name of the entry where the CSS is referred. Placeholders and hashing are discussed in detail in the *Adding Hashes to Filenames* chapter.
+Здесь `[name]` — это заполнитель, используемый имя записи, в которой указан имя файла CSS. Заполнитель и хеширование подробно обсуждаются в главе *Добавление хешей в имена файлов*.
 
-T> If you wanted to output the resulting file to a specific directory, you could do it by passing a path. Example: `filename: "styles/[name].css"`.
+T> Если вы хотите вывести результирующий файл в конкретный каталог, вы можете сделать это, путем указания пути. Пример: `filename: "styles/[name].css"`.
 
 {pagebreak}
 
-### Connecting with Configuration
+### Подключение к конфигурации
 
-Connect the function with the configuration as below:
+Подключите функцию с конфигурацией, как показано ниже:
 
 **webpack.config.js**
 
@@ -91,13 +91,13 @@ leanpub-end-insert
 ]);
 ```
 
-Using this setup, you can still benefit from the HMR during development. For a production build, it's possible to generate a separate CSS, though. `HtmlWebpackPlugin` picks it up automatically and injects it into `index.html`.
+Используя эту настройку, вы по-прежнему можете воспользоваться преимуществами HMR во время разработки. Однако для сборки в продакшене можно создать отдельный CSS. `HtmlWebpackPlugin` автоматически выбирает его и вводит его в `index.html`.
 
-T> If you are using *CSS Modules*, remember to tweak `use` accordingly as discussed in the *Loading Styles* chapter. You can maintain separate setups for standard CSS and CSS Modules so that they get loaded through discrete logic.
+T> Если вы используете *CSS-модули*, не забудьте настроить `use` в соответствии с тем, как описано в главе *Загрузка стилей*. Вы можете поддерживать отдельные настройки для обычного CSS и CSS-модулей, чтобы они загружались через отдельную логику.
 
 {pagebreak}
 
-After running `npm run build`, you should see output similar to the following:
+После выполнения `npm run build` вы увидите результат, похожий на следующий:
 
 ```bash
 Hash: 45a5e26cc963eb12db02
@@ -116,15 +116,15 @@ Entrypoint main = main.js main.css
 ...
 ```
 
-Now styling has been pushed to a separate CSS file. Thus, the JavaScript bundle has become slightly smaller. You also avoid the FOUC problem. The browser doesn't have to wait for JavaScript to load to get styling information. Instead, it can process the CSS separately, avoiding the flash.
+Теперь стиль был перенесен в отдельный файл CSS. Таким образом, бандл JavaScript стал немного меньше. Вы также устраняете проблему FOUC. Браузеру не нужно дожидаться загрузки JavaScript, чтобы получить информацию о стиле. Вместо этого он может обрабатывать CSS отдельно, избегая вспышки.
 
-T> If you are getting `Module build failed: CssSyntaxError:` or `Module build failed: Unknown word` error, make sure your `common` configuration doesn't have a CSS-related section set up.
+T> Если вы получаете ошибку `Module build failed: CssSyntaxError:` или `Module build failed: Unknown word`, убедитесь, что в вашей конфигурации `common` нет раздела, связанного с CSS.
 
 {pagebreak}
 
-## Managing Styles Outside of JavaScript
+## Управление стилями за пределами JavaScript
 
-Even though referring to styling through JavaScript and then bundling is the recommended option, it's possible to achieve the same result through an `entry` and [globbing](https://www.npmjs.com/package/glob) the CSS files through an entry:
+Несмотря на то, что рекомендуемым вариантом является ссылка на стиль с помощью JavaScript и последующий процесс сборки, можно добиться такого же результата через `entry` и [подстановку](https://www.npmjs.com/package/glob) CSS-файлов через вход:
 
 ```javascript
 ...
@@ -144,21 +144,21 @@ const commonConfig = merge([
 ]);
 ```
 
-After this type of change, you would not have to refer to styling from your application code. It also means that CSS Modules stop working. You have to be careful with CSS ordering as well.
+После этого типа изменения вам не нужно будет ссылаться на стиль из вашего кода приложения. Это также означает, что CSS-модули перестают работать. Вы также должны быть осторожны с порядком обработки CSS.
 
-As a result, you should get both *style.css* and *style.js*. The latter file contains content like `webpackJsonp([1,3],[function(n,c){}]);` and it doesn't do anything as discussed in the [webpack issue 1967](https://github.com/webpack/webpack/issues/1967).
+В результате вы должны получить как *style.css*, так и *style.js*. Последний файл содержит такое содержимое, как `webpackJsonp([1,3],[function(n,c){}]);` и он ничего не делает, о чём обсуждалось в [этом ишью webpack](https://github.com/webpack/webpack/issues/1967).
 
-If you want strict control over the ordering, you can set up a single CSS entry and then use `@import` to bring the rest to the project through it. Another option would be to set up a JavaScript entry and go through `import` to get the same effect.
+Если вам нужен строгий контроль над порядком, вы можете настроить одну запись CSS, а затем использовать `@import`, to bring the rest to the project through it. Другой вариант — настроить запись JavaScript и перейти к использованию `import` для получения того же эффекта.
 
-T> [css-entry-webpack-plugin](https://www.npmjs.com/package/css-entry-webpack-plugin) has been designed to help with this usage pattern. The plugin can extract a CSS bundle from entry without MCEP.
+T> [css-entry-webpack-plugin](https://www.npmjs.com/package/css-entry-webpack-plugin) был разработан, чтобы помочь с этим характером использования. Плагин может извлечь CSS-бандл из записи без MCEP.
 
-## Conclusion
+## Заключение
 
-The current setup separates styling from JavaScript neatly. Even though the technique is most valuable with CSS, it can be used to extract HTML templates or any other files types you consume. The hard part about `MiniCssExtractPlugin` has to do with its setup, but the complexity can be hidden behind an abstraction.
+Текущая настройка отлично отделяет стиль от JavaScript. Несмотря на то, что этот метод наиболее ценен для CSS, его можно использовать для извлечения шаблонов HTML или любых других типов файлов, которые вы обслуживаете. Самое трудное связано с настройкой `MiniCssExtractPlugin`, но эта сложность может быть скрыта за абстракцией.
 
-To recap:
+В итоге:
 
-* Using `MiniCssExtractPlugin` with styling solves the problem of Flash of Unstyled Content (FOUC). Separating CSS from JavaScript also improves caching behavior and removes a potential attack vector.
-* If you don't prefer to maintain references to styling through JavaScript, an alternative is to handle them through an entry. You have to be careful with style ordering in this case, though.
+* Использование `MiniCssExtractPlugin` со стилем решает проблему Flash of Unstyled Content (FOUC). Разделение CSS с помощью JavaScript также улучшает поведение кеширования и удаляет потенциальный способ атаки.
+* Если вы не предпочитаете поддерживать ссылки на стилизацию через JavaScript, альтернативой является обработка их через запись. Однако в этом случае вы должны быть осторожны с порядком файлов стилей.
 
-In the next chapter, you'll learn to eliminate unused CSS from the project.
+В следующей главе вы научитесь исключать неиспользуемый CSS из проекта.

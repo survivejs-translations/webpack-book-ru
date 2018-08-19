@@ -1,26 +1,26 @@
-# Loading Styles
+# Загрузка стилей
 
-Webpack doesn't handle styling out of the box, and you will have to use loaders and plugins to allow loading style files. In this chapter, you will set up CSS with the project and see how it works out with automatic browser refreshing. When you make a change to the CSS webpack doesn't have to force a full refresh. Instead, it can patch the CSS without one.
+Webpack не обрабатывает стили из коробки, и вам будет необходимо использовать загрузчики и плагины, чтобы разрешить загрузку файлов со стилями. В этой главе вы настроите обработку CSS для проекта, в также увидите, как работает автоматическое обновление браузера. Когда вы вносите изменения в CSS, webpack не обновляет в принудительном порядке полностью все стили. Вместо этого он может обновлять CSS без полной перезагрузки.
 
-## Loading CSS
+## Загрузка CSS
 
-To load CSS, you need to use [css-loader](https://www.npmjs.com/package/css-loader) and [style-loader](https://www.npmjs.com/package/style-loader). *css-loader* goes through possible `@import` and `url()` lookups within the matched files and treats them as a regular ES2015 `import`. If an `@import` points to an external resource, *css-loader* skips it as only internal resources get processed further by webpack.
+Для загрузки CSS вам нужно использовать [css-loader](https://www.npmjs.com/package/css-loader) и [style-loader](https://www.npmjs.com/package/style-loader). *css-loader* выполняет поиск `@import` и `url()` в соответствующих файлах и рассматривает их как обычный `import` в ES2015. Если `@import` указывает на внешний ресурс, *css-loader* пропускает его, поскольку только внутренние ресурсы далее будут обрабатываться webpack.
 
-*style-loader* injects the styling through a `style` element. The way it does this can be customized. It also implements the *Hot Module Replacement* interface providing for a pleasant development experience.
+*style-loader* внедряет стилизацию через элемент `style`. То, как он это делает, можно настроить по-своему. Этот загрузчик также реализует интерфейс *горячей перезагрузки модулей*, обеспечивающий приятный опыт при разработки.
 
-The matched files can be processed through loaders like [file-loader](https://www.npmjs.com/package/file-loader) or [url-loader](https://www.npmjs.com/package/url-loader), and these possibilities are discussed in the *Loading Assets* part of the book.
+Соответствующие файлы могут обрабатываться через загрузчики, таких как [file-loader](https://www.npmjs.com/package/file-loader) или [url-loader](https://www.npmjs.com/package/url-loader), и данная возможность обсуждается далее в части *Загрузка ресурсов*.
 
-Since inlining CSS isn't a good idea for production usage, it makes sense to use `MiniCssExtractPlugin` to generate a separate CSS file. You will do this in the next chapter.
+Поскольку вложенный CSS — это не самая лучшая идея для использования в продакшене, имеет смысл использовать `MiniCssExtractPlugin` для создания отдельного CSS-файла. Вы сделаете это в следующей главе.
 
 {pagebreak}
 
-To get started, invoke
+Для начала выполните в консоли следующее:
 
 ```bash
 npm install css-loader style-loader --save-dev
 ```
 
-Now let's make sure webpack is aware of them. Add a new function at the end of the part definition:
+Теперь давайте убедимся, что webpack знает о CSS-файлах. Добавить новую функцию в конец файла с определениями:
 
 **webpack.parts.js**
 
@@ -40,7 +40,7 @@ exports.loadCSS = ({ include, exclude } = {}) => ({
 });
 ```
 
-You also need to connect the fragment to the primary configuration:
+Вам также необходимо подключить эту часть к основной конфигурации:
 
 **webpack.config.js**
 
@@ -53,17 +53,17 @@ leanpub-end-insert
 ]);
 ```
 
-The added configuration means that files ending with `.css` should invoke the given loaders. `test` matches against a JavaScript-style regular expression.
+Добавленная конфигурация означает, что файлы, заканчивающиеся на `.css`, должны вызывать указанные загрузчики. `test` сопоставляет стилевой файл с регулярным выражением JavaScript.
 
-Loaders are transformations that are applied to source files, and return the new source and can be chained together like a pipe in Unix. They evaluated from right to left. This means that `loaders: ["style-loader", "css-loader"]` can be read as `styleLoader(cssLoader(input))`.
+Загрузки — это преобразования, применяемые к исходным файлам, они возвращают новый источник данных, и могут быть связаны вместе, подобно конвейеру в Unix. Они работают справа налево. Это означает, что загрузчики `loaders: ["style-loader", "css-loader"]` нужно читать как как `styleLoader(cssLoader(input))`.
 
-T> If you want to disable *css-loader* `url` parsing set `url: false`. The same idea applies to `@import`. To disable parsing imports you can set `import: false` through the loader options.
+T> Если вы не хотите, чтобы учитывались файлы через `url()`, то установите для *css-loader* настройку `url: false`. Подобное правило применимо и к `@import`. Для отключения импорта, вы можете установить `import: false` в параметрах загрузчика.
 
-T> In case you don't need HMR capability, support for old Internet Explorer, and source maps, consider using [micro-style-loader](https://www.npmjs.com/package/micro-style-loader) instead of *style-loader*.
+T> В случае, если вам не нужны возможности HMR, поддержка старого Internet Explorer и карта кода, попробуйте использовать [micro-style-loader](https://www.npmjs.com/package/micro-style-loader) вместо *style-loader*.
 
-## Setting Up the Initial CSS
+## Настройка начального CSS
 
-You are missing the CSS still:
+Когда всё настроено, не хватает самого главного — CSS-файла, давайте создадим основной файл со стилями:
 
 **src/main.css**
 
@@ -73,7 +73,7 @@ body {
 }
 ```
 
-Also, you need to make webpack aware of it. Without having an entry pointing to it somehow, webpack is not able to find the file:
+Кроме того, вам нужно дать знать о существовании этого файлу webpack. Если у вас нет точки входа, указывающей на этот файл, webpack не сможет его найти:
 
 **src/index.js**
 
@@ -84,21 +84,29 @@ leanpub-end-insert
 ...
 ```
 
-Execute `npm start` and browse to `http://localhost:8080` if you are using the default port and open up *main.css* and change the background color to something like `lime` (`background: lime`).
+Выполните «npm start» и перейдите на «http: // localhost: 8080», если используете порт по умолчанию и откройте * main.css * и измените цвет фона на нечто вроде `lime` (` background: lime`) ,
 
-You continue from here in the next chapter. Before that, though, you'll learn about styling-related techniques.
+Вы продолжаете отсюда в следующей главе. До этого, однако, вы узнаете о методах, связанных с стилем.
 
-![Hello cornsilk world](images/hello_02.png)
+Выполните `npm start` и перейдите по URL-адресу `http://localhost:8080`, если используете порт по умолчанию, а затем откройте  *main.css* и измените цвет фона на что-нибудь другой, например на `lime` (`background: lime`).
 
-T> The *CSS Modules* appendix discusses an approach that allows you to treat local to files by default. It avoids the scoping problem of CSS.
+Продолжим с этого момента в уже следующей главе. А пока вы узнаете о методах, связанных со стилизацией.
 
-## Loading Less
+![Привет светло-жёлтый цвет](images/hello_02.png)
+
+T> В приложении *CSS-модули* обсуждается подход, позволяющий по умолчанию обрабатывать локальные файлы. Это позволяет избежать проблемы с областью видимости CSS.
+
+## Загрузка Less
 
 ![Less](images/less.png)
 
-[Less](http://lesscss.org/) is a CSS processor packed with functionality. Using Less doesn't take a lot of effort through webpack as [less-loader](https://www.npmjs.com/package/less-loader) deals with the heavy lifting. You should install [less](https://www.npmjs.com/package/less) as well given it's a peer dependency of *less-loader*.
+Меньше - процессор CSS, оснащенный функциональностью. Использование Less не требует больших усилий с помощью webpack, поскольку менее загружаемый имеет дело с тяжелым подъемом. Вы должны установить меньше, также учитывая, что это зависимость от меньшего загрузчика.
 
-Consider the following minimal setup:
+Рассмотрим следующую минимальную настройку:
+
+[Less](http://lesscss.org/) — CSS-процессор, оснащенный функциональностью. Испольльзование Less не требует больших усилий с webpack, поскольку загрузчик [less-loader](https://www.npmjs.com/package/less-loader) выполняет всю тяжелую (черновую) работу. Вам нужно установить [less](https://www.npmjs.com/package/less), поскольку от него зависит *less-loader*.
+
+Рассмотрим следующую минимально рабочую настройку:
 
 ```javascript
 {
@@ -107,15 +115,15 @@ Consider the following minimal setup:
 },
 ```
 
-The loader supports Less plugins, source maps, and so on. To understand how those work you should check out the project itself.
+Загрузчик поддерживает Less-плагины, карты кода и т.д. Чтобы понять, как это работает вам следует проверить сам проект.
 
-## Loading Sass
+## Загрузка Sass
 
 ![Sass](images/sass.png)
 
-[Sass](http://sass-lang.com/) is a widely used CSS preprocessor. You should use [sass-loader](https://www.npmjs.com/package/sass-loader) with it. Remember to install [node-sass](https://www.npmjs.com/package/node-sass) to your project as it's a peer dependency.
+Sass - широко используемый CSS-препроцессор. Вы должны использовать [sass-loader](https://www.npmjs.com/package/sass-loader). Не забудьте установить [node-sass](https://www.npmjs.com/package/node-sass) в свой проект, так как это необязательная зависимость .
 
-Webpack doesn't need much configuration:
+Webpack не требует большой конфигурации:
 
 ```javascript
 {
@@ -124,17 +132,17 @@ Webpack doesn't need much configuration:
 },
 ```
 
-T> If you want more performance, especially during development, check out [fast-sass-loader](https://www.npmjs.com/package/fast-sass-loader).
+T> Если вы хотите повысить производительность, особенно во время разработки, посмотрите на пакет [fast-sass-loader](https://www.npmjs.com/package/fast-sass-loader).
 
-## Loading Stylus and Yeticss
+## Загрузка Stylus и Yeticss
 
 ![Stylus](images/stylus.png)
 
-[Stylus](http://stylus-lang.com/) is yet another example of a CSS processor. It works well through [stylus-loader](https://www.npmjs.com/package/stylus-loader). [yeticss](https://www.npmjs.com/package/yeticss) is a pattern library that works well with it.
+[Stylus](http://stylus-lang.com/) — это ещё один пример CSS-процессора. Он хорошо работает через [stylus-loader](https://www.npmjs.com/package/stylus-loader). [yeticss](https://www.npmjs.com/package/yeticss) — это библиотека шаблонов, которая хорошо работает со *stylus-loader*.
 
 {pagebreak}
 
-Consider the following configuration:
+Рассмотрим следующую конфигурацию:
 
 ```javascript
 {
@@ -159,11 +167,11 @@ Consider the following configuration:
 },
 ```
 
-To start using yeticss with Stylus, you must import it to one of your app's *.styl* files:
+Для использования yeticss со Stylus, вам нужно импортировать его в один из файлов *.styl* в вашем приложении:
 
 ```javascript
 @import "yeticss"
-//or
+// Или
 @import "yeticss/components/type"
 ```
 
@@ -171,9 +179,9 @@ To start using yeticss with Stylus, you must import it to one of your app's *.st
 
 ![PostCSS](images/postcss.png)
 
-[PostCSS](http://postcss.org/) allows you to perform transformations over CSS through JavaScript plugins. You can even find plugins that provide you Sass-like features. PostCSS is the equivalent of Babel for styling. [postcss-loader](https://www.npmjs.com/package/postcss-loader) allows using it with webpack.
+[PostCSS](http://postcss.org/) позволяет выполнять преобразования через CSS с помощью плагинов, написанных на JavaScript. Вы даже можете найти плагины, которые предоставляют подобные Sass возможности. PostCSS — эквивалент Babel для стилизации. [postcss-loader](https://www.npmjs.com/package/postcss-loader) позволяет использовать его с webpack.
 
-The example below illustrates how to set up autoprefixing using PostCSS. It also sets up [precss](https://www.npmjs.com/package/precss), a PostCSS plugin that allows you to use Sass-like markup in your CSS. You can mix this technique with other loaders to enable autoprefixing there.
+В приведенном ниже примере показано, как настроить автоматическое добавление браузерных префиксов с помощью PostCSS. Он также устанавливает [precss](https://www.npmjs.com/package/precss), плагин PostCSS, позволяющий использовать Sass-подобную раскладку в вашем CSS. Вы можете сочетать эту технику с другими загрузчиками, чтобы включить автодобавления браузерных префиксов.
 
 ```javascript
 {
@@ -194,13 +202,15 @@ The example below illustrates how to set up autoprefixing using PostCSS. It also
 },
 ```
 
-You have to remember to include [autoprefixer](https://www.npmjs.com/package/autoprefixer) and [precss](https://www.npmjs.com/package/precss) to your project for this to work. The technique is discussed in detail in the *Autoprefixing* chapter.
+Следует помнить, что вам нужно добавить [autoprefixer](https://www.npmjs.com/package/autoprefixer) и [precss](https://www.npmjs.com/package/precss) в ваш проект, чтобы они заработали. Эта техинка подробно обсуждается в главе «Автоматическое добавление браузерных префиксов».
 
-T> PostCSS supports *postcss.config.js* based configuration. It relies on [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) internally for other formats.
+T> PostCSS поддерживает конфигурацию на основе *postcss.config.js*. Внутри он полагается на пакет [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) для других форматов.
 
 ### cssnext
 
-[cssnext](http://cssnext.io/) is a PostCSS plugin that allows experiencing the future now with certain restrictions. You can use it through [postcss-cssnext](https://www.npmjs.com/package/postcss-cssnext) and enable it as follows:
+cssnext - это плагин PostCSS, который позволяет испытывать будущее сейчас с определенными ограничениями. Вы можете использовать его через postcss-cssnext и включить его следующим образом:
+
+[cssnext](http://cssnext.io/) — плагин PostCSS, позволяющий использовать синтаксис будущих спецификаций CSS, не беспокоясь о совместимости со старыми браузерами CSS. Вы можете использовать его через [postcss-cssnext](https://www.npmjs.com/package/postcss-cssnext) и включить его следующим образом:
 
 ```javascript
 {
@@ -213,31 +223,31 @@ T> PostCSS supports *postcss.config.js* based configuration. It relies on [cosmi
 },
 ```
 
-See [the usage documentation](http://cssnext.io/usage/) for available options.
+Смотрите [документацию по использованию](http://cssnext.io/usage/) доступных опций.
 
-T> cssnext includes *autoprefixer*! You don't have to configure autoprefixing separately for it to work in this case.
+T> cssnext включает *autoprefixer*! Вам не нужно настраивать отдельно автодобавление браузерных префиксов для того, чтобы они работали в данном случае.
 
-## Understanding Lookups
+## Понимание поиска файлов
 
-To get most out of *css-loader*, you should understand how it performs its lookups. Even though *css-loader* handles relative imports by default, it doesn't touch absolute imports (`url("/static/img/demo.png")`). If you rely on this kind of imports, you have to copy the files to your project.
+Для получения большего от *css-loader*, вы должны понимать, как он выполняет поиск. Несмотря на то, что *css-loader* обрабатывает относительный импорт по умолчанию, он не затрагивает абсолютный импорт (`url("/static/img/demo.png")`). Если вы полагаетесь на этот вид импорта, вам нудно скопировать файлы в свой проект.
 
-[copy-webpack-plugin](https://www.npmjs.com/package/copy-webpack-plugin) works for this purpose, but you can also copy the files outside of webpack. The benefit of the former approach is that webpack-dev-server can pick that up.
+[copy-webpack-plugin](https://www.npmjs.com/package/copy-webpack-plugin) предназначен для этой цели, но вы также можете копировать файлы за пределами webpack. Преимущество первого подхода заключается в том, что webpack-dev-сервер может обработать их.
 
-T> [resolve-url-loader](https://www.npmjs.com/package/resolve-url-loader) comes in handy if you use Sass or Less. It adds support for relative imports to the environments.
+T> [resolve-url-loader](https://www.npmjs.com/package/resolve-url-loader) пригодится, если вы используете Sass или Less. Он добавляет поддержку относительного импорта.
 
-### Processing *css-loader* Imports
+### Обработка импортов *css-loader*
 
-If you want to process *css-loader* imports in a specific way, you should set up `importLoaders` option to a number that tells the loader how many loaders before the *css-loader* should be executed against the imports found. If you import other CSS files from your CSS through the `@import` statement and want to process the imports through specific loaders, this technique is essential.
+Если вы хотите обработать импорты *css-loader* определенным образом, вы должны установить опцию `importLoaders` на число, которое указывает загрузчику, сколько загрузчиков перед *css-loader* должно быть выполнено с найденными импортами. Если вы импортируете другие CSS-файлы из своего CSS с помощью выражения `@import` и хотите обработать импорты через определенные загрузчики, этот метод имеет весьма важное значение.
 
 {pagebreak}
 
-Consider the following import from a CSS file:
+Рассмотрим следующий импорт из файла CSS:
 
 ```css
 @import "./variables.sass";
 ```
 
-To process the Sass file, you would have to write configuration:
+Для обработки файла Sass вам нужна такая конфигурация:
 
 ```javascript
 {
@@ -255,47 +265,47 @@ To process the Sass file, you would have to write configuration:
 },
 ```
 
-If you added more loaders, such as *postcss-loader*, to the chain, you would have to adjust the `importLoaders` option accordingly.
+Если вы добавили в цепочку больше загрузчиков, таких как *postcss-loader*, вам потребуется соответствующим образом настроить опцию `importLoaders`.
 
-### Loading from *node_modules* Directory
+### Загрузка из каталога *node_modules*
 
-You can load files directly from your node_modules directory. Consider Bootstrap and its usage for example:
+Вы можете загружать файлы напрямую из каталога `node_modules`. Рассмотрим Bootstrap и его использование, например:
 
 ```less
 @import "~bootstrap/less/bootstrap";
 ```
 
-The tilde character (`~`) tells webpack that it's not a relative import as by default. If tilde is included, it performs a lookup against `node_modules` (default setting) although this is configurable through the [resolve.modules](https://webpack.js.org/configuration/resolve/#resolve-modules) field.
+Символ тильды (`~`) указывает webpack, что по умолчанию это не относительный импорт. Если присутствует тильда, то поиск выполняется по каталогу `node_modules` (настройка по умолчанию), хотя можно настроить через поле [resolve.modules](https://webpack.js.org/configuration/resolve/#resolve-modules).
 
-W> If you are using *postcss-loader*, you can skip using `~` as discussed in [postcss-loader issue tracker](https://github.com/postcss/postcss-loader/issues/166). *postcss-loader* can resolve the imports without a tilde.
+W> Если вы используете *postcss-loader*, вы можете пропустить использование `~`, как обсуждалось в [ишью репозитория postcss-loader](https://github.com/postcss/postcss-loader/issues/166). Загрузчик *postcss-loader* может разрешить импорт без тильды.
 
-## Enabling Source Maps
+## Включение карты кода
 
-If you want to enable source maps for CSS, you should enable `sourceMap` option for *css-loader* and set `output.publicPath` to an absolute url pointing to your development server. If you have multiple loaders in a chain, you have to enable source maps separately for each. *css-loader* [issue 29](https://github.com/webpack/css-loader/issues/29) discusses this problem further.
+Если вы хотите включить карту кода для CSS, вам нужно активировать параметр `sourceMap` для *css-loader* и установить `output.publicPath` на абсолютный URL-адрес, указывающий на ваш сервер разработки. Если у вас есть несколько загрузчиков в цепочке, вам нужно включить карту кода отдельно для каждого. В [этом ишью](https://github.com/webpack/css-loader/issues/29) в *css-loader* эта проблема обсуждается более подробно.
 
-## Converting CSS to Strings
+## Преобразование CSS в строку
 
-Especially with Angular 2, it can be convenient if you can get CSS in a string format that can be pushed to components. [css-to-string-loader](https://www.npmjs.com/package/css-to-string-loader) achieves exactly this.
+Особенно с Angular 2 может быть удобно получение CSS в формате строки, который может быть перенесен в компоненты. С помощью [css-to-string-loader](https://www.npmjs.com/package/css-to-string-loader) получится этого достичь.
 
-## Using Bootstrap
+## Использование Bootstrap
 
-There are a couple of ways to use [Bootstrap](https://getbootstrap.com/) through webpack. One option is to point to the [npm version](https://www.npmjs.com/package/bootstrap) and perform loader configuration as above.
+Есть несколько способов использовать [Bootstrap](https://getbootstrap.com/) через webpack. Один из вариантов — указать [npm-версию](https://www.npmjs.com/package/bootstrap) и выполнить конфигурацию загрузчика, как показано выше.
 
-The [Sass version](https://www.npmjs.com/package/bootstrap-sass) is another option. In this case, you should set `precision` option of *sass-loader* to at least 8. This is [a known issue](https://www.npmjs.com/package/bootstrap-sass#sass-number-precision) explained at *bootstrap-sass*.
+[Версия Sass](https://www.npmjs.com/package/bootstrap-sass) — это еще один вариант. В этом случае вы должны установить опцию `precision` загрузчика *sass-loader* как минимум на 8. Это [известная проблема](https://www.npmjs.com/package/bootstrap-sass#sass-number-precision), описанная в *bootstrap-sass*.
 
-The third option is to go through [bootstrap-loader](https://www.npmjs.com/package/bootstrap-loader). It does a lot more but allows customization.
+Третий вариант — использовать [bootstrap-loader](https://www.npmjs.com/package/bootstrap-loader). Это предоставляет больше возможностей, но позволяет собственную настройку.
 
-## Conclusion
+## Заключение
 
-Webpack can load a variety of style formats. The approaches covered here write the styling to JavaScript bundles by default.
+Webpack может загружать различные форматы стилей. The approaches covered here write the styling to JavaScript bundles by default.
 
-To recap:
+В итоге:
 
-* *css-loader* evaluates the `@import` and `url()` definitions of your styling. *style-loader* converts it to JavaScript and implements webpack's *Hot Module Replacement* interface.
-* Webpack supports a large variety of formats compiling to CSS through loaders. These include Sass, Less, and Stylus.
-* PostCSS allows you to inject functionality to CSS in through its plugin system. cssnext is an example of a collection of plugins for PostCSS that implements future features of CSS.
-* *css-loader* doesn't touch absolute imports by default. It allows customization of loading behavior through the `importLoaders` option. You can perform lookups against *node_modules* by prefixing your imports with a tilde (`~`) character.
-* To use source maps, you have to enable `sourceMap` boolean through each style loader you are using except for *style-loader*. You should also set `output.publicPath` to an absolute url that points to your development server.
-* Using Bootstrap with webpack requires special care. You can either go through generic loaders or a bootstrap specific loader for more customization options.
+* *css-loader* обрабатывает определения `@import` и `url()` ваших стилей. *style-loader* преобразует его в JavaScript и реализует интерфейс *модуль горячей перезагруки* из webpack.
+* Webpack поддерживает большое количество форматов, которые компилируются в CSS с помощью загрузчиков. К ним относятся Sass, Less и Stylus.
+* PostCSS позволяет вам внедрять функциональность CSS в свою систему плагинов. cssnext — пример набора плагинов для PostCSS, который позволяет использовать будущий функционал CSS.
+* По умолчанию *css-loader* не обрабатывает абсолютный импорт.Он позволяет настраивать поведение загрузки через опцию `importLoaders`. Вы можете выполнять поиск по *node_modules*, указав префикс знака тильды (`~`) при импорте.
+* Для использования карты кода, вам нужно включить логическую настройку `sourceMap` на каждом используемом вами загрузчике стиля, за исключением *style-loader*. Вам также следует установить `output.publicPath` на абсолютный URL-адрес, указывающий на сервер разработки.
+* Использование Bootstrap с webpack требует особого внимания. Вы можете использовать общие загрузчики, либо специальный загрузчик, если нужны дополнительные параметры настройки.
 
-Although the loading approach covered here is enough for development purposes, it's not ideal for production. You'll learn why and how to solve this in the next chapter by separating CSS from the source.
+Хотя подход к загрузке, описанного в данной главе, вполне достаточно для разработки, он не идеален для продакшена. Вы узнаете, почему и как решить эту проблему в следующей главе, отделив CSS от источника.

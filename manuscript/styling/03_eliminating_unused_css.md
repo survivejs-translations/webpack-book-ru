@@ -1,16 +1,16 @@
-# Eliminating Unused CSS
+# Исключение неиспользуемого CSS
 
-Frameworks like [Bootstrap](https://getbootstrap.com/) tend to come with a lot of CSS. Often you use only a small part of it. Typically, you bundle even the unused CSS. It's possible, however, to eliminate the portions you aren't using.
+Фреймворки, такие как [Bootstrap](https://getbootstrap.com/), как правило, имеют много CSS. Часто вы используете только небольшую часть. Обычно вы включаете в бандл даже неиспользуемый CSS. Однако можно исключить части CSS-кода, которые вы не используете.
 
-[PurifyCSS](https://www.npmjs.com/package/purifycss) is a tool that can achieve this by analyzing files. It walks through your code and figures out which CSS classes are being used. Often there is enough information for it to strip unused CSS from your project. It also works with single page applications to an extent.
+[PurifyCSS](https://www.npmjs.com/package/purifycss) — это инструмент, который может достичь этого путем анализа файлов. Он просматривает ваш код и вычисляет, какие CSS-классы используются. Часто для этого достаточно информации, чтобы удалить неиспользованный CSS из вашего проекта. Он также работает с одностраничными приложениями в определенной степени.
 
-[uncss](https://www.npmjs.com/package/uncss) is a good alternative to PurifyCSS. It operates through PhantomJS and performs its work differently. You can use uncss itself as a PostCSS plugin.
+[uncss](https://www.npmjs.com/package/uncss) — хорошая альтернатива PurifyCSS. Он работает через PhantomJS и выполняет свою работу иначе. Вы можете использовать сам uncss как плагин для PostCSS.
 
-W> You have to be careful if you are using CSS Modules. You have to **whitelist** the related classes as discussed in [purifycss-webpack readme](https://github.com/webpack-contrib/purifycss-webpack#usage-with-css-modules).
+W> Вы должны быть осторожны, если используете CSS-модули. Вы должны использовать **белый список** связанных классов, как описано в [readme-файле к purifycss-webpack](https://github.com/webpack-contrib/purifycss-webpack#usage-with-css-modules).
 
-## Setting Up Pure.css
+## Настройка Pure.css
 
-To make the demo more realistic, let's install [Pure.css](http://purecss.io/), a small CSS framework, as well and refer to it from the project so that you can see PurifyCSS in action. These two projects aren't related in any way despite the naming.
+Чтобы сделать демонстрацию более реалистичной, давайте установим [Pure.css](http://purecss.io/), небольшой CSS-фреймворк, а также будем использовать его в проекте, чтобы вы могли видеть PurifyCSS в действии. Эти два проекта никоим образом не связаны, несмотря на похожее название.
 
 ```bash
 npm install purecss --save
@@ -18,7 +18,7 @@ npm install purecss --save
 
 {pagebreak}
 
-To make the project aware of Pure.css, `import` it:
+Чтобы проект знал о Pure.css, импортируем его через выражение `import`:
 
 **src/index.js**
 
@@ -29,14 +29,16 @@ leanpub-end-insert
 ...
 ```
 
-T> The `import` works because webpack will resolve against `"browser": "build/pure-min.css",` field in the *package.json* file of Pure.css due to [resolve.mainFields](https://webpack.js.org/configuration/resolve/#resolve-mainfields). Webpack will try to resolve possible `browser` and `module` fields before looking into `main`.
+T> Выражение `import` работает, потому что webpack разрешает данную зависимость из поля `"browser": "build/pure-min.css",` в файле *package.json* пакета Pure.css благодаря опции [resolve.mainFields](https://webpack.js.org/configuration/resolve/#resolve-mainfields). Webpack попытается разрешить зависимости в возможных полях `browser` и `module`, прежде чем смотреть в `main`.
+
+Вам также следует сделать демонстрационный компонент с использованием класса из Pure.css, это будет наша отправная точка:
 
 You should also make the demo component use a Pure.css class, so there is something to work with:
 
 **src/component.js**
 
 ```javascript
-export default (text = "Hello world") => {
+export default (text = "Привет, мир") => {
   const element = document.createElement("div");
 
 leanpub-start-insert
@@ -48,11 +50,11 @@ leanpub-end-insert
 };
 ```
 
-If you run the application (`npm start`), the "Hello world" should look like a button.
+Если вы запустите приложение (`npm start`), «Привет, мир» должен выглядеть как кнопка.
 
-![Styled hello](images/styled-button.png)
+![Стилизированный текст «Привет, мир»](images/styled-button.png)
 
-Building the application (`npm run build`) should yield output:
+Создание билда приложения (`npm run build`) должно следующий вывод:
 
 ```bash
 Hash: 36bff4e71a3f746d46fa
@@ -66,21 +68,21 @@ index.html  220 bytes          [emitted]
 ...
 ```
 
-As you can see, the size of the CSS file grew, and this is something to fix with PurifyCSS.
+Как вы можете видеть, размер файла CSS увеличился, и это можно исправить с помощью PurifyCSS.
 
-## Enabling PurifyCSS
+## Включение PurifyCSS
 
-Using PurifyCSS can lead to significant savings. In the example of the project, they purify and minify Bootstrap (140 kB) in an application using ~40% of its selectors to mere ~35 kB. That's a big difference.
+Использование PurifyCSS может привести к значительной экономии. В примере проекта они очищают и минимизируют Bootstrap (140 kB) в приложении, используя ~40% его селекторов до ~35 кБ. Это большая разница.
 
 {pagebreak}
 
-[purifycss-webpack](https://www.npmjs.com/package/purifycss-webpack) allows to achieve similar results. You should use the `MiniCssExtractPlugin` with it for the best results. Install it and a [glob](https://www.npmjs.org/package/glob) helper first:
+[purifycss-webpack](https://www.npmjs.com/package/purifycss-webpack) позволяет достичь аналогичных результатов. Вам следует использовать `MiniCssExtractPlugin` вместе с ним для достижения наилучших результатов. Сначала установите его и помощник [glob](https://www.npmjs.org/package/glob):
 
 ```bash
 npm install glob purifycss-webpack purify-css --save-dev
 ```
 
-You also need PurifyCSS configuration as below:
+Вам также нужна конфигурация PurifyCSS, как показано ниже:
 
 **webpack.parts.js**
 
@@ -92,7 +94,7 @@ exports.purifyCSS = ({ paths }) => ({
 });
 ```
 
-Next, the part has to be connected with the configuration. It's essential the plugin is used *after* the `MiniCssExtractPlugin`; otherwise, it doesn't work:
+Затем часть должна быть связана с конфигурацией. Очень важно, чтобы плагин использовался *после* `MiniCssExtractPlugin`; в противном случае он не работает:
 
 **webpack.config.js**
 
@@ -123,9 +125,9 @@ leanpub-end-insert
 ]);
 ```
 
-W> The order matters. CSS extraction has to happen before purifying.
+W> Порядок имеет значение. Перед очисткой должно произойти извлечение CSS.
 
-If you execute `npm run build` now, you should see something:
+Если сейчас вы выполните `npm run build`, вы увидите что-то похожее на это:
 
 ```bash
 Hash: 36bff4e71a3f746d46fa
@@ -139,31 +141,31 @@ index.html  220 bytes          [emitted]
 ...
 ```
 
-The size of the style has decreased noticeably. Instead of 16k, you have roughly 2k now. The difference would be even more significant for more massive CSS frameworks.
+Размер стиля заметно уменьшился. Вместо 16k у вас сейчас примерно 2k. Разница была бы еще более значимой для более крупных CSS-фреймворков.
 
-PurifyCSS supports [additional options](https://github.com/purifycss/purifycss#the-optional-options-argument) including `minify`. You can enable these through the `purifyOptions` field when instantiating the plugin. Given PurifyCSS cannot pick all of the classes you are always using, you should use `purifyOptions.whitelist` array to define selectors which it should leave in the result no matter what.
+PurifyCSS поддерживает [дополнительные опции](https://github.com/purifycss/purifycss#the-optional-options-argument), включая `minify`. Вы можете включить их через поле `purifyOptions` при создании экземпляра плагина. Учитывая, что PurifyCSS не может выбрать все классы, которые вы всегда используете, вы должны использовать массив `purifyOptions.whitelist` для определения селекторов, которые он должен оставить не смотря ни на что.
 
-W> Using PurifyCSS loses CSS source maps even if you have enabled them with loader specific configuration due to the way it works underneath.
+W> Использование PurifyCSS теряет карты кода CSS, даже если вы включили их с определенной конфигурацией загрузчика из-за того, как он работает под ним.
 
 {pagebreak}
 
-### Critical Path Rendering
+### Отрисовка критического пути
 
-The idea of [critical path rendering](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/) takes a look at CSS performance from a different angle. Instead of optimizing for size, it optimizes for render order and emphasizes **above-the-fold** CSS. The result is achieved by rendering the page and then figuring out which rules are required to obtain the shown result.
+Идея [отрисовки критического пути](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/) рассматривает производительность CSS с другой точки зрения. Вместо оптимизации размера, он оптимизирует порядок отрисовки и выделяет CSS **в верхней части страницы (above-the-fold)**. Результат достигается путем отрисовки страницы, а затем выяснения, какие правила необходимы для получения позитивного результата.
 
-[webpack-critical](https://www.npmjs.com/package/webpack-critical) and [html-critical-webpack-plugin](https://www.npmjs.com/package/html-critical-webpack-plugin) implement the technique as a `HtmlWebpackPlugin` plugin. [isomorphic-style-loader](https://www.npmjs.com/package/isomorphic-style-loader) achieves the same using webpack and React.
+[webpack-critical](https://www.npmjs.com/package/webpack-critical) и [html-critical-webpack-plugin](https://www.npmjs.com/package/html-critical-webpack-plugin) реализуют эту технику в виде плагина `HtmlWebpackPlugin`. С пакетом [isomorphic-style-loader](https://www.npmjs.com/package/isomorphic-style-loader) можно получить тот же результат при использовании webpack и React.
 
-[critical-path-css-tools](https://github.com/addyosmani/critical-path-css-tools) by Addy Osmani lists other related tools.
+[critical-path-css-tools](https://github.com/addyosmani/critical-path-css-tools) от Эдди Османи (Addy Osmani) перечисляет другие связанные инструменты.
 
-## Conclusion
+## Заключение
 
-Using PurifyCSS can lead to a significant decrease in file size. It's mainly valuable for static sites that rely on a massive CSS framework. The more dynamic a site or an application becomes, the harder it becomes to analyze reliably.
+Использование PurifyCSS может привести к значительному уменьшению размера файла. Это в основном ценно для статических сайтов, которые полагаются на массивный фреймворк CSS. Чем более динамичным становится сайт или приложение, тем сложнее его надежно анализировать.
 
-To recap:
+В итоге:
 
-* Eliminating unused CSS is possible using PurifyCSS. It performs static analysis against the source.
-* The functionality can be enabled through *purifycss-webpack*, and the plugin should be applied *after* `MiniCssExtractPlugin`.
-* At best, PurifyCSS can eliminate most, if not all, unused CSS rules.
-* Critical path rendering is another CSS technique that emphasizes rendering the above-the-fold CSS first. The idea is to render something as fast as possible instead of waiting for all CSS to load.
+* Исключить неиспользованный CSS можно с помощью PurifyCSS. Он выполняет статический анализ с источником.
+* Эта функциональность может быть включена через *purifycss-webpack*, и плагин следует применять *после* `MiniCssExtractPlugin`.
+* В лучшем случае PurifyCSS может исключить большинство, если не все, неиспользуемых CSS-правил.
+* Отрисовка критического пути — это еще одна методика CSS, которая подчеркивает сначала отрисовку CSS в верхней части страницы. Идея состоит в том, чтобы сделать что-то как можно быстрее, а не ждать загрузки CSS.
 
-In the next chapter, you'll learn to **autoprefix**. Enabling the feature makes it more convenient to develop complicated CSS setups that work with older browsers as well.
+В следующей главе вы узнаете **autoprefix**. Включение возможности упрощает написание вручную сложных настроек CSS, предназначенные для работы со старыми браузерами.

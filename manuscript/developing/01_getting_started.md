@@ -1,46 +1,46 @@
-# Getting Started
+# Начало работы
 
-Before getting started, make sure you are using a recent version of [Node](http://nodejs.org/). You should use at least the most current LTS (long-term support) version. The configuration of the book has been written with the LTS Node features in mind. You should have `node` and `npm` commands available at your terminal. [Yarn](https://yarnpkg.com/) is a good alternative to npm and works for the tutorial as well.
+Перед началом работы, удостоверьтесь что вы используете актуальную версию [Node](http://nodejs.org/). Вам следует использовать как минимум последнюю LTS (long-term support) версию. В книге, конфигурация webpack ориентирована на функции именно LTS Node. Так-же, в вашем терминале должны быть доступны команды `node` и `npm`. [Yarn](https://yarnpkg.com/) хорошая альтернатива npm, и тоже подходит для этого руководства.
 
-It's possible to get a more controlled environment by using a solution such as [Docker](https://www.docker.com/), [Vagrant](https://www.vagrantup.com/) or [nvm](https://www.npmjs.com/package/nvm). Vagrant comes with a performance penalty as it relies on a virtual machine. Vagrant is valuable in a team: each developer can have the same environment that is usually close to production.
+Возможно использование более контролируемого окружения, благодаря решениям вроде [Docker](https://www.docker.com/), [Vagrant](https://www.vagrantup.com/) или [nvm](https://www.npmjs.com/package/nvm). Vagrant более требовательный к ресурсам вашего компьютера, поскольку опирается на виртуальную машину. Vagrant полезен при работе в команде: каждый разработчик может иметь одинаковое окружение, которое обычно близко к окружению на продакшене.
 
-T> The completed configuration is available at [GitHub](https://github.com/survivejs-demos/webpack-demo).
+T> Завершенная конфигурация доступна на [GitHub](https://github.com/survivejs-demos/webpack-demo).
 
 {pagebreak}
 
-## Setting Up the Project
+## Создание проекта
 
-To get a starting point, you should create a directory for the project and set up a *package.json* there. npm uses that to manage project dependencies. Here are the basic commands:
+Для начала, вам следует создать для проекта папку с файлом *package.json* внутри. npm использует этот файл для управления зависимостями проекта. Вот базовые команды для этого:
 
 ```bash
 mkdir webpack-demo
 cd webpack-demo
-npm init -y # -y generates *package.json*, skip for more control
+npm init -y # опция -y создает *package.json*, но вы можете его опустить, если нуждаетесь в большем контроле
 ```
 
-You can tweak the generated *package.json* manually to make further changes to it even though a part of the operations modify the file automatically for you. The official documentation explains [package.json options](https://docs.npmjs.com/files/package.json) in more detail.
+Вы можете вносить дополнительные изменения в сгенерированный *package.json* вручную, несмотря на то, что часть команд модифицирует этот файл для вас автоматически. Официальная документация объясняет [опции package.json](https://docs.npmjs.com/files/package.json) более детально.
 
-T> You can set those `npm init` defaults at *~/.npmrc*.
+T> В файле *~/.npmrc* вы можете прописать опции, которые будут использоваться по умолчанию командой `npm init`.
 
-T> This is an excellent chance to set up version control using [Git](https://git-scm.com/). You can create a commit per step and tag per chapter, so it's easier to move back and forth if you want.
+T> Это идеальный момент для настройки контроля версий с помощью [Git](https://git-scm.com/). Вы можете создавать коммит на каждый свой шаг, и тег на каждую главу. Таким образом вам будет проще переключаться между изменениями, если потребуется.
 
-T> The book examples have been formatted using [Prettier](https://www.npmjs.com/package/prettier) with `"trailingComma": "es5",` and `"printWidth": 68` options enabled to make the diffs clean and fit the page.
+T> Примеры в книге были отформатированы с помощью [Prettier](https://www.npmjs.com/package/prettier), с включенными опциями `"trailingComma": "es5",` и `"printWidth": 68`, для того что бы сделать изменения более опрятными, и они могли вместится на странице.
 
-## Installing Webpack
+## Установка Webpack
 
-Even though webpack can be installed globally (`npm install webpack -g`), it's a good idea to maintain it as a dependency of your project to avoid issues, as then you have control over the exact version you are running. The approach works nicely in **Continuous Integration** (CI) setups as well. A CI system can install your local dependencies, compile your project using them, and then push the result to a server.
+Несмотря на то, что webpack может быть установлен глобально (`npm install webpack -g`), во избежание ошибок, хорошей практикой является добавление webpack в зависимости вашего проекта. В последствии, вы будете управлять конкретной версией webpack, которая используется в проекте. Такой подход отлично работает с настройкой **Continuous Integration** (CI). Система CI может установить ваши локальные зависимости, скомпилировать проект с их использованием, и затем отправить изменения на сервер.
 
-To add webpack to the project, execute:
+Для того, что бы добавить webpack в ваш проект, выполните:
 
 ```bash
-npm install webpack webpack-cli --save-dev # -D to type less
+npm install webpack webpack-cli --save-dev # можно использовать -D для краткости
 ```
 
-You should see webpack at your *package.json* `devDependencies` section after this. In addition to installing the package locally below the *node_modules* directory, npm also generates an entry for the executable.
+После этого, вы должны увидеть webpack в вашем *package.json*, в разделе `devDependencies`. Помимо локальной установки пакета в папку *node_modules*, npm так же сгенерирует исполняемый файл.
 
-T> You can use `--save` and `--save-dev` to separate application and development dependencies. The former installs and writes to *package.json* `dependencies` field whereas the latter writes to `devDependencies` instead.
+T> Вы можете использовать опции `--save` и `--save-dev` для разделения зависимостей приложения, и зависимостей разработки. Первая опция устанавливает пакет, и записывает его в раздел `dependencies` файла *package.json*, в то время как вторая записывает в раздел `devDependencies`.
 
-T> [webpack-cli](https://www.npmjs.com/package/webpack-cli) comes with additional functionality including `init` and `migrate` commands that allow you to create new webpack configuration fast and update from an older version to a newer one.
+T> [webpack-cli](https://www.npmjs.com/package/webpack-cli) поставляется с дополнительным функционалом, включая команды `init` и `migrate` которые позволяют быстрее создавать новые конфигурации webpack и мигрировать со старых версий на более новые.
 
 ## Executing Webpack
 

@@ -42,11 +42,11 @@ T> Вы можете использовать опции `--save` и `--save-dev
 
 T> [webpack-cli](https://www.npmjs.com/package/webpack-cli) поставляется с дополнительным функционалом, включая команды `init` и `migrate` которые позволяют быстрее создавать новые конфигурации webpack и мигрировать со старых версий на более новые.
 
-## Executing Webpack
+## Процесс выполнения Webpack
 
-You can display the exact path of the executables using `npm bin`. Most likely it points at *./node_modules/.bin*. Try running webpack from there through the terminal using `node_modules/.bin/webpack` or a similar command.
+Вы можете получить точный путь к исполняемым файлам с помощью команды `npm bin`. Скорее всего, команда укажет на директорию *./node_modules/.bin*. Попробуйте запустить webpack из этой папки с помощью `node_modules/.bin/webpack` или другой подобной команды.
 
-After running, you should see a version, a link to the command line interface guide and an extensive list of options. Most aren't used in this project, but it's good to know that this tool is packed with functionality if nothing else.
+После выполнения команды, вы должны увидеть версию webpack, ссылку на руководство по интерфейсу командной строки и обширный список опций. Большинство из них не будут использоваться в нашем проекте, но, по крайней мере, хорошо знать, что webpack наполнен функциональностью.
 
 ```bash
 $ node_modules/.bin/webpack
@@ -61,21 +61,21 @@ The 'mode' option has not been set. Set 'mode' option to 'development' or 'produ
 ERROR in Entry module not found: Error: Can't resolve './src' in '.../webpack-demo'
 ```
 
-The output tells that webpack cannot find the source to compile. It's also missing a `mode` parameter to apply development or production specific defaults.
+Данный вывод говорит нам о том, что webpack не может найти исходный файл для компиляции. Так же, отсутствует параметр `mode`, который применяет специфичные настройки для окружений разработки или продакшена.
 
-To get a quick idea of webpack output, we should fix both:
+Чтобы получить краткое представление о том, что выводит webpack, нам необходимо сделать следующее:
 
-1. Set up *src/index.js* so that it contains `console.log("Hello world");`.
-2. Execute `node_modules/.bin/webpack --mode development`. Webpack will discover the source file by Node convention.
-3. Examine *dist/main.js*. You should see webpack bootstrap code that begins executing the code. Below the bootstrap, you should find something familiar.
+1. Создать *src/index.js*, который будет содержать `console.log("Hello world");`.
+2. Выполнить команду `node_modules/.bin/webpack --mode development`. Webpack обнаружит данный файл, поскольку следует конвенциям Node.
+3. Исследуйте файл *dist/main.js*. Вы должны увидеть стандартный код начальной загрузки, который добавляет webpack. Он начинает выполнение вашего кода. Под ним вы должны увидеть кое-что знакомое.
 
-T> Try also `--mode production` and compare the output.
+T> Попробуйте выполнить команду с опцией `--mode production` и сравните результат.
 
 {pagebreak}
 
-## Setting Up Assets
+## Настройка ресурсов
 
-To make the build more involved, we can add another module to the project and start developing a small application:
+Что бы сделать сборку более привлекательной, мы можем добавить другой модуль в наш проект, и начать разработку маленького приложения:
 
 **src/component.js**
 
@@ -89,7 +89,7 @@ export default (text = "Hello world") => {
 };
 ```
 
-We also have to modify the original file to import the new file and render the application through the DOM:
+После этого, нам следует изменить оригинальный файл таким образом, что бы импортировать новый файл и отобразить наше приложение через DOM:
 
 **src/index.js**
 
@@ -99,23 +99,23 @@ import component from "./component";
 document.body.appendChild(component());
 ```
 
-Examine the output after building (`node_modules/.bin/webpack --mode development`). You should see both modules in the bundle that webpack wrote to the `dist` directory.
+Исследуйте вывод после сборки (`node_modules/.bin/webpack --mode development`). Вы должны увидеть оба модуля в сборке, которую webpack записал в папку `dist`.
 
-To make the output clearer to examine, pass `--devtool false` parameter to webpack. Webpack will generate `eval` based source maps by default and doing this will disable the behavior. See the *Source Maps* chapter for more information.
+Для того, чтобы было легче исследовать вывод, передайте параметр `--devtool false`. Webpack по умолчанию генерирует карты кода, основанные на функции `eval`, и данный параметр отключит это поведение. Дополнительную информацию вы найдете в главе *Source Maps*.
 
-One problem remains, though. How can we test the application in the browser?
+Остается только одна проблема. Как нам протестировать приложение в браузере?
 
-## Configuring *html-webpack-plugin*
+## Настройка плагина *html-webpack-plugin*
 
-The problem can be solved by writing an *index.html* file that points to the generated file. Instead of doing that on our own, we can use a plugin and webpack configuration to do this.
+Проблема может быть решена созданием файла *index.html*, который будет указывать на сгенерированный файл. Но вместо того, чтобы делать это самим, мы можем использовать плагин  и настройку webpack.
 
-To get started, install *html-webpack-plugin*:
+Для начала, установите *html-webpack-plugin*:
 
 ```bash
 npm install html-webpack-plugin --save-dev
 ```
 
-To connect the plugin with webpack, set up configuration as below:
+Что бы подключить этот плагин с помощью webpack, создайте файл конфигурации, с кодом показанным ниже:
 
 **webpack.config.js**
 
@@ -131,20 +131,20 @@ module.exports = {
 };
 ```
 
-Now that the configuration is done, you should try the following:
+Теперь настройка закончена, и вы можете попробовать следующее:
 
-1. Build the project using `node_modules/.bin/webpack --mode production`. You can try the `development` mode too.
-2. Enter the build directory using `cd dist`.
-3. Run the server using `serve` (`npm i serve -g`) or a similar command.
-4. Examine the result through a web browser. You should see something familiar there.
+1. Собрать проект с помощью `node_modules/.bin/webpack --mode production`. Вы можете попробовать и `development` режим.
+2. Войти в папку нашей сборки с помощью `cd dist`.
+3. Запустить сервер, с использованием `serve` (`npm i serve -g`) или другой подобной команды.
+4. Исследовать результат в веб-браузере. Вы должны увидеть там кое-что знакомое.
 
 ![Hello world](images/hello_01.png)
 
-T> **Trailing commas** are used in the book examples on purpose as it gives cleaner diffs for the code examples.
+T> **Висячие запятые** используются в примерах, поскольку это делает более очевидным сравнение изменений примеров нашего кода.
 
-## Examining the Output
+## Исследование вывода
 
-If you execute `node_modules/.bin/webpack --mode production`, you should see output:
+Если вы выполните `node_modules/.bin/webpack --mode production`, вы увидите следующий вывод:
 
 ```bash
 Hash: aafe36ba210b0fbb7073
@@ -166,15 +166,15 @@ Child html-webpack-plugin for "index.html":
         + 2 hidden modules
 ```
 
-The output tells a lot:
+Этот вывод говорит нам о многом:
 
-* `Hash: aafe36ba210b0fbb7073` - The hash of the build. You can use this to invalidate assets through `[hash]` placeholder. Hashing is discussed in detail in the *Adding Hashes to Filenames* chapter.
-* `Version: webpack 4.1.1` - Webpack version.
-* `Time: 338ms` - Time it took to execute the build.
-* `main.js  679 bytes       0  [emitted]  main` - Name of the generated asset, size, the IDs of the **chunks** into which it's related, status information telling how it was generated, the name of the chunk.
-* `index.html  181 bytes          [emitted]` - Another generated asset that was emitted by the process.
-* `[0] ./src/index.js + 1 modules 219 bytes {0} [built]` - The ID of the entry asset, name, size, entry chunk ID, the way it was generated.
-* `Child html-webpack-plugin for "index.html":` - This is plugin-related output. In this case *html-webpack-plugin* is creating this output on its own.
+* `Hash: aafe36ba210b0fbb7073` - хэш нашей сборки. Вы можете использовать его, что бы сделать недействительными ресурсы, используя заполнитель((???)) `[hash]`. Хэширование рассматривается детально в главе *Добавление хэшей к именам файлов*.
+* `Version: webpack 4.1.1` - версия webpack.
+* `Time: 338ms` - время, затраченное на создание сборки.
+* `main.js  679 bytes       0  [emitted]  main` - название сгенерированного ресурса; его размер; ID **фрагмента** которому он относится; информация о статусе, которая говорит нам о том, каким образом он был сгенерирован и имя фрагмента.
+* `index.html  181 bytes          [emitted]` - другой сгенерированный ресурс, созданный во время во время сборки.
+* `[0] ./src/index.js + 1 modules 219 bytes {0} [built]` - ID входного ресурса, его имя, размер, ID входного фрагмента и то, каким образом он был сгенерирован.
+* `Child html-webpack-plugin for "index.html":` - это специфичный для какого-нибудь плагина вывод. В данном случае, *html-webpack-plugin* создает этот вывод самостоятельно.
 
 Examine the output below the `dist/` directory. If you look closely, you can see the same IDs within the source.
 

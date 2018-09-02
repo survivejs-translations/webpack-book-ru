@@ -174,19 +174,19 @@ Child html-webpack-plugin for "index.html":
 * `main.js  679 bytes       0  [emitted]  main` - название сгенерированного ресурса; его размер; ID **фрагмента** которому он относится; информация о статусе, которая говорит нам о том, каким образом он был сгенерирован и имя фрагмента.
 * `index.html  181 bytes          [emitted]` - другой сгенерированный ресурс, созданный во время во время сборки.
 * `[0] ./src/index.js + 1 modules 219 bytes {0} [built]` - ID входного ресурса, его имя, размер, ID входного фрагмента и то, каким образом он был сгенерирован.
-* `Child html-webpack-plugin for "index.html":` - это специфичный для какого-нибудь плагина вывод. В данном случае, *html-webpack-plugin* создает этот вывод самостоятельно.
+* `Child html-webpack-plugin for "index.html":` - это специфичный для какого-нибудь плагина вывод. В данном случае, *html-webpack-plugin* выводит это самостоятельно.
 
-Examine the output below the `dist/` directory. If you look closely, you can see the same IDs within the source.
+Проверьте вывод внутри папки `dist/`. Если вы внимательно посмотрите, то увидите те же самые ID в этой папке.
 
-T> In addition to a configuration object, webpack accepts an array of configurations. You can also return a `Promise` and eventually `resolve` to a configuration for example.
+T> В дополнение к объекту конфигурации, webpack принимает и массив конфигурации. К примеру, вы так же можете вернуть `Promise` и, в конечном итоге, `resolve` в саму конфигурацию.
 
-T> If you want a light alternative to *html-webpack-plugin*, see [mini-html-webpack-plugin](https://www.npmjs.com/package/mini-html-webpack-plugin). It does less but it's also simpler to understand.
+T> Если вам нужна легковесная альтернатива плагину *html-webpack-plugin*, обратите внимание на [mini-html-webpack-plugin](https://www.npmjs.com/package/mini-html-webpack-plugin). Он делает намного меньше, но его также проще понять.
 
 {pagebreak}
 
-## Adding a Build Shortcut
+## Добавление сокращенной команды
 
-Given executing `node_modules/.bin/webpack` is verbose, you should do something about it. Adjust *package.json* to run tasks as below:
+Команда для сборки нашего проекта (`node_modules/.bin/webpack`) слишком многословная, нужно с этим что-то сделать. Отредактируйте *package.json* как показано ниже:
 
 **package.json**
 
@@ -196,42 +196,42 @@ Given executing `node_modules/.bin/webpack` is verbose, you should do something 
 },
 ```
 
-Run `npm run build` to see the same output as before. npm adds *node_modules/.bin* temporarily to the path enabling this. As a result, rather than having to write `"build": "node_modules/.bin/webpack"`, you can do `"build": "webpack"`.
+А теперь, запустите `npm run build` и вы увидите идентичный прежнему вывод. npm временно добавляет папку *node_modules/.bin* к путям поиска файлов. В результате, вместо того что бы писать `"build": "node_modules/.bin/webpack"`, вы можете написать проще: `"build": "webpack"`.
 
-You can execute this kind of scripts through *npm run* and you can use *npm run* anywhere within your project. If you run the command as is, it gives you the listing of available scripts.
+Вы можете выполнить подобный скрипт с помощью команды *npm run*, и вы можете использовать *npm run* где угодно, внутри папок вашего проекта. Если вы выполните эту команду как есть, она вернет вам список доступных скриптов.
 
-T> There are shortcuts like *npm start* and *npm test*. You can run these directly without *npm run* although that works too. For those in a hurry, you can use *npm t* to run your tests.
+T> Есть еще другие сокращенные команды, вроде *npm start* и *npm test*. Вы можете выполнять эти команды напрямую, без *npm run*, и это тоже будет работать. А те кто очень торопится, могут использовать *npm t* для того что бы запустить тесты.
 
-T> To go one step further, set up system level aliases using the `alias` command in your terminal configuration. You could map `nrb` to `npm run build` for instance.
-
-{pagebreak}
-
-## `HtmlWebpackPlugin` Extensions
-
-Although you can replace `HtmlWebpackPlugin` template with your own, there are premade ones like [html-webpack-template](https://www.npmjs.com/package/html-webpack-template) or [html-webpack-template-pug](https://www.npmjs.com/package/html-webpack-template-pug).
-
-There are also specific plugins that extend `HtmlWebpackPlugin`'s functionality:
-
-* [favicons-webpack-plugin](https://www.npmjs.com/package/favicons-webpack-plugin) is able to generate favicons.
-* [script-ext-html-webpack-plugin](https://www.npmjs.com/package/script-ext-html-webpack-plugin) gives you more control over script tags and allows you to tune script loading further.
-* [style-ext-html-webpack-plugin](https://www.npmjs.com/package/style-ext-html-webpack-plugin) converts CSS references to inlined CSS. The technique can be used to serve critical CSS to the client fast as a part of the initial payload.
-* [resource-hints-webpack-plugin](https://www.npmjs.com/package/resource-hints-webpack-plugin) adds [resource hints](https://www.w3.org/TR/resource-hints/) to your HTML files to speed up loading time.
-* [preload-webpack-plugin](https://www.npmjs.com/package/preload-webpack-plugin) enables `rel=preload` capabilities for scripts and helps with lazy loading, and it combines well with techniques discussed in the *Building* part of this book.
-* [webpack-cdn-plugin](https://www.npmjs.com/package/webpack-cdn-plugin) allows you to specify which dependencies to load through a Content Delivery Network (CDN). This common technique is used for speeding up loading of popular libraries.
-* [dynamic-cdn-webpack-plugin](https://www.npmjs.com/package/dynamic-cdn-webpack-plugin) achieves a similar result.
+T> Для того что бы пойти еще на шаг дальше, настройте алиас(???) системного уровня с помощью команды `alias` в настройках вашего терминала. К примеру, вы можете добавить команду `nrb` которая будет запускать `npm run build`.
 
 {pagebreak}
 
-## Conclusion
+## Расширения для `HtmlWebpackPlugin`
 
-Even though you have managed to get webpack up and running, it does not do that much yet. Developing against it would be painful. Each time you wanted to check out the application, you would have to build it manually using `npm run build` and then refresh the browser. That's where webpack's more advanced features come in.
+Хотя вы можете заменить шаблон `HtmlWebpackPlugin` своим собственным, есть еще и другие готовые решения, вроде [html-webpack-template](https://www.npmjs.com/package/html-webpack-template) или [html-webpack-template-pug](https://www.npmjs.com/package/html-webpack-template-pug).
 
-To recap:
+Существуют еще и плагины, расширяющие функционал `HtmlWebpackPlugin`:
 
-* It's a good idea to use a locally installed version of webpack over a globally installed one. This way you can be sure of what version you are using. The local dependency also works in a Continuous Integration environment.
-* Webpack provides a command line interface through the *webpack-cli* package. You can use it even without configuration, but any advanced usage requires configuration.
-* To write more complicated setups, you most likely have to write a separate *webpack.config.js* file.
-* `HtmlWebpackPlugin` can be used to generate an HTML entry point to your application. In the *Multiple Pages* chapter you will see how to generate multiple separate pages using it.
-* It's handy to use npm *package.json* scripts to manage webpack. You can use it as a light task runner and use system features outside of webpack.
+* [favicons-webpack-plugin](https://www.npmjs.com/package/favicons-webpack-plugin) может генерировать favicons.
+* [script-ext-html-webpack-plugin](https://www.npmjs.com/package/script-ext-html-webpack-plugin) дает вам больше контроля над тегами script и позволяет настроить загрузку скриптов более тонко.
+* [style-ext-html-webpack-plugin](https://www.npmjs.com/package/style-ext-html-webpack-plugin) конвертирует ссылки на CSS во встроенный CSS. Данная техника может быть использована для того, что бы предоставить критический CSS клиенту как можно быстрее, как часть начальной загрузки страницы.
+* [resource-hints-webpack-plugin](https://www.npmjs.com/package/resource-hints-webpack-plugin) добавляет [ресурсные подсказки и директивы](https://www.w3.org/TR/resource-hints/) в ваши HTML файлы что бы ускорить процесс загрузки.
+* [preload-webpack-plugin](https://www.npmjs.com/package/preload-webpack-plugin) включает возможности `rel=preload` для ваших скриптов и помогает с ленивой загрузкой, а еще, он хорошо сочитается с техниками, разобранными в главе *Building* данной книги.
+* [webpack-cdn-plugin](https://www.npmjs.com/package/webpack-cdn-plugin) позволяет вам указать, какие зависимости необходимо загружать из Сети Доставки Содержимого (CDN). Эта распространенная техника используется для ускорения загрузки популярных библиотек.
+* [dynamic-cdn-webpack-plugin](https://www.npmjs.com/package/dynamic-cdn-webpack-plugin) позволяет достичь аналогичного результата.
 
-In the next chapter, you will learn how to improve the developer experience by enabling automatic browser refresh.
+{pagebreak}
+
+## Заключение
+
+Даже несмотря на то, что вам удалось установить и запустить webpack, сейчас он делает на так уж много. Разработка с его помощью может быть болезненной. Каждый раз, когда вам необходимо проверить результат работы приложения, вам необходимо собрать его вручную командой `npm run build` и потом обновить страницу в браузере. Это то место, где более сложные функции webpack могут показать себя.
+
+В итоге:
+
+* Хорошей идеей будет использование локально установленного webpack, вместо глобальной установки. В таком случае вы можете быть уверены в том, какую версию вы используете. Локальная зависимость так же хорошо работает с окружением Continuous Integration.
+* Webpack предоставляет интерфейс командной строки с помощью пакета *webpack-cli*. Вы можете использовать его даже без настройки, но она необходима для более продвинутого использования.
+* Для записи более сложных настроек, вам, скорее всего, придется создать отдельный файл *webpack.config.js*.
+* `HtmlWebpackPlugin` может быть использован для генерации входного HTML для вашего приложения. В главе *Несколько страниц* вы увидите, как можно генерировать несколько отдельных страниц с его помощью.
+* Удобно использовать скрипты *package.json*, предоставленные пакетом npm, для управления webpack. Для упрощения работы, вы можете использовать его как легковесный менеджер задач, и использовать функции вашей системы, выходящие за рамки пакета webpack.
+
+В следующей главе, вы узнаете как улучшить восприятие со стороны разработчика (developer experience), путем включения функции автоматического обновления браузера.

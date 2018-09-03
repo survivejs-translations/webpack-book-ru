@@ -1,42 +1,42 @@
 # webpack-dev-server
 
-Tools, such as [LiveReload](http://livereload.com/) or [Browsersync](http://www.browsersync.io/), allow refreshing the browser as you develop the application and avoid a refresh for CSS changes. It's possible to setup Browsersync to work with webpack through [browser-sync-webpack-plugin](https://www.npmjs.com/package/browser-sync-webpack-plugin), but webpack has more tricks in store.
+Такие инструменты, как [LiveReload](http://livereload.com/) или [Browsersync](http://www.browsersync.io/) позволяют обновлять браузер по мере разработки, а также избежать полной перезагрузки страницы при изменении CSS. Есть возможность настроить Browsersync для работы с webpack с помощью [browser-sync-webpack-plugin](https://www.npmjs.com/package/browser-sync-webpack-plugin), но у webpack есть другие козыри в рукаве.
 
-## Webpack `watch` Mode and *webpack-dev-server*
+## Режим `watch` и *webpack-dev-server*
 
-A good first step towards a better development environment is to use webpack in its **watch** mode. You can activate it by passing the `--watch` to webpack. Example: `npm run build -- --watch`.
+Первым шагом на пути к лучшему окружению разработки является использование webpack в его режиме **слежения**. Вы можете включить этот режим, передав в webpack параметр `--watch`. Например: `npm run build -- --watch`.
 
-Once enabled, the watch mode detects changes made to your files and recompiles automatically. *webpack-dev-server* (WDS) implements a watch mode and goes even further.
+Когда этот режим включен, webpack отслеживает изменения, внесенные в ваши файлы, и пересобирает проект автоматически. *webpack-dev-server* (WDS) реализует режим слежения и идет еще дальше.
 
-WDS is a development server running **in-memory**, meaning the bundle contents aren't written out to files but stored in memory. The distinction is important when trying to debug code and styles.
+WDS - это сервер разработки, который работает **в памяти**. Это означает, что содержимое сборки не записывается в файлы, но сохраняется в памяти. Это различие важно понимать, когда вы пытаетесь отладить ваш код или стили.
 
-By default, WDS refreshes content automatically in the browser while you develop your application, so you don't have to do it yourself. However it also supports an advanced webpack feature, **Hot Module Replacement** (HMR).
+По умолчанию, WDS обновляет содержимое страницы браузера автоматически пока вы разрабатываете приложение, так что вам не приходится это делать самому. Однако, он поддерживает и более продвинутую функцию webpack, **Горячую Замену Модулей** (HMR).
 
-HMR allows patching the browser state without a full refresh making it particularly handy with libraries like React where an update blows away the application state. The *Hot Module Replacement* appendix covers the feature in detail.
+HMR позволяет обновлять состояние браузера без полной перезагрузки страницы, что делает эту функцию особенно удобной при использовании с библиотеками вроде React, в которой обновление страницы уничтожает состояние вашего приложения. Приложение *Горячая Замена Модулей* объясняет эту функцию детально.
 
-WDS provides an interface that makes it possible to patch code on the fly, however for this to work efficiently you have to implement this interface for the client-side code. It's trivial for something like CSS because it's stateless, but the problem is harder with JavaScript frameworks and libraries.
+WDS предоставляет интерфейс, который позволяет исправлять код на лету, однако для эффективной работы этой функции, вы должны реализовать данный интерфейс для клиентской части кода. Это довольно тривиальная задача для чего-то, вроде CSS, поскольку у него нет состояния, но решение этой задачи с JavaScript фреймворками и библиотеками гораздо сложнее.
 
-## Emitting Files from WDS
+## Запись файлов из WDS
 
-Even though it's good that WDS operates in-memory by default for performance reasons, sometimes it can be good to emit files to the file system. If you are integrating with another server that expects to find the files, this becomes essential. [write-file-webpack-plugin](https://www.npmjs.com/package/write-file-webpack-plugin) allows you to do this.
+Несмотря на то, что WDS который работает в памяти по умолчанию - это хорошее решение, в плане производительности, иногда лучше будет записывать файлы в вашу файловую систему. Это может быть необходимым, когда вы интегрируетесь с другим сервером, который ожидает присутствия файлов. [write-file-webpack-plugin](https://www.npmjs.com/package/write-file-webpack-plugin) позволяет вам это сделать.
 
-W> You should use WDS strictly for development. If you want to host your application, consider other standard solutions, such as Apache or Nginx.
+W> Вам следует использовать WDS исключительно для разработки. Если вы хотите размещать(???) ваше приложение с помощью других стандартных решений, как например Apache или Nginx.
 
-## Getting Started with WDS
+## Начало работы с WDS
 
-To get started with WDS, install it first:
+Для того, что бы начать работу с WDS, сперва установите его:
 
 ```bash
 npm install webpack-dev-server --save-dev
 ```
 
-As before, this command generates a command below the `npm bin` directory, and you could run *webpack-dev-server* from there. After running the WDS, you have a development server running at `http://localhost:8080`. Automatic browser refresh is in place now, although at a fundamental level.
+Как и прежде, даная команда сгенерирует для нас исполняемый файл в папке `npm bin`, и вы сможете запустить *webpack-dev-server* из нее. После запуска WDS, в вашем распоряжении окажется сервер разработки по адресу `http://localhost:8080`. Автоматическое обновление браузера тоже будет включено, хоть и на фундаментальном уровне(???).
 
 {pagebreak}
 
-## Attaching WDS to the Project
+## Привязка WDS к проекту
 
-To integrate WDS to the project, define an npm script for launching it. To follow npm conventions, call it as *start* like below:
+Для интеграции WDS в наш проект, определим npm скрипт для его запуска. Что бы следовать конвенциям npm, нужно назвать его *start*, как на примере ниже:
 
 **package.json**
 
@@ -49,9 +49,9 @@ leanpub-end-insert
 },
 ```
 
-T> WDS picks up configuration like webpack itself. The same rules apply.
+T> WDS загружает вашу конфигурацию, как и сам webpack. Здесь работают одинаковые правила.
 
-If you execute either *npm run start* or *npm start* now, you should see something in the terminal:
+Теперь, если вы выполните *npm run start* или *npm start*, вы должны увидеть кое-что в терминале:
 
 ```bash
 > webpack-dev-server --mode development
@@ -71,23 +71,23 @@ Entrypoint main [big] = main.js
 
 {pagebreak}
 
-The server is running, and if you open `http://localhost:8080/` at your browser, you should see something familiar:
+Сервер запущен, и если вы откроете `http://localhost:8080/` в вашем браузере, вы увидите кое-что знакомое:
 
 ![Hello world](images/hello_01.png)
 
-If you try modifying the code, you should see the output in your terminal. The browser should also perform a hard refresh on change.
+Теперь, если вы попытаетесь изменить ваш код, вы увидите новый вывод в вашем терминале. Браузер тоже должен реагировать на изменение кода перезагрузкой страницы.
 
-T> WDS tries to run in another port in case the default one is being used. The terminal output tells you where it ends up running. You can debug the situation with a command like `netstat -na | grep 8080`. If something is running on the port 8080, it should display a message on Unix.
+T> WDS попытается запустится на другом порту, в случае если стандартный уже занят. Вывод в терминале расскажет вам о том, на каком порту он запустится. Вы можете отладить данную ситуацию, с помощью команд, вроде `netstat -na | grep 8080`. В Unix системах, если что-то уже запущено на порту 8080, данная команда выведет сообщение.
 
-T> In addition to `production` and `development`, there's a third mode, `none`, which disables everything and is close to the behavior you had in versions before webpack 4.
+T> В дополнение к режимам `production` и `development`, есть и третий режим, `none`, который отключает все и близок к поведению, который был в распоряжении пользователей webpack в версиях, предшествующих 4.
 
-## Configuring WDS Through Webpack Configuration
+## Настройка WDS через конфигурацию webpack
 
-WDS functionality can be customized through the `devServer` field in the webpack configuration. You can set most of these options through the CLI as well, but managing them through webpack is a decent approach.
+Функциональность WDS может быть настроена через поле `devServer` в конфигурации webpack. Вы можете задать большинство настроек и через CLI, но управление ими через webpack это более приемлемый подход.
 
 {pagebreak}
 
-Enable additional functionality as below:
+Включите дополнительный функционал, как показано ниже:
 
 **webpack.config.js**
 

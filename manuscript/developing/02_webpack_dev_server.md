@@ -97,34 +97,35 @@ T> В дополнение к режимам `production` и `development`, ес
 module.exports = {
 leanpub-start-insert
   devServer: {
-    // Display only errors to reduce the amount of output.
+    // Отображать только ошибки чтобы уменьшить количество вывода в консоли.
     stats: "errors-only",
 
-    // Parse host and port from env to allow customization.
+    // Парсить хост и порт из env-переменных 
+    // (переменных окружения) чтобы позволить кастомизацию.
     //
-    // If you use Docker, Vagrant or Cloud9, set
+    // Если вы используете Docker, Vagrant или Cloud9, укажите
     // host: options.host || "0.0.0.0";
     //
-    // 0.0.0.0 is available to all network devices
-    // unlike default `localhost`.
-    host: process.env.HOST, // Defaults to `localhost`
-    port: process.env.PORT, // Defaults to 8080
-    open: true, // Open the page in browser
+    // 0.0.0.0 доступно для всех сетевых устройств,
+    // в отличии от значения по умолчанию - `localhost`.
+    host: process.env.HOST, // По умолчанию `localhost`
+    port: process.env.PORT, // По умолчанию 8080
+    open: true, // Открыть страницу в браузере
   },
 leanpub-end-insert
   ...
 };
 ```
 
-After this change, you can configure the server host and port options through environment parameters (example: `PORT=3000 npm start`).
+После этих изменений, вы сможете указать хост и порт сервера через переменные окружения (например: `PORT=3000 npm start`).
 
-T> [dotenv](https://www.npmjs.com/package/dotenv) allows you to define environment variables through a *.env* file. *dotenv* allows you to control the host and port setting of the setup quickly.
+T> [dotenv](https://www.npmjs.com/package/dotenv) позволяет вам определить переменные окружения с помощью *.env* файла. *dotenv* дает возможность вам быстро настраивать конфигурацию хоста и порта.
 
-T> Enable `devServer.historyApiFallback` if you are using HTML5 History API based routing.
+T> Включите `devServer.historyApiFallback` если вы используете роутинг(???), на основании HTML5 History API.
 
-## Enabling Error Overlay
+## Включение режима наложения ошибок (overlay)
 
-WDS provides an overlay for capturing compilation related warnings and errors:
+WDS предоставляет режим наложения для захвата предупреждений и ошибок, выявленных на этапе компиляции:
 
 **webpack.config.js**
 
@@ -140,31 +141,31 @@ leanpub-end-insert
 };
 ```
 
-Run the server now (`npm start`) and break the code to see an overlay in the browser:
+Теперь, запустите сервер (`npm start`) и поломайте что-нибудь в вашем коде, для того что бы увидеть режим наложения в браузере:
 
-![Error overlay](images/error-overlay.png)
+![Наложение ошибок](images/error-overlay.png)
 
-T> If you want even better output, consider [error-overlay-webpack-plugin](https://www.npmjs.com/package/error-overlay-webpack-plugin) as it shows the origin of the error better.
+T> Если вы хотите еще более хороший вывод ошибок, рассмотрите плагин [error-overlay-webpack-plugin](https://www.npmjs.com/package/error-overlay-webpack-plugin), поскольку он показывает источник ошибки еще лучше.
 
-W> WDS overlay does *not* capture runtime errors of the application.
+W> Режим наложения ошибок WDS *не* захватывает ошибки, произошедшие во время исполнения приложения в браузере.
 
-## Enabling Hot Module Replacement
+## Включение функции Горячей Замены Модулей
 
-Hot Module Replacement is one of those features that set webpack apart. Implementing it requires additional effort on both server and client-side. The *Hot Module Replacement* appendix discusses the topic in greater detail. If you want to integrate HMR to your project, give it a look. It won't be needed to complete the tutorial, though.
+Горячая Замена Модулей это одна из тех функций, которые стоит рассмотреть отдельно от webpack. Реализация этой функции требует дополнительных усилий как на стороне сервера, так и на стороне клиента. Приложение *Горячая Замена Модулей* рассказывает об этом детально. Если вы хотите интегрировать HMR в ваш проект, вам следует с ним ознакомится. Но для завершения данной книги это вовсе не обязательно.
 
-## Accessing the Development Server from Network
+## Доступ к серверу разработки из сети
 
-It's possible to customize host and port settings through the environment in the setup (i.e., `export PORT=3000` on Unix or `SET PORT=3000` on Windows). The default settings are enough on most platforms.
+Есть возможность задать настройки хоста и порта через окружение (т.е. `export PORT=3000` в Unix системах, или `SET PORT=3000` в Windows). Настроек по умолчанию достаточно в большинстве платформ.
 
-To access your server, you need to figure out the ip of your machine. On Unix, this can be achieved using `ifconfig | grep inet`. On Windows, `ipconfig` can be utilized. An npm package, such as [node-ip](https://www.npmjs.com/package/node-ip) come in handy as well. Especially on Windows, you need to set your `HOST` to match your ip to make it accessible.
+Что бы получить доступ к вашему серверу, вам необходимо выяснить IP-адрес вашего устройства. В Unix системах, это можно сделать с помощью команды `ifconfig | grep inet`. В Windows может быть использована команда `ipconfig`. npm пакет, как например [node-ip](https://www.npmjs.com/package/node-ip), тоже может пригодиться. Особенно в Windows, вам необходимо установить свой `HOST`, чтобы он соответствовал вашему IP, для того что бы он стал доступен.
 
 {pagebreak}
 
-## Making It Faster to Develop Configuration
+## Ускорение редактирования конфигурации
 
-WDS will handle restarting the server when you change a bundled file, but what about when you edit the webpack config? Restarting the development server each time you make a change tends to get boring after a while. The process can be automated as [discussed in GitHub](https://github.com/webpack/webpack-dev-server/issues/440#issuecomment-205757892) by using [nodemon](https://www.npmjs.com/package/nodemon) monitoring tool.
+WDS будет управлять рестартом сервера, в то время как вы меняете файлы проекта, но как насчет тех случаев, когда вы меняете конфигурацию webpack? Ручной перезапуск сервера разработки каждый раз, при изменении конфигурации, как правило, быстро надоедает. Этот процесс может быть автоматизирован с помощью инструмента мониторинга [nodemon](https://www.npmjs.com/package/nodemon), что уже [обсуждалось на GitHub](https://github.com/webpack/webpack-dev-server/issues/440#issuecomment-205757892).
 
-To get it to work, you have to install it first through `npm install nodemon --save-dev`. After that, you can make it watch webpack config and restart WDS on change. Here's the script if you want to give it a go:
+Что бы это работало, вам сперва нужно установить пакет с помощью `npm install nodemon --save-dev`. После этого, вы можете заставить его следить за файлом конфигурации webpack, и перезапускать WDS если произошли изменения. Вот скрипт, если вы хотите его попробовать:
 
 **package.json**
 
@@ -175,13 +176,13 @@ To get it to work, you have to install it first through `npm install nodemon --s
 },
 ```
 
-It's possible WDS [will support the functionality](https://github.com/webpack/webpack-cli/issues/15) itself in the future. If you want to make it reload itself on change, you should implement this workaround for now.
+В будущем, возможно, WDS [будет поддерживать данный функционал](https://github.com/webpack/webpack-cli/issues/15) из коробки. Но сейчас, если вы хотите чтобы он сам перезапускался при изменении конфигурации, вам необходимо внедрить данное решение.
 
 {pagebreak}
 
-## Polling Instead of Watching Files
+## Опрос (polling) файлов, вместо слежения за изменениями
 
-Sometimes the file watching setup provided by WDS won't work on your system. It can be problematic on older versions of Windows, Ubuntu, Vagrant, and Docker. Enabling polling is a good option then:
+Иногда, механизм слежения за изменениями в файлах, предоставленный WDS может не работать в вашей системе. Могут возникнуть проблемы на старых версиях Windows, Ubuntu, Vagrant, и Docker. В таком случае, включение механизма опроса - это хороший вариант:
 
 **webpack.config.js**
 
@@ -192,16 +193,16 @@ const webpack = require("webpack");
 module.exports = {
   devServer: {
     watchOptions: {
-      // Delay the rebuild after the first change
+      // Отложить процесс сборки после первого изменения
       aggregateTimeout: 300,
 
-      // Poll using interval (in ms, accepts boolean too)
+      // Интервал опроса (в мс, так же поддерживает boolean значение)
       poll: 1000,
     },
   },
   plugins: [
-    // Ignore node_modules so CPU usage with poll
-    // watching drops significantly.
+    // Игнорирование директории node_modules. В таком случае, 
+    // использование ресурсов CPU при опросе значительно падает.
     new webpack.WatchIgnorePlugin([
       path.join(__dirname, "node_modules")
     ]),
@@ -209,67 +210,67 @@ module.exports = {
 };
 ```
 
-The setup is more resource intensive than the default, but it's worth trying out.
+Данная конфигурация более ресурсоемкая, чем слежение, но ее стоит попробовать.
 
 {pagebreak}
 
-## Alternate Ways to Use *webpack-dev-server*
+## Альтернативные способы использования *webpack-dev-server*
 
-You could have passed the WDS options through a terminal. It's clearer to manage the options within webpack configuration as that helps to keep *package.json* nice and tidy. It's also easier to understand what's going on as you don't need to dig out the answers from the webpack source.
+Вы могли бы передавать опции WDS через терминал. Но более очевидным способом является управление опциями через конфигурацию webpack, поскольку это помогает поддерживать файл *package.json* красивым и аккуратным. Такой подход также легче к восприятию того, что вообще здесь происходит, поскольку вам не нужно искать ответы на вопросы в самом webpack.
 
-Alternately, you could have set up an Express server and use a middleware. There are a couple of options:
+В качестве альтернативы, вы могли бы настроить Express сервер и использовать промежуточное ПО (middleware). Вот несколько вариантов:
 
-* [The official WDS middleware](https://webpack.js.org/guides/development/#using-webpack-dev-middleware)
+* [Официальное промежуточное ПО WDS](https://webpack.js.org/guides/development/#using-webpack-dev-middleware)
 * [webpack-hot-middleware](https://www.npmjs.com/package/webpack-hot-middleware)
 * [webpack-isomorphic-dev-middleware](https://www.npmjs.com/package/webpack-isomorphic-dev-middleware)
 
-There's also a [Node API](https://webpack.js.org/configuration/dev-server/) if you want more control and flexibility.
+Также, есть еще [Node API](https://webpack.js.org/configuration/dev-server/), если вы хотите больший уровень контроля и гибкости.
 
-W> There are [slight differences](https://github.com/webpack/webpack-dev-server/issues/616) between the CLI and the Node API.
+W> Существуют [незначительные различия](https://github.com/webpack/webpack-dev-server/issues/616) между CLI и Node API.
 
-## Other Features of *webpack-dev-server*
+## Другие функции *webpack-dev-server*
 
-WDS provides functionality beyond what was covered above. There are a couple of relevant fields that you should be aware of:
+WDS предоставляет и другие функции, которые не были описаны выше. Существует несколько дополнительных опций, о которых вам следует знать:
 
-* `devServer.contentBase` - Assuming you don't generate *index.html* dynamically and prefer to maintain it yourself in a specific directory, you need to point WDS to it. `contentBase` accepts either a path (e.g., `"build"`) or an array of paths (e.g., `["build", "images"]`). The value defaults to the project root.
-* `devServer.proxy` - If you are using multiple servers, you have to proxy WDS to them. The proxy setting accepts an object of proxy mappings (e.g., `{ "/api": "http://localhost:3000/api" }`) that resolve matching queries to another server. Proxy settings are disabled by default.
-* `devServer.headers` - Attach custom headers to your requests here.
+* `devServer.contentBase` - в том случае, если вы не генерируете *index.html* динамически, и предпочитаете поддерживать данный файл самостоятельно, в определенной папке,  вам необходимо проинформировать WDS об этом файле. `contentBase` принимает либо путь (т.е., `"build"`), либо массив путей (т.е., `["build", "images"]`). Здесь значение по умолчанию - это корневая папка вашего проекта.
+* `devServer.proxy` - если вы используете несколько серверов, вам необходимо проксировать запросы из WDS к ним. Опция `proxy` принимает объект маппингов(???) для проксирования (т.е., `{ "/api": "http://localhost:3000/api" }`), которые указывают, какие запросы отправлять на другой сервер. По умолчанию эта опция отключена.
+* `devServer.headers` - здесь вы можете определить ваши кастомные заголовки для запросов.
 
-T> [The official documentation](https://webpack.js.org/configuration/dev-server/) covers more options.
+T> [Официальная документация](https://webpack.js.org/configuration/dev-server/) охватывает больше опций.
 
-## Development Plugins
+## Плагины для разработки
 
-The webpack plugin ecosystem is diverse, and there are a lot of plugins that can help specifically with development:
+Экосистема плагинов webpack разнообразна, и есть много плагинов, которые могут помочь в разработке:
 
-* [case-sensitive-paths-webpack-plugin](https://www.npmjs.com/package/case-sensitive-paths-webpack-plugin) can be handy when you are developing on case-insensitive environments like macOS or Windows but using case-sensitive environment like Linux for production.
-* [npm-install-webpack-plugin](https://www.npmjs.com/package/npm-install-webpack-plugin) allows webpack to install and wire the installed packages with your *package.json* as you import new packages to your project.
-* [react-dev-utils](https://www.npmjs.com/package/react-dev-utils) contains webpack utilities developed for [Create React App](https://www.npmjs.com/package/create-react-app). Despite its name, they can find use beyond React. If you want only webpack message formatting, consider [webpack-format-messages](https://www.npmjs.com/package/webpack-format-messages).
-* [start-server-webpack-plugin](https://www.npmjs.com/package/start-server-webpack-plugin) is able to start your server after webpack build completes.
-
-{pagebreak}
-
-## Output Plugins
-
-There are also plugins that make the webpack output easier to notice and understand:
-
-* [system-bell-webpack-plugin](https://www.npmjs.com/package/system-bell-webpack-plugin) rings the system bell on failure instead of letting webpack fail silently.
-* [webpack-notifier](https://www.npmjs.com/package/webpack-notifier) uses system notifications to let you know of webpack status.
-* [nyan-progress-webpack-plugin](https://www.npmjs.com/package/nyan-progress-webpack-plugin) can be used to get tidier output during the build process. Take care if you are using Continuous Integration (CI) systems like Travis as they can clobber the output. Webpack provides `ProgressPlugin` for the same purpose. No nyan there, though.
-* [friendly-errors-webpack-plugin](https://www.npmjs.com/package/friendly-errors-webpack-plugin) improves on error reporting of webpack. It captures common errors and displays them in a friendlier manner.
-* [webpack-dashboard](https://www.npmjs.com/package/webpack-dashboard) gives an entire terminal based dashboard over the standard webpack output. If you prefer clear visual output, this one comes in handy.
+* [case-sensitive-paths-webpack-plugin](https://www.npmjs.com/package/case-sensitive-paths-webpack-plugin) может быть полезен в том случае, если вы разрабатываете в окружении не чувствительном к регистру, вроде macOS или Windows, но на продакшене используете чувствительное к регистру окружение, вроде Linux.
+* [npm-install-webpack-plugin](https://www.npmjs.com/package/npm-install-webpack-plugin) позволяет webpack автоматически устанавливать и подключать пакеты, редактируя *package.json*, когда вы импортируете новые пакеты в ваш проект.
+* [react-dev-utils](https://www.npmjs.com/package/react-dev-utils) содержит утилиты webpack, разработанные для [Create React App](https://www.npmjs.com/package/create-react-app). несмотря на название, они могут пригодиться даже если вы не используете React. Если вы хотите подключить только форматирование сообщений webpack, взгляните на [webpack-format-messages](https://www.npmjs.com/package/webpack-format-messages).
+* [start-server-webpack-plugin](https://www.npmjs.com/package/start-server-webpack-plugin) может запустить ваш сервер после завершения процесса сборки webpack.
 
 {pagebreak}
 
-## Conclusion
+## Плагины вывода
 
-WDS complements webpack and makes it more friendly for developers by providing development oriented functionality.
+Также есть плагины, которые позволяют легче воспринимать и обращать внимание на ошибки webpack:
 
-To recap:
+* [system-bell-webpack-plugin](https://www.npmjs.com/package/system-bell-webpack-plugin) посылает сигнал в вашу систему, отчего при неудачной сборке звучит системный звонок, вместо того, чтобы позволять webpack беззвучно завершать процесс с неудачей.
+* [webpack-notifier](https://www.npmjs.com/package/webpack-notifier) использует системные уведомления, чтобы дать вам знать о текущем статусе webpack.
+* [nyan-progress-webpack-plugin](https://www.npmjs.com/package/nyan-progress-webpack-plugin) может быть использован для получения более аккуратного вывода, во время процесса сборки. Будьте осторожны, если вы используете системы Continuous Integration (CI), такие как Travis, поскольку они могут сжимать вывод. Webpack предоставляет `ProgressPlugin` для тех же целей. Правда, без всяких ня.
+* [friendly-errors-webpack-plugin](https://www.npmjs.com/package/friendly-errors-webpack-plugin) улучшает отчет об ошибках webpack. Он отлавливает распространенные ошибки, и отображает их в более дружественной манере.
+* [webpack-dashboard](https://www.npmjs.com/package/webpack-dashboard) предоставляет полноценную приборную панель(???) в терминале, вместо стандартного вывода webpack. Если вы предпочитаете визуально чистый вывод, данный плагин пригодится.
 
-* Webpack's `watch` mode is the first step towards a better development experience. You can have webpack compile bundles as you edit your source.
-* WDS can refresh the browser on change. It also implements **Hot Module Replacement**.
-* The default WDS setup can be problematic on specific systems. For this reason, more resource intensive polling is an alternative.
-* WDS can be integrated into an existing Node server using a middleware. Doing this gives you more control than relying on the command line interface.
-* WDS does far more than refreshing and HMR. For example proxying allows you to connect it to other servers.
+{pagebreak}
 
-In the next chapter, you learn to compose configuration so that it can be developed further later in the book.
+## Заключение
+
+WDS дополняет webpack и делает его более дружественным для разработчиков, обеспечивая функциональность, ориентированную на разработку.
+
+В итоге:
+
+* `watch` режим в webpack это первый шаг на пути к лучшему опыту разработки. Вы омжете заставить webpack производить сборку проекта в то время, как редактируете исходный код.
+* WDS может обновлять страничку в браузере во время редактирования исходного кода. Он также предоставляет механизм **Горячей Замены Модулей**.
+* Конфигурация WDS по умолчанию может быть проблематичной на некоторых системах. По этой причине более ресурсоемкий опрос файлов (polling) является альтернативой.
+* WDS может быть интегрирован в существующий Node сервер с использованием промежуточного ПО. Это даст вам больше контроля,в отличии от интерфейса командной строки.
+* WDS способен на гораздо большее, чем обновление страницы браузера и HMR. Например, проксирование запросов позволяет приложению подключаться к другим серверам.
+
+В следующей главе вы научитесь составлять конфигурацию, которую можно будет развивать дальше, на протяжении всей книги.

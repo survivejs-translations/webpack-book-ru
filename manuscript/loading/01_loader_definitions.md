@@ -1,20 +1,20 @@
-# Loader Definitions
+# Определения загрузчика
 
-Webpack provides multiple ways to set up module loaders. Webpack 2 simplified the situation by introducing the `use` field. It can be a good idea to prefer absolute paths here as they allow you to move configuration without breaking assumptions.
+Webpack предоставляет несколько способов настройки загрузчиков модулей. Webpack 2 упростил ситуацию путём введения поле `use`. Это может быть хорошей идеей предпочесть абсолютные пути в данном случае, поскольку они позволяют вам перемещать конфигурацию, не нарушая предположений.
 
-The other way is to set `context` field as this gives a similar effect and affects the way entry points and loaders are resolved. It doesn't have an impact on the output, though, and you still need to use an absolute path or `/` there.
+Другой способ — установить поле `context`, поскольку это даёт аналогичный эффект и влияет на то, как разрешаются точки входа и загрузчики. Тем не менее, это не влияет на вывод, и вам по-прежнему нужно использовать абсолютный путь или `/`.
 
-Assuming you set an `include` or `exclude` rule, packages loaded from *node_modules* still work as the assumption is that they have been compiled in such a way that they work out of the box. If they don't, then you have to apply techniques covered in the *Consuming Packages* chapter.
+Допустим, что вы устанавливаете правило `include` или `exclude`, и пакеты, загруженные из *node_modules*, всё ещё работают, поскольку предполагается, что они были скомпилированы таким образом, что работают из коробки. Если это не так, тогда вам необходимо применить методы, описанные в главе *Использование пакетов *.
 
-T> `include`/`exclude` is handy with *node_modules* as webpack processes and traverses the installed packages by default when you import JavaScript files to your project. Therefore you need to configure it to avoid that behavior. Other file types don't suffer from this issue.
+T> Свойства `include`/`exclude` удобно использовать с *node_modules*, поскольку webpack обрабатывает и обходит установленные пакеты по умолчанию в этой директории при импорте JavaScript-файлов в проекте. Поэтому вам следует настроить их, чтобы избежать такого поведения. Другие типы файлов не испытывают этой проблемы.
 
-## Anatomy of a Loader
+## Анатомия загрузчика
 
-Webpack supports a large variety of formats through *loaders*. Also, it supports a couple of JavaScript module formats out of the box. The idea is the same. You always set up a loader, or loaders, and connect those with your directory structure.
+Webpack поддерживает большое количество форматов, используя *загрузчики*. Кроме того, он поддерживает несколько форматов модулей JavaScript из коробки. Идея та же: вы всегда настраиваете загрузчики и связываете их со своей структурой директорий.
 
 {pagebreak}
 
-Consider the example below where webpack processes JavaScript through Babel:
+Рассмотрим пример ниже, где webpack обрабатывает JavaScript через Babel:
 
 **webpack.config.js**
 
@@ -24,20 +24,20 @@ module.exports = {
   module: {
     rules: [
       {
-        // **Conditions** to match files using RegExp, function.
+        // **Условия** для сопоставления файлов с помощью функции RegExp.
         test: /\.js$/,
 
-        // **Restrictions**
-        // Restrict matching to a directory. This
-        // also accepts an array of paths or a function.
-        // The same applies to `exclude`.
+        // **Ограничения**
+        // Ограничить сопоставление директории.
+        // Разрешена передача также массива путей или функция.
+        // То же самое относится к `exclude`.
         include: path.join(__dirname, "app"),
         exclude(path) {
-          // You can perform more complicated checks  as well.
+          // Можно выполнять более сложные проверки.
           return path.match(/node_modules/);
         },
 
-        // **Actions** to apply loaders to the matched files.
+        // **Действия** для применения загрузчиков к подходящим файлам.
         use: "babel-loader",
       },
     ],
@@ -45,13 +45,13 @@ module.exports = {
 };
 ```
 
-T> If you are not sure how a particular RegExp matches, consider using an online tool, such as [regex101](https://regex101.com/), [RegExr](http://regexr.com/), or [Regexper](https://regexper.com).
+T> Если вы не знаете, что обозначает определённое регулярное выражение, рассмотрите возможность использования онлайн-инструментов для этой цели, например [regex101](https://regex101.com/), [RegExr](http://regexr.com/) или [Regexper](https://regexper.com).
 
-## Loader Evaluation Order
+## Порядок выполнения загрузчика
 
-It's good to keep in mind that webpack's loaders are always evaluated from right to left and from bottom to top (separate definitions). The right-to-left rule is easier to remember when you think about as functions. You can read definition `use: ["style-loader", "css-loader"]` as `style(css(input))` based on this rule.
+Полезно иметь в виду, что загрузчики webpack всегда выполняются справа налево и снизу вверх (отдельные определения). Правило «справа налево» легче запомнить, если думать о нём как о функциях. Вы можете прочитать определение `use: ["style-loader", "css-loader"]` как `style(css(input))`, основываясь на данном правиле.
 
-To see the rule in action, consider the example below:
+Для просмотра этого правила в действии, рассмотрите приведённый ниже пример:
 
 ```javascript
 {
@@ -60,7 +60,7 @@ To see the rule in action, consider the example below:
 },
 ```
 
-Based on the right to left rule, the example can be split up while keeping it equivalent:
+Исходя из правила «справа налево», этот пример можно разделить, оставив при этом его тем же самым:
 
 ```javascript
 {
@@ -73,57 +73,57 @@ Based on the right to left rule, the example can be split up while keeping it eq
 },
 ```
 
-### Enforcing Order
+### Соблюдение порядка
 
-Even though it would be possible to develop an arbitrary configuration using the rule above, it can be convenient to be able to force specific rules to be applied before or after regular ones. The `enforce` field can come in handy here. It can be set to either `pre` or `post` to push processing either before or after other loaders.
+Несмотря на то, что можно было бы создать произвольную конфигурацию, используя правило выше, может быть удобно иметь возможность принудительно применять определённые правила до или после обычных. В таком случае пригодится поле `enforce`, которое может принимать значение `pre` или `post` для обеспечения обработки до или после других загрузчиков, соответственно.
 
-Linting is a good example because the build should fail before it does anything else. Using `enforce: "post"` is rarer and it would imply you want to perform a check against the built source. Performing analysis against the built source is one potential example.
+Проверка кода (линтинг) — хороший пример, потому что сборка должна завершиться неудачей, прежде чем выполнить что-нибудь ещё. Использование `enforce: "post"` встречается реже, и это означает, что вы хотите выполнить проверку готовой сборки из исходных файлов. В качестве одного из возможных примеров можно привести выполнение анализа выполненной сборки.
 
 {pagebreak}
 
-The basic syntax goes as below:
+Основной синтаксис приведён ниже:
 
 ```javascript
 {
-  // Conditions
+  // Условия
   test: /\.js$/,
-  enforce: "pre", // "post" too
+  enforce: "pre", // или "post" 
 
-  // Actions
+  // Действия
   use: "eslint-loader",
 },
 ```
 
-It would be possible to write the same configuration without `enforce` if you chained the declaration with other loaders related to the `test` carefully. Using `enforce` removes the necessity for that and allows you to split loader execution into separate stages that are easier to compose.
+Можно было бы написать ту же конфигурацию без использования `enforce`, если бы вы внимательно соединили объявление с другими загрузчиками в `test`. Использование `enforce` устраняет эту необходимость и позволяет разделить выполнение загрузчика на отдельные этапы, которые легче формировать.
 
-## Passing Parameters to a Loader
+## Передача параметров в загрузчик
 
-There's a query format that allows passing parameters to loaders:
+Существует формат запроса, позволяющий передавать параметры загрузчикам:
 
 ```javascript
 {
-  // Conditions
+  // Условия
   test: /\.js$/,
   include: PATHS.app,
 
-  // Actions
+  // Действия
   use: "babel-loader?presets[]=env",
 },
 ```
 
-This style of configuration works in entries and source imports too as webpack picks it up. The format comes in handy in certain individual cases, but often you are better off using more readable alternatives.
+Этот тип конфигурации работает в записях и при импорте исходных файлов, поскольку webpack обрабатывает их. Показанный выше формат может быть полезен в определённых отдельных случаях, но часто  лучше использовать более читаемые альтернативы.
 
 {pagebreak}
 
-It's preferable to go through `use`:
+Например, предпочтительнее использовать `use`:
 
 ```javascript
 {
-  // Conditions
+  // Условия
   test: /\.js$/,
   include: PATHS.app,
 
-  // Actions
+  // Действия
   use: {
     loader: "babel-loader",
     options: {
@@ -133,7 +133,7 @@ It's preferable to go through `use`:
 },
 ```
 
-If you wanted to use more than one loader, you could pass an array to `use` and expand from there:
+При использовании более одного загрузчика, следует передать массив в поле `use`:
 
 ```javascript
 {
@@ -147,35 +147,35 @@ If you wanted to use more than one loader, you could pass an array to `use` and 
         presets: ["env"],
       },
     },
-    // Add more loaders here
+    // Далее остальные загрузчики...
   ],
 },
 ```
 
 {pagebreak}
 
-## Branching at `use` Using a Function
+## Ветвление в `use` с использованием функций
 
-In the book setup, you compose configuration on a higher level. Another option to achieve similar results would be to branch at `use` as webpack's loader definitions accept functions that allow you to branch depending on the environment. Consider the example below:
+В настройке книги вы составляете конфигурацию на более высоком уровне. Другим вариантом достижения аналогичных результатов будет разветвление в `use`, поскольку определения загрузчика webpack принимают функции, позволяющие менять конфигурацию в зависимости от окружения. Рассмотрим приведённый ниже пример:
 
 ```javascript
 {
   test: /\.css$/,
 
-  // `resource` refers to the resource path matched.
-  // `resourceQuery` contains possible query passed to it
-  // `issuer` tells about match context path
+  // `resource` ссылается совпавший путь ресурса.
+  // `resourceQuery` возможный ресурс, переданный ему
+  // `issuer` указывает на путь контекста соответствия
   use: ({ resource, resourceQuery, issuer }) => {
-    // You have to return something falsy, object, or a
-    // string (i.e., "style-loader") from here.
+    // Нужно вернуть что-нибудь, соответствующее ложному значению, либо объект,
+    // или строку (например, "style-loader").
     //
-    // Returning an array fails! Nest rules instead.
+    // Возврат массив потерпит неудачу! Вместо это используется вложенные правила.
     if (env === "development") {
       return {
         use: {
-          loader: "css-loader", // css-loader first
+          loader: "css-loader", // сначала css-loader
           rules: [
-            "style-loader", // style-loader after
+            "style-loader", // и после него style-loader
           ],
         },
       };
@@ -184,22 +184,22 @@ In the book setup, you compose configuration on a higher level. Another option t
 },
 ```
 
-Carefully applied, this technique allows different means of composition.
+С осторожностью применяемая, данная техника позволяет использовать различные средства композиции.
 
-## Inline Definitions
+## Встроенные определения
 
-Even though configuration level loader definitions are preferable, it's possible to write loader definitions inline:
+Несмотря на то, что определения загрузчика на уровне конфигурации предпочтительнее, можно написать встроенные определения загрузчика:
 
 ```javascript
-// Process foo.png through url-loader and other
-// possible matches.
+// Обработка foo.png через загрузчик url-loader и другие
+// возможные совпадения.
 import "url-loader!./foo.png";
 
-// Override possible higher level match completely
+// Полностью переопределить возможное соответствие уровнем выше
 import "!!url-loader!./bar.png";
 ```
 
-The problem with this approach is that it couples your source with webpack. Nonetheless, it's still an excellent form to know. Since configuration entries go through the same mechanism, the same forms work there as well:
+Проблема с данным подходом состоит в том, что он соединяет исходный файл с webpack. Тем не менее, это по-прежнему отличная форма для понимания. Поскольку записи конфигурации проходят один и тот же механизм, то действуют те же формы:
 
 ```javascript
 {
@@ -209,27 +209,27 @@ The problem with this approach is that it couples your source with webpack. None
 },
 ```
 
-## Alternate Ways to Match Files
+## Альтернативные способы сопоставления файлов
 
-`test` combined with `include` or `exclude` to constrain the match is the most common approach to match files. These accept the data types as listed below:
+Поле `test` в сочетании с `include` или `exclude` используется для ограничения соответствия — наиболее распространённый подход для сопоставления файлов. Они принимают типы данных, перечисленные ниже:
 
-* `test` - Match against a RegExp, string, function, an object, or an array of conditions like these.
-* `include` - The same.
-* `exclude` - The same, except the output is the inverse of `include`.
-* `resource: /inline/` - Match against a resource path including the query. Examples: `/path/foo.inline.js`, `/path/bar.png?inline`.
-* `issuer: /bar.js/` - Match against a resource requested from the match. Example: `/path/foo.png` would match if it was requested from `/path/bar.js`.
-* `resourcePath: /inline/` - Match against a resource path without its query. Example: `/path/foo.inline.png`.
-* `resourceQuery: /inline/` - Match against a resource based on its query. Example: `/path/foo.png?inline`.
+* `test` - Совпадёт с RegExp, строкой, функцией, объектом или массивом условий, как эти.
+* `include` - То же самое.
+* `exclude` - То же самое, за исключением вывода, противоположность `include`.
+* `resource: /inline/` - Совпадёт с путём к ресурсу, включая запрос. Примеры: `/path/foo.inline.js`, `/path/bar.png?inline`.
+* `issuer: /bar.js/` - Совпадёт с ресурсом, запрошенном в совпадении. Пример: `/path/foo.png` будет совпадать, если он был запрошена из `/path/bar.js`.
+* `resourcePath: /inline/` - Совпадёт с путём ресурса без его запроса. Пример: `/path/foo.inline.png`.
+* `resourceQuery: /inline/` - Совпадёт с ресурсом на основе его запроса. Пример: `/path/foo.png?inline`.
 
-Boolean based fields can be used to constrain these matchers further:
+Поля на основе булевого типа можно использовать следующие ограничения:
 
-* `not` - Do **not** match against a condition (see `test` for accepted values).
-* `and` - Match against an array of conditions. All must match.
-* `or` - Match against an array while any must match.
+* `not` - **Не** совпадает с условием (см. `test` для допустимых значений).
+* `and` - Совпадёт с массивом условий. Все условия должны совпадать.
+* `or` - Совпадает с массивом условий, где любое условие должно совпадать.
 
-## Loading Based on `resourceQuery`
+## Загрузка исходя из поля `resourceQuery`
 
-`oneOf` field makes it possible to route webpack to a specific loader based on a resource related match:
+Поле `oneOf` позволяет направлять webpack на конкретный загрузчик, опираясь на соответствующий ресурс:
 
 ```javascript
 {
@@ -247,13 +247,13 @@ Boolean based fields can be used to constrain these matchers further:
 },
 ```
 
-If you wanted to embed the context information to the filename, the rule could use `resourcePath` over `resourceQuery`.
+Если вы хотите вставить контекстную информацию в имя файла, данное правило может использовать `resourcePath` вместо `resourceQuery`.
 
 {pagebreak}
 
-## Loading Based on `issuer`
+## Загрузка исходя из поля `issuer`
 
-`issuer` can be used to control behavior based on where a resource was imported. In the example below adapted from [css-loader issue 287](https://github.com/webpack-contrib/css-loader/pull/287#issuecomment-261269199), *style-loader* is applied when webpack captures a CSS file from a JavaScript import:
+Поле `issuer` может использоваться для управления поведением в зависимости от того, где ресурс был импортирован. В приведённом ниже примере, подготовленный из [ишью №287 в css-loader](https://github.com/webpack-contrib/css-loader/pull/287#issuecomment-261269199), *style-loader* применяется, когда webpack захватывает CSS-файл из импорта JavaScript:
 
 ```javascript
 {
@@ -271,19 +271,19 @@ If you wanted to embed the context information to the filename, the rule could u
 },
 ```
 
-Another approach would be to mix `issuer` and `not`:
+Другим подходом было бы сочетание `issuer` и `not`:
 
 ```javascript
 {
   test: /\.css$/,
 
   rules: [
-    // CSS imported from other modules is added to the DOM
+    // CSS, импортированный из других модулей, добавлен в DOM
     {
       issuer: { not: /\.css$/ },
       use: "style-loader",
     },
-    // Apply css-loader against CSS imports to return CSS
+    // Применить css-loader к импорту CSS для возврата CSS
     {
       use: "css-loader",
     },
@@ -291,21 +291,21 @@ Another approach would be to mix `issuer` and `not`:
 }
 ```
 
-## Understanding Loader Behavior
+## Понимание поведения загрузчика
 
-Loader behavior can be understood in greater detail by inspecting them. [loader-runner](https://www.npmjs.com/package/loader-runner) allows you to run them in isolation without webpack. Webpack uses this package internally and *Extending with Loaders* chapter covers it in detail.
+Поведение загрузчика можно понять более подробно путём их проверки. Пакет [loader-runner](https://www.npmjs.com/package/loader-runner) позволяет запускать загрузчики изолированно без webpack. Webpack использует этот пакет внутри, а глава *Расширение с помощью Loaders* содержит подробную информацию по нему.
 
-[inspect-loader](https://www.npmjs.com/package/inspect-loader) allows you to inspect what's being passed between loaders. Instead of having to insert `console.log`s within *node_modules*, you can attach this loader to your configuration and inspect the flow there.
+Пакет [inspect-loader](https://www.npmjs.com/package/inspect-loader) позволяет проверить, что именно передаётся между загрузчиками. Вместо того, чтобы вставлять `console.log` в *node_modules*, вы можете подключить этот загрузчик к своей конфигурации и проверить поток там.
 
-## Conclusion
+## Резюме
 
-Webpack provides multiple ways to setup loaders but sticking with `use` is enough in webpack 4. Be careful with loader ordering, as it's a common source of problems.
+Webpack предоставляет несколько способов настройки загрузчиков, но в webpack 4 достаточно придерживаться применения `use`. Будьте осторожны с порядком загрузчика, поскольку это является распространённым источником проблем.
 
-To recap:
+Подводя итоги:
 
-* **Loaders** allow you determine what should happen when webpack's module resolution mechanism encounters a file.
-* A loader definition consists of **conditions** based on which to match and **actions** that should be performed when a match happens.
-* Webpack 2 introduced the `use` field. It combines the ideas of old `loader` and `loaders` fields into a single construct.
-* Webpack 4 provides multiple ways to match and alter loader behavior. You can, for example, match based on a **resource query** after a loader has been matched and route the loader to specific actions.
+* **Загрузки** позволяют определить, что должно произойти при обнаружении файла механизмом разрешения модуля webpack.
+* Определение загрузчика состоит из **условий (conditions)**, основанных на совпадении, и **действиях (actions)**, которые необходимо выполнять при совпадении.
+* В webpack 2 появилось поле `use`. Оно объединяет идеи старых полей `loader` и `loaders` в одну конструкцию.
+* Webpack 4 предоставляет несколько способов для совпадения и изменения поведения загрузчика. Вы можете, например, создать совпадение на основе **запроса ресурса (resource query)** после сопоставления загрузчика и направлении загрузчика к определённым действиям.
 
-In the next chapter, you'll learn to load images using webpack.
+В следующей главе вы научитесь загружать изображения с помощью webpack.

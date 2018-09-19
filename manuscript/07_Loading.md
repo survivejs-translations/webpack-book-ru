@@ -1,3 +1,3 @@
--# Loading Assets
+-# Загрузка ресурсов
 
-In this part, you will learn how to load different types of assets using webpack’s loaders. Especially images, fonts, and JavaScript receive particular attention. You also learn how webpack’s loader definitions work.
+В этой части вы узнаете, как загружать различные типы ресурсов с помощью загрузчиков webpack. В частности, особое внимание уделяется загрузке изображений, шрифтов и JavaScript. Вы также узнаете, как работают определения загрузчика webpack.

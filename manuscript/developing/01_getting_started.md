@@ -1,52 +1,52 @@
-# Getting Started
+# Начало работы
 
-Before getting started, make sure you are using a recent version of [Node](http://nodejs.org/). You should use at least the most current LTS (long-term support) version. The configuration of the book has been written with the LTS Node features in mind. You should have `node` and `npm` commands available at your terminal. [Yarn](https://yarnpkg.com/) is a good alternative to npm and works for the tutorial as well.
+Перед началом работы, удостоверьтесь что вы используете актуальную версию [Node](http://nodejs.org/). Вам следует использовать как минимум последнюю LTS (long-term support) версию. В книге, конфигурация webpack ориентирована на функции именно LTS Node. Так-же, в вашем терминале должны быть доступны команды `node` и `npm`. [Yarn](https://yarnpkg.com/) хорошая альтернатива npm, и тоже подходит для этого руководства.
 
-It's possible to get a more controlled environment by using a solution such as [Docker](https://www.docker.com/), [Vagrant](https://www.vagrantup.com/) or [nvm](https://www.npmjs.com/package/nvm). Vagrant comes with a performance penalty as it relies on a virtual machine. Vagrant is valuable in a team: each developer can have the same environment that is usually close to production.
+Возможно использование более контролируемого окружения, благодаря решениям вроде [Docker](https://www.docker.com/), [Vagrant](https://www.vagrantup.com/) или [nvm](https://www.npmjs.com/package/nvm). Vagrant более требовательный к ресурсам вашего компьютера, поскольку опирается на виртуальную машину. Vagrant полезен при работе в команде: каждый разработчик может иметь одинаковое окружение, которое обычно близко к окружению на продакшене.
 
-T> The completed configuration is available at [GitHub](https://github.com/survivejs-demos/webpack-demo).
+T> Завершенная конфигурация доступна на [GitHub](https://github.com/survivejs-demos/webpack-demo).
 
 {pagebreak}
 
-## Setting Up the Project
+## Создание проекта
 
-To get a starting point, you should create a directory for the project and set up a *package.json* there. npm uses that to manage project dependencies. Here are the basic commands:
+Для начала, вам следует создать для проекта папку с файлом *package.json* внутри. npm использует этот файл для управления зависимостями проекта. Вот базовые команды для этого:
 
 ```bash
 mkdir webpack-demo
 cd webpack-demo
-npm init -y # -y generates *package.json*, skip for more control
+npm init -y # опция -y создает *package.json*, но вы можете его опустить, если нуждаетесь в большем контроле
 ```
 
-You can tweak the generated *package.json* manually to make further changes to it even though a part of the operations modify the file automatically for you. The official documentation explains [package.json options](https://docs.npmjs.com/files/package.json) in more detail.
+Вы можете вносить дополнительные изменения в сгенерированный *package.json* вручную, несмотря на то, что часть команд модифицирует этот файл для вас автоматически. Официальная документация объясняет [опции package.json](https://docs.npmjs.com/files/package.json) более детально.
 
-T> You can set those `npm init` defaults at *~/.npmrc*.
+T> В файле *~/.npmrc* вы можете прописать опции, которые будут использоваться по умолчанию командой `npm init`.
 
-T> This is an excellent chance to set up version control using [Git](https://git-scm.com/). You can create a commit per step and tag per chapter, so it's easier to move back and forth if you want.
+T> Это идеальный момент для настройки контроля версий с помощью [Git](https://git-scm.com/). Вы можете создавать коммит на каждый свой шаг, и тег на каждую главу. Таким образом вам будет проще переключаться между изменениями, если потребуется.
 
-T> The book examples have been formatted using [Prettier](https://www.npmjs.com/package/prettier) with `"trailingComma": "es5",` and `"printWidth": 68` options enabled to make the diffs clean and fit the page.
+T> Примеры в книге были отформатированы с помощью [Prettier](https://www.npmjs.com/package/prettier), с включенными опциями `"trailingComma": "es5",` и `"printWidth": 68`, для того что бы сделать изменения более опрятными, и они могли вместится на странице.
 
-## Installing Webpack
+## Установка Webpack
 
-Even though webpack can be installed globally (`npm install webpack -g`), it's a good idea to maintain it as a dependency of your project to avoid issues, as then you have control over the exact version you are running. The approach works nicely in **Continuous Integration** (CI) setups as well. A CI system can install your local dependencies, compile your project using them, and then push the result to a server.
+Несмотря на то, что webpack может быть установлен глобально (`npm install webpack -g`), во избежание ошибок, хорошей практикой является добавление webpack в зависимости вашего проекта. В последствии, вы будете управлять конкретной версией webpack, которая используется в проекте. Такой подход отлично работает с настройкой **Continuous Integration** (CI). Система CI может установить ваши локальные зависимости, скомпилировать проект с их использованием, и затем отправить изменения на сервер.
 
-To add webpack to the project, execute:
+Для того, что бы добавить webpack в ваш проект, выполните:
 
 ```bash
-npm install webpack webpack-cli --save-dev # -D to type less
+npm install webpack webpack-cli --save-dev # можно использовать -D для краткости
 ```
 
-You should see webpack at your *package.json* `devDependencies` section after this. In addition to installing the package locally below the *node_modules* directory, npm also generates an entry for the executable.
+После этого, вы должны увидеть webpack в вашем *package.json*, в разделе `devDependencies`. Помимо локальной установки пакета в папку *node_modules*, npm так же сгенерирует исполняемый файл.
 
-T> You can use `--save` and `--save-dev` to separate application and development dependencies. The former installs and writes to *package.json* `dependencies` field whereas the latter writes to `devDependencies` instead.
+T> Вы можете использовать опции `--save` и `--save-dev` для разделения зависимостей приложения, и зависимостей разработки. Первая опция устанавливает пакет, и записывает его в раздел `dependencies` файла *package.json*, в то время как вторая записывает в раздел `devDependencies`.
 
-T> [webpack-cli](https://www.npmjs.com/package/webpack-cli) comes with additional functionality including `init` and `migrate` commands that allow you to create new webpack configuration fast and update from an older version to a newer one.
+T> [webpack-cli](https://www.npmjs.com/package/webpack-cli) поставляется с дополнительным функционалом, включая команды `init` и `migrate` которые позволяют быстрее создавать новые конфигурации webpack и мигрировать со старых версий на более новые.
 
-## Executing Webpack
+## Процесс выполнения Webpack
 
-You can display the exact path of the executables using `npm bin`. Most likely it points at *./node_modules/.bin*. Try running webpack from there through the terminal using `node_modules/.bin/webpack` or a similar command.
+Вы можете получить точный путь к исполняемым файлам с помощью команды `npm bin`. Скорее всего, команда укажет на директорию *./node_modules/.bin*. Попробуйте запустить webpack из этой папки с помощью `node_modules/.bin/webpack` или другой подобной команды.
 
-After running, you should see a version, a link to the command line interface guide and an extensive list of options. Most aren't used in this project, but it's good to know that this tool is packed with functionality if nothing else.
+После выполнения команды, вы должны увидеть версию webpack, ссылку на руководство по интерфейсу командной строки и обширный список опций. Большинство из них не будут использоваться в нашем проекте, но, по крайней мере, хорошо знать, что webpack наполнен функциональностью.
 
 ```bash
 $ node_modules/.bin/webpack
@@ -61,21 +61,21 @@ The 'mode' option has not been set. Set 'mode' option to 'development' or 'produ
 ERROR in Entry module not found: Error: Can't resolve './src' in '.../webpack-demo'
 ```
 
-The output tells that webpack cannot find the source to compile. It's also missing a `mode` parameter to apply development or production specific defaults.
+Данный вывод говорит нам о том, что webpack не может найти исходный файл для компиляции. Так же, отсутствует параметр `mode`, который применяет специфичные настройки для окружений разработки или продакшена.
 
-To get a quick idea of webpack output, we should fix both:
+Чтобы получить краткое представление о том, что выводит webpack, нам необходимо сделать следующее:
 
-1. Set up *src/index.js* so that it contains `console.log("Hello world");`.
-2. Execute `node_modules/.bin/webpack --mode development`. Webpack will discover the source file by Node convention.
-3. Examine *dist/main.js*. You should see webpack bootstrap code that begins executing the code. Below the bootstrap, you should find something familiar.
+1. Создать *src/index.js*, который будет содержать `console.log("Hello world");`.
+2. Выполнить команду `node_modules/.bin/webpack --mode development`. Webpack обнаружит данный файл, поскольку следует конвенциям Node.
+3. Исследуйте файл *dist/main.js*. Вы должны увидеть стандартный код начальной загрузки, который добавляет webpack. Он начинает выполнение вашего кода. Под ним вы должны увидеть кое-что знакомое.
 
-T> Try also `--mode production` and compare the output.
+T> Попробуйте выполнить команду с опцией `--mode production` и сравните результат.
 
 {pagebreak}
 
-## Setting Up Assets
+## Настройка ресурсов
 
-To make the build more involved, we can add another module to the project and start developing a small application:
+Что бы сделать сборку более привлекательной, мы можем добавить другой модуль в наш проект, и начать разработку маленького приложения:
 
 **src/component.js**
 
@@ -89,7 +89,7 @@ export default (text = "Hello world") => {
 };
 ```
 
-We also have to modify the original file to import the new file and render the application through the DOM:
+После этого, нам следует изменить оригинальный файл таким образом, что бы импортировать новый файл и отобразить наше приложение через DOM:
 
 **src/index.js**
 
@@ -99,23 +99,23 @@ import component from "./component";
 document.body.appendChild(component());
 ```
 
-Examine the output after building (`node_modules/.bin/webpack --mode development`). You should see both modules in the bundle that webpack wrote to the `dist` directory.
+Исследуйте вывод после сборки (`node_modules/.bin/webpack --mode development`). Вы должны увидеть оба модуля в сборке, которую webpack записал в папку `dist`.
 
-To make the output clearer to examine, pass `--devtool false` parameter to webpack. Webpack will generate `eval` based source maps by default and doing this will disable the behavior. See the *Source Maps* chapter for more information.
+Для того, чтобы было легче исследовать вывод, передайте параметр `--devtool false`. Webpack по умолчанию генерирует карты кода, основанные на функции `eval`, и данный параметр отключит это поведение. Дополнительную информацию вы найдете в главе *Source Maps*.
 
-One problem remains, though. How can we test the application in the browser?
+Остается только одна проблема. Как нам протестировать приложение в браузере?
 
-## Configuring *html-webpack-plugin*
+## Настройка плагина *html-webpack-plugin*
 
-The problem can be solved by writing an *index.html* file that points to the generated file. Instead of doing that on our own, we can use a plugin and webpack configuration to do this.
+Проблема может быть решена созданием файла *index.html*, который будет указывать на сгенерированный файл. Но вместо того, чтобы делать это самим, мы можем использовать плагин  и настройку webpack.
 
-To get started, install *html-webpack-plugin*:
+Для начала, установите *html-webpack-plugin*:
 
 ```bash
 npm install html-webpack-plugin --save-dev
 ```
 
-To connect the plugin with webpack, set up configuration as below:
+Что бы подключить этот плагин с помощью webpack, создайте файл конфигурации, с кодом показанным ниже:
 
 **webpack.config.js**
 
@@ -131,20 +131,20 @@ module.exports = {
 };
 ```
 
-Now that the configuration is done, you should try the following:
+Теперь настройка закончена, и вы можете попробовать следующее:
 
-1. Build the project using `node_modules/.bin/webpack --mode production`. You can try the `development` mode too.
-2. Enter the build directory using `cd dist`.
-3. Run the server using `serve` (`npm i serve -g`) or a similar command.
-4. Examine the result through a web browser. You should see something familiar there.
+1. Собрать проект с помощью `node_modules/.bin/webpack --mode production`. Вы можете попробовать и `development` режим.
+2. Войти в папку нашей сборки с помощью `cd dist`.
+3. Запустить сервер, с использованием `serve` (`npm i serve -g`) или другой подобной команды.
+4. Исследовать результат в веб-браузере. Вы должны увидеть там кое-что знакомое.
 
 ![Hello world](images/hello_01.png)
 
-T> **Trailing commas** are used in the book examples on purpose as it gives cleaner diffs for the code examples.
+T> **Висячие запятые** используются в примерах, поскольку это делает более очевидным сравнение изменений примеров нашего кода.
 
-## Examining the Output
+## Исследование вывода
 
-If you execute `node_modules/.bin/webpack --mode production`, you should see output:
+Если вы выполните `node_modules/.bin/webpack --mode production`, вы увидите следующий вывод:
 
 ```bash
 Hash: aafe36ba210b0fbb7073
@@ -166,27 +166,27 @@ Child html-webpack-plugin for "index.html":
         + 2 hidden modules
 ```
 
-The output tells a lot:
+Этот вывод говорит нам о многом:
 
-* `Hash: aafe36ba210b0fbb7073` - The hash of the build. You can use this to invalidate assets through `[hash]` placeholder. Hashing is discussed in detail in the *Adding Hashes to Filenames* chapter.
-* `Version: webpack 4.1.1` - Webpack version.
-* `Time: 338ms` - Time it took to execute the build.
-* `main.js  679 bytes       0  [emitted]  main` - Name of the generated asset, size, the IDs of the **chunks** into which it's related, status information telling how it was generated, the name of the chunk.
-* `index.html  181 bytes          [emitted]` - Another generated asset that was emitted by the process.
-* `[0] ./src/index.js + 1 modules 219 bytes {0} [built]` - The ID of the entry asset, name, size, entry chunk ID, the way it was generated.
-* `Child html-webpack-plugin for "index.html":` - This is plugin-related output. In this case *html-webpack-plugin* is creating this output on its own.
+* `Hash: aafe36ba210b0fbb7073` - хэш нашей сборки. Вы можете использовать его, что бы сделать недействительными ресурсы, используя заполнитель((???)) `[hash]`. Хэширование рассматривается детально в главе *Добавление хэшей к именам файлов*.
+* `Version: webpack 4.1.1` - версия webpack.
+* `Time: 338ms` - время, затраченное на создание сборки.
+* `main.js  679 bytes       0  [emitted]  main` - название сгенерированного ресурса; его размер; ID **фрагмента** которому он относится; информация о статусе, которая говорит нам о том, каким образом он был сгенерирован и имя фрагмента.
+* `index.html  181 bytes          [emitted]` - другой сгенерированный ресурс, созданный во время во время сборки.
+* `[0] ./src/index.js + 1 modules 219 bytes {0} [built]` - ID входного ресурса, его имя, размер, ID входного фрагмента и то, каким образом он был сгенерирован.
+* `Child html-webpack-plugin for "index.html":` - это специфичный для какого-нибудь плагина вывод. В данном случае, *html-webpack-plugin* выводит это самостоятельно.
 
-Examine the output below the `dist/` directory. If you look closely, you can see the same IDs within the source.
+Проверьте вывод внутри папки `dist/`. Если вы внимательно посмотрите, то увидите те же самые ID в этой папке.
 
-T> In addition to a configuration object, webpack accepts an array of configurations. You can also return a `Promise` and eventually `resolve` to a configuration for example.
+T> В дополнение к объекту конфигурации, webpack принимает и массив конфигурации. К примеру, вы так же можете вернуть `Promise` и, в конечном итоге, `resolve` в саму конфигурацию.
 
-T> If you want a light alternative to *html-webpack-plugin*, see [mini-html-webpack-plugin](https://www.npmjs.com/package/mini-html-webpack-plugin). It does less but it's also simpler to understand.
+T> Если вам нужна легковесная альтернатива плагину *html-webpack-plugin*, обратите внимание на [mini-html-webpack-plugin](https://www.npmjs.com/package/mini-html-webpack-plugin). Он делает намного меньше, но его также проще понять.
 
 {pagebreak}
 
-## Adding a Build Shortcut
+## Добавление сокращенной команды
 
-Given executing `node_modules/.bin/webpack` is verbose, you should do something about it. Adjust *package.json* to run tasks as below:
+Команда для сборки нашего проекта (`node_modules/.bin/webpack`) слишком многословная, нужно с этим что-то сделать. Отредактируйте *package.json* как показано ниже:
 
 **package.json**
 
@@ -196,42 +196,42 @@ Given executing `node_modules/.bin/webpack` is verbose, you should do something 
 },
 ```
 
-Run `npm run build` to see the same output as before. npm adds *node_modules/.bin* temporarily to the path enabling this. As a result, rather than having to write `"build": "node_modules/.bin/webpack"`, you can do `"build": "webpack"`.
+А теперь, запустите `npm run build` и вы увидите идентичный прежнему вывод. npm временно добавляет папку *node_modules/.bin* к путям поиска файлов. В результате, вместо того что бы писать `"build": "node_modules/.bin/webpack"`, вы можете написать проще: `"build": "webpack"`.
 
-You can execute this kind of scripts through *npm run* and you can use *npm run* anywhere within your project. If you run the command as is, it gives you the listing of available scripts.
+Вы можете выполнить подобный скрипт с помощью команды *npm run*, и вы можете использовать *npm run* где угодно, внутри папок вашего проекта. Если вы выполните эту команду как есть, она вернет вам список доступных скриптов.
 
-T> There are shortcuts like *npm start* and *npm test*. You can run these directly without *npm run* although that works too. For those in a hurry, you can use *npm t* to run your tests.
+T> Есть еще другие сокращенные команды, вроде *npm start* и *npm test*. Вы можете выполнять эти команды напрямую, без *npm run*, и это тоже будет работать. А те кто очень торопится, могут использовать *npm t* для того что бы запустить тесты.
 
-T> To go one step further, set up system level aliases using the `alias` command in your terminal configuration. You could map `nrb` to `npm run build` for instance.
-
-{pagebreak}
-
-## `HtmlWebpackPlugin` Extensions
-
-Although you can replace `HtmlWebpackPlugin` template with your own, there are premade ones like [html-webpack-template](https://www.npmjs.com/package/html-webpack-template) or [html-webpack-template-pug](https://www.npmjs.com/package/html-webpack-template-pug).
-
-There are also specific plugins that extend `HtmlWebpackPlugin`'s functionality:
-
-* [favicons-webpack-plugin](https://www.npmjs.com/package/favicons-webpack-plugin) is able to generate favicons.
-* [script-ext-html-webpack-plugin](https://www.npmjs.com/package/script-ext-html-webpack-plugin) gives you more control over script tags and allows you to tune script loading further.
-* [style-ext-html-webpack-plugin](https://www.npmjs.com/package/style-ext-html-webpack-plugin) converts CSS references to inlined CSS. The technique can be used to serve critical CSS to the client fast as a part of the initial payload.
-* [resource-hints-webpack-plugin](https://www.npmjs.com/package/resource-hints-webpack-plugin) adds [resource hints](https://www.w3.org/TR/resource-hints/) to your HTML files to speed up loading time.
-* [preload-webpack-plugin](https://www.npmjs.com/package/preload-webpack-plugin) enables `rel=preload` capabilities for scripts and helps with lazy loading, and it combines well with techniques discussed in the *Building* part of this book.
-* [webpack-cdn-plugin](https://www.npmjs.com/package/webpack-cdn-plugin) allows you to specify which dependencies to load through a Content Delivery Network (CDN). This common technique is used for speeding up loading of popular libraries.
-* [dynamic-cdn-webpack-plugin](https://www.npmjs.com/package/dynamic-cdn-webpack-plugin) achieves a similar result.
+T> Для того что бы пойти еще на шаг дальше, настройте алиас(???) системного уровня с помощью команды `alias` в настройках вашего терминала. К примеру, вы можете добавить команду `nrb` которая будет запускать `npm run build`.
 
 {pagebreak}
 
-## Conclusion
+## Расширения для `HtmlWebpackPlugin`
 
-Even though you have managed to get webpack up and running, it does not do that much yet. Developing against it would be painful. Each time you wanted to check out the application, you would have to build it manually using `npm run build` and then refresh the browser. That's where webpack's more advanced features come in.
+Хотя вы можете заменить шаблон `HtmlWebpackPlugin` своим собственным, есть еще и другие готовые решения, вроде [html-webpack-template](https://www.npmjs.com/package/html-webpack-template) или [html-webpack-template-pug](https://www.npmjs.com/package/html-webpack-template-pug).
 
-To recap:
+Существуют еще и плагины, расширяющие функционал `HtmlWebpackPlugin`:
 
-* It's a good idea to use a locally installed version of webpack over a globally installed one. This way you can be sure of what version you are using. The local dependency also works in a Continuous Integration environment.
-* Webpack provides a command line interface through the *webpack-cli* package. You can use it even without configuration, but any advanced usage requires configuration.
-* To write more complicated setups, you most likely have to write a separate *webpack.config.js* file.
-* `HtmlWebpackPlugin` can be used to generate an HTML entry point to your application. In the *Multiple Pages* chapter you will see how to generate multiple separate pages using it.
-* It's handy to use npm *package.json* scripts to manage webpack. You can use it as a light task runner and use system features outside of webpack.
+* [favicons-webpack-plugin](https://www.npmjs.com/package/favicons-webpack-plugin) может генерировать favicons.
+* [script-ext-html-webpack-plugin](https://www.npmjs.com/package/script-ext-html-webpack-plugin) дает вам больше контроля над тегами script и позволяет настроить загрузку скриптов более тонко.
+* [style-ext-html-webpack-plugin](https://www.npmjs.com/package/style-ext-html-webpack-plugin) конвертирует ссылки на CSS во встроенный CSS. Данная техника может быть использована для того, что бы предоставить критический CSS клиенту как можно быстрее, как часть начальной загрузки страницы.
+* [resource-hints-webpack-plugin](https://www.npmjs.com/package/resource-hints-webpack-plugin) добавляет [ресурсные подсказки и директивы](https://www.w3.org/TR/resource-hints/) в ваши HTML файлы что бы ускорить процесс загрузки.
+* [preload-webpack-plugin](https://www.npmjs.com/package/preload-webpack-plugin) включает возможности `rel=preload` для ваших скриптов и помогает с ленивой загрузкой, а еще, он хорошо сочитается с техниками, разобранными в главе *Building* данной книги.
+* [webpack-cdn-plugin](https://www.npmjs.com/package/webpack-cdn-plugin) позволяет вам указать, какие зависимости необходимо загружать из Сети Доставки Содержимого (CDN). Эта распространенная техника используется для ускорения загрузки популярных библиотек.
+* [dynamic-cdn-webpack-plugin](https://www.npmjs.com/package/dynamic-cdn-webpack-plugin) позволяет достичь аналогичного результата.
 
-In the next chapter, you will learn how to improve the developer experience by enabling automatic browser refresh.
+{pagebreak}
+
+## Заключение
+
+Даже несмотря на то, что вам удалось установить и запустить webpack, сейчас он делает на так уж много. Разработка с его помощью может быть болезненной. Каждый раз, когда вам необходимо проверить результат работы приложения, вам необходимо собрать его вручную командой `npm run build` и потом обновить страницу в браузере. Это то место, где более сложные функции webpack могут показать себя.
+
+В итоге:
+
+* Хорошей идеей будет использование локально установленного webpack, вместо глобальной установки. В таком случае вы можете быть уверены в том, какую версию вы используете. Локальная зависимость так же хорошо работает с окружением Continuous Integration.
+* Webpack предоставляет интерфейс командной строки с помощью пакета *webpack-cli*. Вы можете использовать его даже без настройки, но она необходима для более продвинутого использования.
+* Для записи более сложных настроек, вам, скорее всего, придется создать отдельный файл *webpack.config.js*.
+* `HtmlWebpackPlugin` может быть использован для генерации входного HTML для вашего приложения. В главе *Несколько страниц* вы увидите, как можно генерировать несколько отдельных страниц с его помощью.
+* Удобно использовать скрипты *package.json*, предоставленные пакетом npm, для управления webpack. Для упрощения работы, вы можете использовать его как легковесный менеджер задач, и использовать функции вашей системы, выходящие за рамки пакета webpack.
+
+В следующей главе, вы узнаете как улучшить восприятие со стороны разработчика (developer experience), путем включения функции автоматического обновления браузера.

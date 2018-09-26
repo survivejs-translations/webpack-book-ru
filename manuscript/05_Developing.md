@@ -1,3 +1,4 @@
--# Developing
+-# Разработка
 
-In this part, you get up and running with webpack. You will learn to configure webpack-dev-server. Finally, you compose the configuration so that it's possible to expand in the following parts of the book.
+В этой части книги, вы настроите webpack и начнете работу с ним. Так-же, вы научитесь настраивать webpack-dev-server. И наконец, вы создадите файл конфигурации, который можно будет расширить в последующих частях книги.
+

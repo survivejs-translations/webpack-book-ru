@@ -1,20 +1,20 @@
-# Minifying
+# Минификация
 
-Since webpack 4, the production output gets minified using UglifyJS by default. That said, it's good to understand the technique and further possibilities.
+Начиная с webpack 4, сборка для продакшена по умолчанию минифицируется с помощью UglifyJS. Тем не менее, хорошо понимать технику и дальнейшие возможности.
 
-## Minifying JavaScript
+## Минификация JavaScript
 
-The point of **minification** is to convert the code into a smaller form. Safe **transformations** do this without losing any meaning by rewriting code. Good examples of this include renaming variables or even removing entire blocks of code based on the fact that they are unreachable (`if (false)`).
+Цель **минификации** состоит в преобразовании кода в сжатую форму. Безопасные **преобразования** делают это без потери смысла, переписывая код. В качестве хороших примеров применения этой техники можно назвать переименование переменных или даже удаление целых блоков кода, если они в конечном итоге не будут выполнены (`if (false)`).
 
-Unsafe transformations can break code as they can lose something implicit the underlying code relies upon. For example, Angular 1 expects specific function parameter naming when using modules. Rewriting the parameters breaks code unless you take precautions against it in this case.
+Небезопасные преобразования могут нарушить работу кода, поскольку они могут удалить что-то неявное, на что опирается основный код. К примеру, Angular 1 при использовании модулей ожидает определённое именование параметра функции. Переименование параметров нарушит корректное выполнение кода до тех пор, пока не будут приняты меры предосторожности.
 
-### Modifying JavaScript Minification Process
+### Изменение процесса минификации JavaScript
 
-In webpack 4, minification process is controlled through two configuration fields: `optimization.minimize` flag to toggle it and `optimization.minimizer` array to configure the process.
+В webpack 4 процесс минификации управляется через два поля конфигурации: флаг `optimization.minimize` для переключения минификации и массив `optimization.minimizer` для настройки этого процесса.
 
-To tune the defaults, we'll attach [uglifyjs-webpack-plugin](https://www.npmjs.com/package/uglifyjs-webpack-plugin) to the project so that it's possible to tune it.
+Для настройки этих значений по умолчанию, мы добавим в проект пакет [uglifyjs-webpack-plugin](https://www.npmjs.com/package/uglifyjs-webpack-plugin), чтобы его впоследствии настроить.
 
-To get started, include the plugin to the project:
+Сначала установите плагин в проект:
 
 ```bash
 npm install uglifyjs-webpack-plugin --save-dev
@@ -22,7 +22,7 @@ npm install uglifyjs-webpack-plugin --save-dev
 
 {pagebreak}
 
-To attach it to the configuration, define a part for it first:
+Теперь, чтобы добавить его к конфигурации, сперва определите для него часть кода:
 
 **webpack.parts.js**
 
@@ -36,7 +36,7 @@ exports.minifyJavaScript = () => ({
 });
 ```
 
-Hook it up to the configuration:
+А теперь присоедините его к конфигурации продакшена:
 
 **webpack.config.js**
 
@@ -50,55 +50,55 @@ leanpub-end-insert
 ]);
 ```
 
-If you execute `npm run build` now, you should see result close to the same as before. The outcome may be a slightly better as you are likely using a newer version of UglifyJS this way.
+Если сейчас выполнить `npm run build`, то вы увидите результат, похожий на тот, что был раньше. Конечный результат у вас может быть, возможно, немного лучше за счёт использования более новой версии UglifyJS.
 
-T> Source maps are disabled by default. You can enable them through the `sourceMap` flag. You should check *uglifyjs-webpack-plugin* for more options.
+T> Карты кода отключены по умолчанию, соответственно включить их можно через флаг `sourceMap`. Вам следует посмотреть на страницу с *uglifyjs-webpack-plugin* для получения дополнительных параметров.
 
-T> To strip `console.log` calls from the resulting source, set `uglifyOptions.compress.drop_console` to `true` as [discussed on Stack Overflow](https://stackoverflow.com/questions/49101152/webpack-v4-remove-console-logs-with-webpack-uglify).
+T> Для удаления вызовов `console.log` из исходных файлов в конечном результате, установите опцию `uglifyOptions.compress.drop_console` на значение `true`, как [обсуждается в вопросе на Stack Overflow](https://stackoverflow.com/questions/49101152/webpack-v4-remove-console-logs-with-webpack-uglify).
 
 {pagebreak}
 
-## Other Ways to Minify JavaScript
+## Другие способы минификации JavaScript
 
-Although the defaults and *uglifyjs-webpack-plugin* works for this use case, there are more options you can consider:
+Хотя по умолчанию и *uglifyjs-webpack-plugin* работают для текущего варианта использования, существуют еще несколько вариантов, которые стоит рассмотреть:
 
-* [babel-minify-webpack-plugin](https://www.npmjs.com/package/babel-minify-webpack-plugin) relies on [babel-preset-minify](https://www.npmjs.com/package/babel-preset-minify) underneath and it has been developed by the Babel team. It's slower than UglifyJS, though.
-* [webpack-closure-compiler](https://www.npmjs.com/package/webpack-closure-compiler) runs parallel and gives even smaller result than *babel-minify-webpack-plugin* at times. [closure-webpack-plugin](https://www.npmjs.com/package/closure-webpack-plugin) is another option.
-* [butternut-webpack-plugin](https://www.npmjs.com/package/butternut-webpack-plugin) uses Rich Harris' experimental [butternut](https://www.npmjs.com/package/butternut) minifier underneath.
+* Пакет [babel-minify-webpack-plugin](https://www.npmjs.com/package/babel-minify-webpack-plugin) полагается внутри на [babel-preset-minify](https://www.npmjs.com/package/babel-preset-minify), разработанный командой Babel. Однако он медленнее, чем UglifyJS.
+* Пакет [webpack-closure-compiler](https://www.npmjs.com/package/webpack-closure-compiler) работает параллельно и в результате иногда выдаёт ещё меньше по размеру, чем пакет *babel-minify-webpack-plugin*. Другим возможным вариантом является пакет [closure-webpack-plugin](https://www.npmjs.com/package/closure-webpack-plugin).
+* Пакет [butternut-webpack-plugin](https://www.npmjs.com/package/butternut-webpack-plugin) в своей основе использует экспериментальный минификатор Рича Харриса (Rich Harris) [butternut](https://www.npmjs.com/package/butternut).
 
-## Speeding Up JavaScript Execution
+## Ускорение выполнения JavaScript
 
-Specific solutions allow you to preprocess code so that it will run faster. They complement the minification technique and can be split into **scope hoisting**, **pre-evaluation**, and **improving parsing**. It's possible these techniques grow overall bundle size sometimes while allowing faster execution.
+Специальные решения позволяют предварительно обрабатывать код с целью, чтобы он работал быстрее. Они дополняют технику минификации и могут быть разделены на **подъем области видимости (*scope hoisting)**, **предварительное выполнение (pre-evaluation)** и **улучшение анализа кода (improving parsing)**. Возможно, эти методы часто увеличивают общий размер сборки, позволяя ускорить выполнение.
 
-### Scope Hoisting
+### Поднятие области видимости
 
-Since webpack 4, it applies scope hoisting in production mode by default. It hoists all modules to a single scope instead of writing a separate closure for each. Doing this slows down the build but gives you bundles that are faster to execute. [Read more about scope hoisting](https://medium.com/webpack/brief-introduction-to-scope-hoisting-in-webpack-8435084c171f) at the webpack blog.
+Начиная с webpack 4, по умолчанию применяется подъем области видимости в режиме продакшена. Поднимаются все модули в одну область видимости, вместо того написания каждый в отдельную анонимную функцию. Этот процесс замедляет сборку, но взаимен создаёт её более быстрой для выполнения. Прочитайте [эту статью о подъеме области видимости]((https://medium.com/webpack/brief-introduction-to-scope-hoisting-in-webpack-8435084c171f)) в блоге webpack.
 
-T>  Pass `--display-optimization-bailout` flag to webpack to gain debugging information related to hoisting results.
+T> Передайте `--display-optimization-bailout` в webpack для получения отладочной информации, связанной с результатами подъема.
 
-### Pre-evaluation
+### Предварительное выполнение
 
-[prepack-webpack-plugin](https://www.npmjs.com/package/prepack-webpack-plugin) uses [Prepack](https://prepack.io/), a partial JavaScript evaluator. It rewrites computations that can be done compile-time and therefore speeds up code execution. See also [val-loader](https://www.npmjs.com/package/val-loader) and [babel-plugin-preval](https://www.npmjs.com/package/babel-plugin-preval) for alternative solutions.
+Пакет [prepack-webpack-plugin](https://www.npmjs.com/package/prepack-webpack-plugin) использует [Prepack](https://prepack.io/), ограниченный интерпретатор JavaScript. Он переписывает вычисления, которые могут выполняться во время компиляции и, следовательно, ускоряет выполнение кода. Смотрите также пакеты [val-loader](https://www.npmjs.com/package/val-loader) и [babel-plugin-preval](https://www.npmjs.com/package/babel-plugin-preval) в качестве альтернативных решений.
 
-### Improving Parsing
+### Улучшение анализа кода
 
-[optimize-js-plugin](https://www.npmjs.com/package/optimize-js-plugin) complements the other solutions by wrapping eager functions, and it enhances the way your JavaScript code gets parsed initially. The plugin relies on [optimize-js](https://github.com/nolanlawson/optimize-js) by Nolan Lawson.
+Пакет [optimize-js-plugin](https://www.npmjs.com/package/optimize-js-plugin) дополняет другие решения, обертывая функции c энергичной моделью вычислений, улучшая способ первоначального анализа JavaScript-кода. Плагин использует пакет [optimize-js](https://github.com/nolanlawson/optimize-js) Нолана Лоусона (Nolan Lawson).
 
-## Minifying HTML
+## Минификация HTML
 
-If you consume HTML templates through your code using [html-loader](https://www.npmjs.com/package/html-loader), you can preprocess it through [posthtml](https://www.npmjs.com/package/posthtml) with [posthtml-loader](https://www.npmjs.com/package/posthtml-loader). You can use [posthtml-minifier](https://www.npmjs.com/package/posthtml-minifier) to minify your HTML through it.
+При использовании HTML-шаблонов в коде с использованием пакета [html-loader](https://www.npmjs.com/package/html-loader), их можно предварительно обработать их через [posthtml](https://www.npmjs.com/package/posthtml) с помощью пакета [posthtml-loader](https://www.npmjs.com/package/posthtml-loader). Можно использовать пакет [posthtml-minifier](https://www.npmjs.com/package/posthtml-minifier) для минификации HTML-кода.
 
-## Minifying CSS
+## Минификация CSS
 
-*css-loader* allows minifying CSS through [cssnano](http://cssnano.co/). Minification needs to be enabled explicitly using the `minimize` option. You can also pass [cssnano specific options](http://cssnano.co/optimisations/) to the query to customize the behavior further.
+Загрузчик *css-loader* позволяет минифицировать CSS с помощью [cssnano](http://cssnano.co/). Включите явно опцию `minim`, если требуется минификация. Вы также можете передать [специфичные для cssnano опции](http://cssnano.co/optimisations/) для дальнейшей настройки поведения.
 
-[clean-css-loader](https://www.npmjs.com/package/clean-css-loader) allows you to use a popular CSS minifier [clean-css](https://www.npmjs.com/package/clean-css).
+Пакет [clean-css-loader](https://www.npmjs.com/package/clean-css-loader) позволяет использовать популярный CSS-минификатор [clean-css](https://www.npmjs.com/package/clean-css).
 
-[optimize-css-assets-webpack-plugin](https://www.npmjs.com/package/optimize-css-assets-webpack-plugin) is a plugin based option that applies a chosen minifier on CSS assets. Using `MiniCssExtractPlugin` can lead to duplicated CSS given it only merges text chunks. `OptimizeCSSAssetsPlugin` avoids this problem by operating on the generated result and thus can lead to a better result.
+Пакет [optimize-css-assets-webpack-plugin](https://www.npmjs.com/package/optimize-css-assets-webpack-plugin) — плагин для минификации CSS-ресурсов с возможностью указать собственный минификатор (по умолчанию используется *cssnano*). Использование пакета *mini-css-extract-plugin* может привести к дублированию CSS, поскольку он только объединяет текстовые фрагменты. Пакет *optimize-css-assets-webpack-plugin* устраняет эту проблему последующей обработкой полученного результата, и, следовательно, может привести к лучшему результату.
 
-### Setting Up CSS Minification
+### Настройка CSS-минификации
 
-Out of the available solutions, `OptimizeCSSAssetsPlugin` composes the best. To attach it to the setup, install it and [cssnano](http://cssnano.co/) first:
+Из доступных решений плагин *optimize-css-assets-webpack-plugin* объединяет всё лучшее из них. Для подключения его к настройке, сначала установите его и [cssnano](http://cssnano.co/):
 
 ```bash
 npm install optimize-css-assets-webpack-plugin cssnano --save-dev
@@ -106,7 +106,7 @@ npm install optimize-css-assets-webpack-plugin cssnano --save-dev
 
 {pagebreak}
 
-Like for JavaScript, you can wrap the idea in a configuration part:
+Как и случае с минификацией JavaScript, вы можете обернуть настройку плагина в часть конфигурации:
 
 **webpack.parts.js**
 
@@ -127,11 +127,11 @@ exports.minifyCSS = ({ options }) => ({
 });
 ```
 
-W> If you use `--json` output with webpack as discussed in the *Build Analysis* chapter, you should set `canPrint: false` for the plugin.
+W> При использовании вывода webpack в формате JSON (с помощью опции `--json`), как описано в главе *Анализ сборки*, вам следует сконфигурировать настройку, использовав `canPrint: false` для плагина. 
 
 {pagebreak}
 
-Then, connect with the main configuration:
+Теперь присоединитесь эту часть к основной конфигурации:
 
 **webpack.config.js**
 
@@ -145,8 +145,8 @@ leanpub-start-insert
       discardComments: {
         removeAll: true,
       },
-      // Run cssnano in safe mode to avoid
-      // potentially unsafe transformations.
+      // Выполнение cssnano в безопасном режиме для предотвращения
+      // потенциальных небезопасных преобразований кода.
       safe: true,
     },
   }),
@@ -155,7 +155,7 @@ leanpub-end-insert
 ]);
 ```
 
-If you build the project now (`npm run build`), you should notice that CSS has become smaller as it's missing comments:
+Если сейчас собрать проект (`npm run build`), вы заметите, что CSS стал меньше, поскольку были удалены комментарии:
 
 ```bash
 Hash: f51ecf99e0da4db99834
@@ -175,20 +175,20 @@ leanpub-end-insert
 ...
 ```
 
-T> [compression-webpack-plugin](https://www.npmjs.com/package/compression-webpack-plugin) allows you to push the problem of generating compressed files to webpack to potentially save processing time on the server.
+T> Пакет [compression-webpack-plugin](https://www.npmjs.com/package/compression-webpack-plugin) позволяет отбросить проблему создания сжатых файлов в webpack для возможного сохранения времени обработки на сервере.
 
-## Minifying Images
+## Минификация изображений
 
-Image size can be reduced by using [img-loader](https://www.npmjs.com/package/img-loader), [imagemin-webpack](https://www.npmjs.com/package/imagemin-webpack), and [imagemin-webpack-plugin](https://www.npmjs.com/package/imagemin-webpack-plugin). The packages use image optimizers underneath.
+Размер изображения можно уменьшить с помощью пакетов [img-loader](https://www.npmjs.com/package/img-loader), [imagemin-webpack](https://www.npmjs.com/package/imagemin-webpack) и [imagemin-webpack-plugin](https://www.npmjs.com/package/imagemin-webpack-plugin). В основе перечисленных пакетов используются оптимизаторы изображений.
 
-It can be a good idea to use *cache-loader* and *thread-loader* with these as discussed in the *Performance* chapter given they can be substantial operations.
+Может быть хорошей идеей вместе с ними использовать пакеты *cache-loader* и *thread-loader*, как описано в главе *Производительность*, учитывая, что они могут быть значительными операциями.
 
-## Conclusion
+## Резюме
 
-Minification is the most comfortable step you can take to make your build smaller. To recap:
+Минимизация - это самый доступный шаг, который вы можете предпринять, чтобы сделать вашу сборку меньше. Подведём итоги:
 
-* **Minification** process analyzes your source code and turns it into a smaller form with the same meaning if you use safe transformations. Specific unsafe transformations allow you to reach even smaller results while potentially breaking code that relies, for example, on exact parameter naming.
-* Webpack performs minification in production mode using UglifyJS by default. Other solutions, such as *babel-minify-webpack-plugin*, provide similar functionality with costs of their own.
-* Besides JavaScript, it's possible to minify other assets, such as CSS, HTML, and images, too. Minifying these requires specific technologies that have to be applied through loaders and plugins of their own.
+* **Процесс минификации** анализирует исходный код и превращает его в меньший по размеру код, без потери функциональных возможностей, при условии, если используются безопасные преобразования. Конкретные небезопасные преобразования позволяют достичь еще меньших по размеру результатов при потенциальном нарушении кода, если он, например, зависит от точные имён параметров.
+* Webpack выполняет минимизацию в режиме продакшена, используя по умолчанию UglifyJS. Другие решения, такие как *babel-minify-webpack-plugin*, обеспечивают аналогичную функциональность с издержками.
+* Помимо JavaScript, можно также миницифировать другие ресурсы, включая CSS, HTML и изображения. Для их минификации требуются определённые технологии, которые должны применяться через загрузчики и собственные плагины.
 
-You'll learn to apply tree shaking against code in the next chapter.
+В следующей главе вы научитесь применять tree shaking к коду.

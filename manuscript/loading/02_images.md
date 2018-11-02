@@ -1,20 +1,20 @@
-# Loading Images
+# Загрузка изображений
 
-HTTP/1 application can be made slow by loading a lot of small assets as each request comes with an overhead. HTTP/2 helps in this regard and changes the situation somewhat drastically. Till then you are stuck with different approaches. Webpack allows a few of these.
+Приложение, использующее протокол HTTP/1 можно сделать медленным, если загружается множество мелких ресурсов, поскольку каждый запрос идёт с дополнительными расходами. HTTP/2 помогает в данной проблеме и кардинально меняет ситуацию. До тех пор, пока вы не определились, какой из подходов использовать, webpack позволяет использовать несколько из них.
 
-Webpack can inline assets by using [url-loader](https://www.npmjs.com/package/url-loader). It emits your images as base64 strings within your JavaScript bundles. The process decreases the number of requests needed while growing the bundle size. It's enough to use *url-loader* during development. You want to consider other alternatives for the production build, though.
+Webpack может встроить ресурсы с помощью [url-loader](https://www.npmjs.com/package/url-loader). Этот загрузчик выводит ваши изображения как строки в формате base64 внутри JavaScript-сборок. Данный процесс уменьшает количество требуемых запросов при увеличении размера сборки. Возможностей плагина *url-loader* может хватить для целей разработки. Однако вы скорее захотите применять другие альтернативы для продакшен-сборки.
 
-Webpack gives control over the inlining process and can defer loading to [file-loader](https://www.npmjs.com/package/file-loader). *file-loader* outputs image files and returns paths to them instead of inlining. This technique works with other assets types, such as fonts, as you see in the later chapters.
+Webpack обеспечивает контроль над процессом встраивания и может возложить загрузку на [file-loader](https://www.npmjs.com/package/file-loader). Загрузчик *file-loader* выводит файлы изображений и возвращает пути к ним вместо встраивания. Этот метод работает с другими типами ресурсов, такими как шрифты, как вы увидите в следующей главе.
 
-## Setting Up *url-loader*
+## Настройка *url-loader*
 
-*url-loader* is a good starting point and it's the perfect option for development purposes, as you don't have to care about the size of the resulting bundle. It comes with a *limit* option that can be used to defer image generation to *file-loader* after an absolute limit is reached. This way you can inline small files to your JavaScript bundles while generating separate files for the bigger ones.
+Загрузчик *url-loader* — хорошая отправная точка, и это идеальный вариант во время разработки, поскольку вам не нужно заботиться о размере готовой сборки. В этом загрузчике есть опция *limit*, которая может использоваться для отсрочки генерации изображений в *file-loader* после достижения максимального лимита. Таким образом, вы можете встроить небольшие файлы в сборки JavaScript, создавая отдельные файлы для более крупных.
 
-If you use the limit option, you need to install both *url-loader* and *file-loader* to your project. Assuming you have configured your styles correctly, webpack resolves any `url()` statements your styling contains. You can point to the image assets through your JavaScript code as well.
+Если вы используете опцию limit, вам необходимо добавить как *url-loader*, так и *file-loader* в проект. Предполагая, что вы правильно написали CSS, webpack разрешает любые объявления `url()`, содержащиеся в файлах стилей. Вы также можете ссылаться на ресурсы изображения через JavaScript-код.
 
-In case the `limit` option is used, *url-loader* passes possible additional options to *file-loader* making it possible to configure its behavior further.
+Если используется опция `limit`, *url-loader* передаёт дополнительные опции в *file-loader*, позволяя дополнительно настроить его поведение.
 
-To load *.jpg* and *.png* files while inlining files below 25kB, you would have to set up a loader:
+Для загрузки файлов *.jpg* и *.png* путём встраивания их размером ниже 25 Кб, нужна следующая настройка загрузчика:
 
 ```javascript
 {
@@ -28,11 +28,11 @@ To load *.jpg* and *.png* files while inlining files below 25kB, you would have 
 },
 ```
 
-T> If you prefer to use another loader than *file-loader* as the *limit* is reached, set `fallback: "some-loader"`. Then webpack will resolve to that instead of the default.
+T> Если вы предпочитаете использовать другой загрузчик, отличный от *file-loader* по достижении лимита (*limit*), установите опцию `fallback: "some-loader"`, тогда webpack обработает ресурс указанным загрузчиком вместо заданного по умолчанию.
 
-## Setting Up *file-loader*
+## Настройка *file-loader*
 
-If you want to skip inlining altogether, you can use *file-loader* directly. The following setup customizes the resulting filename. By default, *file-loader* returns the MD5 hash of the file's contents with the original extension:
+Если вы хотите полностью пропустить встраивание, вы можете напрямую использовать *file-loader*. Следующая настройка настраивает полученное имя файла. По умолчанию *file-loader* возвращает хеш MD5 содержимого файла с исходным расширением:
 
 ```javascript
 {
@@ -46,19 +46,19 @@ If you want to skip inlining altogether, you can use *file-loader* directly. The
 },
 ```
 
-T> If you want to output your images below a particular directory, set it up with `name: "./images/[hash].[ext]"`.
+T> Если вы хотите выводить изображения в определённой директории, создайте подобную настройку `name: "./images/[hash].[ext]"`.
 
-W> Be careful not to apply both loaders on images at the same time! Use the `include` field for further control if *url-loader* `limit` isn't enough.
+W> Будьте внимательны, чтобы одновременно не применить оба загрузчика изображений! Используйте поле `include` для дальнейшего контроля, если опции `limit` в пакете *url-loader* недостаточно.
 
-## Integrating Images to the Project
+## Интеграция изображений в проект
 
-The ideas above can be wrapped in a small helper that can be incorporated into the book project. To get started, install the dependencies:
+Вышеизложенные идеи могут быть обёрнуты небольшим помощником, который может быть включён учебный проект данного руководства. Для начала установите зависимости:
 
 ```bash
 npm install file-loader url-loader --save-dev
 ```
 
-Set up a function as below:
+Создайте функцию, как показано ниже:
 
 **webpack.parts.js**
 
@@ -80,7 +80,7 @@ exports.loadImages = ({ include, exclude, options } = {}) => ({
 });
 ```
 
-To attach it to the configuration, adjust as follows. The configuration defaults to *url-loader* during development and uses both *url-loader* and *file-loader* in production to maintain smaller bundle sizes. *url-loader* uses *file-loader* implicitly when `limit` is set, and both have to be installed for the setup to work.
+Для присоединения этой функции к конфигурации, выполните следующие действия. Это конфигурация по умолчанию использует *url-loader* во время разработки и использует как *url-loader*, так и *file-loader* в продакшене для поддержки меньших по размеру сборок. Загрузчик *url-loader* использует *file-loader* неявно, когда задан `limit`, поэтому их оба нужно добавить в проект.
 
 **webpack.config.js**
 
@@ -105,7 +105,7 @@ leanpub-end-insert
 ]);
 ```
 
-To test that the setup works, download an image or generate it (`convert -size 100x100 gradient:blue logo.png`) and refer to it from the project:
+Для проверки, работает ли конфигурация, загрузите изображение или сгенерируйте его (`convert -size -100x100 gradient:blue logo.png`) и обратитесь к нему из проекта:
 
 **src/main.css**
 
@@ -120,11 +120,11 @@ leanpub-end-insert
 }
 ```
 
-The behavior changes depending on the `limit` you set. Below the limit, it should inline the image while above it should emit a separate asset and a path to it. The CSS lookup works because of *css-loader*. You can also try importing the image from JavaScript code and see what happens.
+Поведение изменяется в зависимости от установленного лимита (значения опции `limit`). Ниже лимита он должен встроить изображение, а если выше него, то следует сгенерировать отдельный ресурс и путь к нему. Поиск CSS-ресурсов работает из-за загрузчика *css-loader*. Вы также можете попробовать импортировать изображение из кода JavaScript и посмотреть, что произойдёт.
 
-## Loading SVGs
+## Загрузка SVG-файлов
 
-Webpack allows a [couple ways](https://github.com/webpack/webpack/issues/595) to load SVGs. However, the easiest way is through *file-loader* as follows:
+Webpack позволяет загружать SVG-файлы [несколькими способами](https://github.com/webpack/webpack/issues/595). Однако самый простой способ воспользоваться загрузчиком *file-loader*:
 
 ```javascript
 {
@@ -133,43 +133,43 @@ Webpack allows a [couple ways](https://github.com/webpack/webpack/issues/595) to
 },
 ```
 
-Assuming you have set up your styling correctly, you can refer to your SVG files as below. The example SVG path below is relative to the CSS file:
+Предполагая, что стили написаны корректно, вы можете обратиться к своим SVG-файлам, как показано ниже. Пример пути к SVG-файлу относительно CSS-файла показано ниже:
 
 ```css
 .icon {
-   background-image: url("../assets/icon.svg");
+  background-image: url("../assets/icon.svg");
 }
 ```
 
-Consider also the following loaders:
+Вкратце рассмотрим также следующие загрузчики::
 
-* [raw-loader](https://www.npmjs.com/package/raw-loader) gives access to the raw SVG content.
-* [svg-inline-loader](https://www.npmjs.com/package/svg-inline-loader) goes a step further and eliminates unnecessary markup from your SVGs.
-* [svg-sprite-loader](https://www.npmjs.com/package/svg-sprite-loader) can merge separate SVG files into a single sprite, making it potentially more efficient to load as you avoid request overhead. It supports raster images (*.jpg*, *.png*) as well.
-* [svg-url-loader](https://www.npmjs.com/package/svg-url-loader) loads SVGs as UTF-8 encoded data urls. The result is smaller and faster to parse than base64.
-* [react-svg-loader](https://www.npmjs.com/package/react-svg-loader) emits SVGs as React components meaning you could end up with code like `<Image width={50} height={50}/>` to render a SVG in your code after importing it.
+* [raw-loader](https://www.npmjs.com/package/raw-loader) даёт доступ к необработанному SVG-содержимому.
+* [svg-inline-loader](https://www.npmjs.com/package/svg-inline-loader) делает ещё один шаг вперёд и удаляет ненужную разметку из ваших SVG-файлов.
+* [svg-sprite-loader](https://www.npmjs.com/package/svg-sprite-loader) могут объединять отдельные SVG-файлы в один спрайт, что делает его потенциально более эффективным для загрузки, поскольку вы избегаете накладных расходов на совершение HTTP-запроса. Этот загрузчик также поддерживает растровые изображения (*.jpg *, *.png*).
+* [svg-url-loader](https://www.npmjs.com/package/svg-url-loader) загружает SVG как закодированные в UTF-8 URL-адреса данных. Результат получается меньше и быстрее анализируется, чем base64.
+* [react-svg-loader](https://www.npmjs.com/package/react-svg-loader) генерирует SVG в качестве React-компонентов, что означает, что вы можете получить код типа `<Image width={50} height={50}/>`, чтобы отобразить SVG в коде после его импорта.
 
-T> You can still use *url-loader* and the tips above with SVGs too.
+T> Вы по-прежнему можете использовать *url-loader* и применять советы, описанные выше, и к SVG в том числе.
 
-## Optimizing Images
+## Оптимизация изображений
 
-In case you want to compress your images, use [image-webpack-loader](https://www.npmjs.com/package/image-webpack-loader), [svgo-loader](https://www.npmjs.com/package/svgo-loader) (SVG specific), or [imagemin-webpack-plugin](https://www.npmjs.com/package/imagemin-webpack-plugin). This type of loader should be applied first to the data, so remember to place it as the last within `use` listing.
+Если вы хотите сжать изображения, используйте [image-webpack-loader](https://www.npmjs.com/package/image-webpack-loader), [svgo-loader](https://www.npmjs.com/package/svgo-loader) (исключительно для SVG) или [imagemin-webpack-plugin](https://www.npmjs.com/package/imagemin-webpack-plugin). Данный тип загрузчика должен применяться сначала к данным, поэтому не забудьте разместить его последним в списке `use`.
 
-Compression is particularly valuable for production builds as it decreases the amount of bandwidth required to download your image assets and speed up your site or application as a result.
+Сжатие представляет особую ценность для продакшен-сборок, поскольку оно уменьшает необходимую для загрузки изображений пропускную способность, и в результате ускоряет работу сайта или приложения.
 
-## Utilizing `srcset`
+## Использование `srcset`
 
-[resize-image-loader](https://www.npmjs.com/package/resize-image-loader) and [responsive-loader](https://www.npmjs.com/package/responsive-loader) allow you to generate `srcset` compatible collections of images for modern browsers. `srcset` gives more control to the browsers over what images to load and when resulting in higher performance.
+Загрузчик [resize-image-loader](https://www.npmjs.com/package/resize-image-loader) и [responsive-loader](https://www.npmjs.com/package/responsive-loader) позволяют создавать коллекцию изображений с использованием атрибута `srcset`, совместимую с современными браузерами. Атрибут `srcset` даёт больший контроль браузерам над загрузкой изображений и в результате приводит к увеличению производительности.
 
-## Loading Images Dynamically
+## Динамическая загрузка изображений
 
-Webpack allows you to load images dynamically based on a condition. The techniques covered in the *Code Splitting* and *Dynamic Loading* chapters are enough for this purpose. Doing this can save bandwidth and load images only when you need them or preload them while you have time.
+Webpack позволяет загружать изображения динамически в зависимости от условия. Для этой цели достаточно методов, описанных в главах *Разделение кода* и *Динамическая загрузка*. Это позволяет сэкономить трафик и загружать изображения только тогда, когда они вам понадобятся, или загрузить их предварительно, если на это есть время.
 
-## Loading Sprites
+## Загрузка спрайтов
 
-**Spriting** technique allows you to combine multiple smaller images into a single image. It has been used for games to describe animations and it's valuable for web development as well as you avoid request overhead.
+**Техника спрайтов** позволяет объединить несколько меньших изображений в одно-единственное изображение. Спрайты используются в играх для описания анимаций, и он ценен для веб-разработки, а также позволяет избежать накладных расходов на выполнение запроса.
 
-[webpack-spritesmith](https://www.npmjs.com/package/webpack-spritesmith) converts provided images into a sprite sheet and Sass/Less/Stylus mixins. You have to set up a `SpritesmithPlugin`, point it to target images, and set the name of the generated mixin. After that, your styling can pick it up:
+Пакет  [webpack-spritesmith](https://www.npmjs.com/package/webpack-spritesmith) конвертирует предоставленные изображения в изображение спрайта вместе с миксинами Sass/Less/Stylus. Вам следует настроить `SpritesmithPlugin`, указав целевые изображения и задать имя сгенерированного миксина. После этого стили будут обработаны:
 
 ```scss
 @import "~sprite.sass";
@@ -183,54 +183,54 @@ Webpack allows you to load images dynamically based on a condition. The techniqu
 }
 ```
 
-## Using Placeholders
+## Использование заглушек
 
-[image-trace-loader](https://www.npmjs.com/package/image-trace-loader) loads images and exposes the results as `image/svg+xml` URL encoded data. It can be used in conjunction with *file-loader* and *url-loader* for showing a placeholder while the actual image is being loaded.
+Пакет [image-trace-loader](https://www.npmjs.com/package/image-trace-loader) загружает изображения и предоставляет результаты в виде URL-кодированных данных `image/svg+xml`. Этот пакет можно использовать вместе с *file-loader* и *url-loader* для отображения заглушки при загрузке фактического изображения.
 
-[lqip-loader](https://www.npmjs.com/package/lqip-loader) implements a similar idea. Instead of tracing, it provides a blurred image instead of a traced one.
+Пакет [lqip-loader](https://www.npmjs.com/package/lqip-loader) реализует аналогичную идею, но вместо создания силуэта, создает размытое изображение.
 
-## Getting Image Dimensions
+## Получение размеров изображения
 
-Sometimes getting the only reference to an image isn't enough. [image-size-loader](https://www.npmjs.com/package/image-size-loader) emits image dimensions, type, and size in addition to the reference to the image itself.
+Иногда получить единственную ссылку на изображение недостаточно. Пакет [image-size-loader](https://www.npmjs.com/package/image-size-loader) выдаёт размеры, тип и размер изображения в дополнение к ссылке на изображение.
 
-## Referencing to Images
+## Создание ссылок на изображения
 
-Webpack can pick up images from style sheets through `@import` and `url()` assuming *css-loader* has been configured. You can also refer to your images within the code. In this case, you have to import the files explicitly:
+Webpack может обрабатывать изображения из таблиц стилей через `@import` и `url()` из предположения, что *css-loader* правильно настроен. Вы также можете ссылаться на изображения в коде. В этом случае вам нужно явно импортировать файлы:
 
 ```javascript
 import src from "./avatar.png";
 
-// Use the image in your code somehow now
+// Использовать изображение в коде таким образом
 const Profile = () => <img src={src} />;
 ```
 
-If you are using React, then you use [babel-plugin-transform-react-jsx-img-import](https://www.npmjs.com/package/babel-plugin-transform-react-jsx-img-import) to generate the `require` automatically. In that case, you would end up with code:
+Если вы используете React, то можете использовать [babel-plugin-transform-react-jsx-img-import](https://www.npmjs.com/package/babel-plugin-transform-react-jsx-img-import ) для автоматической генерации `require`. В этом случае следующий код будет работать корректно:
 
 ```javascript
 const Profile = () => <img src="avatar.png" />;
 ```
 
-It's also possible to set up dynamic imports as discussed in the *Code Splitting* chapter. Here's a small example:
+Также можно настроить динамический импорт, как описано в главе *Разделение кода*. Вот небольшой пример:
 
 ```javascript
 const src = require(`./avatars/${avatar}`);`.
 ```
 
-## Images and *css-loader* Source Map Gotcha
+## Подводные камни с изображениями и картами кода *css-loader*
 
-If you are using images and *css-loader* with the `sourceMap` option enabled, it's important that you set `output.publicPath` to an absolute value pointing to your development server. Otherwise, images aren't going to work. See [the relevant webpack issue](https://github.com/webpack/style-loader/issues/55) for further explanation.
+При использовании изображений и *css-loader* с опцией `sourceMap`, важно установить `output.publicPath` на абсолютное значение, указывающее на сервер разработки. В противном случае изображения не будут работать. За более подробными объяснениями смотрите [соответствующее ишью webpack](https://github.com/webpack/style-loader/issues/55).
 
-## Conclusion
+## Резюме
 
-Webpack allows you to inline images within your bundles when needed. Figuring out proper inlining limits for your images requires experimentation. You have to balance between bundle sizes and the number of requests.
+Webpack позволяет встраивать изображения в сборки, когда это необходимо. Для правильного определения ограничений на использование ваших изображений необходимы эксперименты. Вам следует найти баланс размерами сборок и количеством запросов.
 
-To recap:
+В итоге:
 
-* *url-loader* inlines the assets within JavaScript. It comes with a `limit` option that allows you to defer assets above it to *file-loader*.
-* *file-loader* emits image assets and returns paths to them to the code. It allows hashing the asset names.
-* You can find image optimization related loaders and plugins that allow you to tune their size further.
-* It's possible to generate **sprite sheets** out of smaller images to combine them into a single request.
-* Webpack allows you to load images dynamically based on a given condition.
-* If you are using source maps, you should remember to set `output.publicPath` to an absolute value for the images to show up.
+* *url-loader* встраивает ресурсы внутри JavaScript. Он поставляется с опцией `limit`, позволяющая переносить ресурсы, которые больше заданного лимита на *file-loader*.
+* *file-loader* выдаёт ресурсы изображений и возвращает пути к ним в код. Он позволяет хешировать имена ресурсов.
+* Вы можете найти связанные с оптимизацией изображений загрузчики и плагины, позволяющие впоследствии настроить вам их размер. 
+* Возможно создание **спрайтов изображений** из меньших изображений для объединения их в один запрос.
+* Webpack позволяет загружать изображения динамически на основе заданного условия.
+* Если вы используете карты кода, вам стоит помнить об установке опции `output.publicPath` на абсолютный путь, где изображения будут храниться.
 
-You'll learn to load fonts using webpack in the next chapter.
+В следующей главе вы научитесь загружать шрифты с помощью webpack.

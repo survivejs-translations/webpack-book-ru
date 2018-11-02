@@ -1,20 +1,20 @@
-# Loading Fonts
+# Загрузка шрифтов
 
-Loading fonts is similar to loading images. It does come with unique challenges, though. How to know what font formats to support? There can be up to four font formats to worry about if you want to provide first class support to each browser.
+Загрузка шрифтов похожа на загрузку изображений. Однако в этом случае есть уникальные задачи. Как узнать, какие форматы шрифтов поддерживаются? Может быть до четырёх форматов шрифтов, о которых стоит беспокоиться, если вы хотите обеспечить первоклассную поддержку для каждого браузера.
 
-The problem can be solved by deciding a set of browsers and platforms that should receive first class service. The rest can use system fonts.
+Проблему можно решить, определившись с набором браузеров и платформ, которые должны получить высококлассный сервис. Остальные могут использовать системные шрифты.
 
-You can approach the problem in several ways through webpack. You can still use *url-loader* and *file-loader* as with images. Font `test` patterns tend to be more complicated, though, and you have to worry about font file related lookups.
+С помощью webpack вы можете подойти к решению этой проблемы несколькими способами. Вы все ещё можете использовать *url-loader* и *file-loader*, как и с изображениями. Шаблоны шрифта `test`, как правило, более сложны, поскольку вам нужно думать о поисках файлов, связанных с шрифтами.
 
-T> [canifont](https://www.npmjs.com/package/canifont) helps you to figure out which font formats you should support. It accepts a **.browserslistrc** definition and then checks font support of each browser based on the definition.
+T> [canifont](https://www.npmjs.com/package/canifont) поможет вам определить, какие форматы шрифтов вам нужно поддерживать. Он принимает определение **.browserslistrc**, а затем проверяет поддержку шрифтов для каждого браузера на основе определения.
 
-## Choosing One Format
+## Выбор одного формата
 
-If you exclude Opera Mini, all browsers support the *.woff* format. Its newer version, *.woff2*, is widely supported by modern browsers and can be a good alternative.
+За исключением Opera Mini, все браузеры поддерживают формат *.woff*. Новая версия этого формата *.woff2* широко поддерживается современными браузерами и может быть хорошей альтернативой.
 
 {pagebreak}
 
-Going with one format, you can use a similar setup as for images and rely on both *file-loader* and *url-loader* while using the limit option:
+Если вы используете один формат, вы можете использовать аналогичную настройку и для изображений, и использовать как *file-loader*, так и *url-loader*  с помощью опции limit:
 
 ```javascript
 {
@@ -28,23 +28,23 @@ Going with one format, you can use a similar setup as for images and rely on bot
 },
 ```
 
-A more elaborate approach to achieve a similar result that includes *.woff2* and others would be to end up with the code as below:
+Более сложный подход для достижения похожего результата, включающий шрифты формата *.woff2* и других, будет иметь такой код:
 
 ```javascript
 {
-  // Match woff2 in addition to patterns like .woff?v=1.1.1.
+  // Совпадает woff2 в дополнение к таким паттернам, как .woff?v=1.1.1.
   test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
   use: {
     loader: "url-loader",
     options: {
-      // Limit at 50k. Above that it emits separate files
+      // Ограничение в 50 Кб, всё что выше этого лимита - выносить в отдельные файлы
       limit: 50000,
 
-      // url-loader sets mimetype if it's passed.
-      // Without this it derives it from the file extension
+      // url-loader устанавливает mime-тип (mimetype), если он передан.
+      // Без указания этой опции, получает mime-тип из расширения файла
       mimetype: "application/font-woff",
 
-      // Output below fonts directory
+      // Вывод в директорию fonts
       name: "./fonts/[name].[ext]",
     }
   },
@@ -53,9 +53,9 @@ A more elaborate approach to achieve a similar result that includes *.woff2* and
 
 {pagebreak}
 
-## Supporting Multiple Formats
+## Поддержка нескольких форматов
 
-In case you want to make sure the site looks good on a maximum amount of browsers, you can use *file-loader* and forget about inlining. Again, it's a trade-off as you get extra requests, but perhaps it's the right move. Here you could end up with a loader configuration:
+Если вы хотите быть уверенными в том, что сайт отображается корректно на максимальном количестве браузеров, то можете использовать *file-loader* и забыть о встраивании. Опять же, это компромисс, поскольку в итоге будут дополнительные запросы, но, возможно, это верный шаг. Ниже приведена конфигурация загрузчика для этого:
 
 ```javascript
 {
@@ -69,7 +69,7 @@ In case you want to make sure the site looks good on a maximum amount of browser
 },
 ```
 
-The way you write your CSS definition matters. To make sure you are getting the benefit from the newer formats, they should become first in the definition. This way the browser picks them up.
+Способ написания CSS имеет значение. Для того, чтобы убедиться, что вы получаете выгоду от новых форматов, они должны быть первыми в определении. Таким образом, браузер их загружает.
 
 ```css
 @font-face {
@@ -78,57 +78,57 @@ The way you write your CSS definition matters. To make sure you are getting the 
     url("./fonts/myfontfile.woff") format("woff"),
     url("./fonts/myfontfile.eot") format("embedded-opentype"),
     url("./fonts/myfontfile.ttf") format("truetype");
-    /* Add other formats as you see fit */
+    /* Добавьте другие форматы, если необходимо */
 }
 ```
 
-T> [MDN discusses the font-family rule](https://developer.mozilla.org/en/docs/Web/CSS/@font-face) in detail.
+T> [Документация MDN подробно обсуждает правило font-family](https://developer.mozilla.org/en/docs/Web/CSS/@font-face).
 
 {pagebreak}
 
-## Manipulating *file-loader* Output Path and `publicPath`
+## Манипулирование путём директории *file-loader* и `publicPath`
 
-As discussed above and in [webpack issue tracker](https://github.com/webpack/file-loader/issues/32#issuecomment-250622904), *file-loader* allows shaping the output. This way you can output your fonts below `fonts/`, images below `images/`, and so on over using the root.
+Как отмечалось выше и в [ишью webpack](https://github.com/webpack/file-loader/issues/32#issuecomment-250622904), *file-loader* позволяет формировать вывод. Благодаря этому вы можете выводить шрифты в `fonts/`, изображения в `images/` и т.д., используя корневую директорию.
 
-Furthermore, it's possible to manipulate `publicPath` and override the default per loader definition. The following example illustrates these techniques together:
+Кроме того, можно манипулировать `publicPath` и переопределять значение по умолчанию для каждого загрузчика. Следующий пример иллюстрирует эти методы вместе:
 
 ```javascript
 {
-  // Match woff2 and patterns like .woff?v=1.1.1.
+  // Совпадает с woff2 в дополнение к таким паттернам, как .woff?v=1.1.1.
   test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
   use: {
     loader: "url-loader",
     options: {
       limit: 50000,
       mimetype: "application/font-woff",
-      name: "./fonts/[name].[ext]", // Output below ./fonts
-      publicPath: "../", // Take the directory into account
+      name: "./fonts/[name].[ext]", // Выводит в ./fonts
+      publicPath: "../", // Учитывать указанную директорию
     },
   },
 },
 ```
 
-## Generating Font Files Based on SVGs
+## Создание файлов шрифтов на основе SVG
 
-If you prefer to use SVG based fonts, they can be bundled as a single font file by using [webfonts-loader](https://www.npmjs.com/package/webfonts-loader).
+Если вы предпочитаете использовать шрифты, основанные на SVG, их можно объединить в один файл шрифта с помощью [webfonts-loader](https://www.npmjs.com/package/webfonts-loader).
 
-W> Take care with SVG images if you have SVG specific image setup in place already. If you want to process font SVGs differently, set their definitions carefully. The *Loader Definitions* chapter covers alternatives.
+W> Необходимо осторожно относиться к изображениям в формате SVG, если у вас уже действует настройка определённая на SVG-изображения. Если вы хотите обрабатывать SVG-шрифты по-разному, тщательно задавайте их определения. В главе *Определения загрузчика* рассматриваются альтернативы.
 
-## Using Google Fonts
+## Использование Google Fonts
 
-[google-fonts-webpack-plugin](https://www.npmjs.com/package/google-fonts-webpack-plugin) can download Google Fonts to webpack build directory or connect to them using a CDN.
+[google-fonts-webpack-plugin](https://www.npmjs.com/package/google-fonts-webpack-plugin) может загружать шрифты из Google в директорию сборки webpack или подключаться к ним с помощью CDN.
 
-## Using Icon Fonts
+## Использование иконочных шрифтов
 
-[iconfont-webpack-plugin](https://www.npmjs.com/package/iconfont-webpack-plugin) was designed to simplify loading icon based fonts. It inlines SVG references within CSS files.
+[iconfont-webpack-plugin](https://www.npmjs.com/package/iconfont-webpack-plugin) был разработан для упрощения загрузки шрифтов на основе иконок. Он встраивает SVG-ссылки в файлах CSS.
 
-## Conclusion
+## Резюме
 
-Loading fonts is similar to loading other assets. You have to consider the browsers you want to support and choose the loading strategy based on that.
+Загрузка шрифтов аналогична загрузке других ресурсов. Вам нужно определиться с поддерживаемыми браузерами, и выбрать стратегию загрузки, основываясь на этом решении.
 
-To recap:
+В итоге:
 
-* When loading fonts, the same techniques as for images apply. You can choose to inline small fonts while bigger ones are served as separate assets.
-* If you decide to provide first class support to only modern browsers, you can select only a font format or two and let the older browsers to use system level fonts.
+* При загрузке шрифтов применяются те же методы, что и для изображений. Вы можете выбрать встраивание небольших шрифтов, в то же время большие шрифты загружать как отдельные ресурсы.
+* Если вы решили предоставить высококачественную поддержку только для современных браузеров, вы можете выбрать только один или два формата шрифта, а старые браузеры будут использовать шрифты, установленные в системе.
 
-In the next chapter, you'll learn to load JavaScript using Babel and webpack. Webpack loads JavaScript by default, but there's more to the topic as you have to consider what browsers you want to support.
+В следующей главе вы научитесь загружать JavaScript с помощью Babel и webpack. Webpack загружает JavaScript по умолчанию, но это ещё не всё, поскольку вам нужно учитывать, какие браузеры вы хотите поддерживать.

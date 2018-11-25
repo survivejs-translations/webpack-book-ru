@@ -1,12 +1,12 @@
-# Tree Shaking
+# Встряхивание дерева
 
-**Tree shaking** is a feature enabled by the ES2015 module definition. The idea is that given it's possible to analyze the module definition statically without running it, webpack can tell which parts of the code are being used and which are not. It's possible to verify this behavior by expanding the application and adding code there that should be eliminated.
+**Встряхивание дерева (tree shaking)** - это свойство (???функция), которое включено в определение модулей стандарта ES2015. Идея состоит в том, что при условии, что можно проанализировать определение модуля статически, не выполняя его, webpack может сказать какие части кода будут использованы, а какие - нет. Это можно проверить, расширив наше приложение и добавив там код, который необходимо убрать.
 
-T> Tree shaking works to an extent through [webpack-common-shake](https://www.npmjs.com/package/webpack-common-shake) against CommonJS module definition. As a majority of npm packages have been authored using the older definition, the plugin has value.
+T> В определенной степени, встряхивание дерева работает через [webpack-common-shake](https://www.npmjs.com/package/webpack-common-shake) используя определение модулей CommonJS. Использование данного плагина имеет значение, поскольку большинство пакетов npm были созданы с использованием более старого определения.
 
-## Demonstrating Tree Shaking
+## Демонстрация встряхивания дерева
 
-To shake code, you have to define a module and use only a part of its code. Set one up:
+Чтобы "встряхнуть" ваш код, вам необходимо определить модуль, и использовать только часть его кода. Итак, давайте создадим такой модуль:
 
 **src/shake.js**
 
@@ -19,7 +19,7 @@ export { shake, bake };
 
 {pagebreak}
 
-To make sure you use a part of the code, alter the application entry point:
+А теперь изменим точку входа нашего приложения, чтобы убедится что мы используем только часть кода:
 
 **src/index.js**
 
@@ -32,32 +32,32 @@ bake();
 ...
 ```
 
-If you build the project again (`npm run build`) and examine the build (*dist/main.js*), it should contain `console.log("bake")`, but miss `console.log("shake")`. That's tree shaking in action.
+Если вы соберете проект с помощью (`npm run build`) и проанализируете код сборки (*dist/main.js*), то он должен содержать `console.log("bake")`, но код `console.log("shake")` должен отсуствовать. Это и есть встряхивание дерева в действии.
 
-To get a better idea of what webpack is using for tree shaking, run it through `npm run build -- --display-used-exports`. You should see additional output like `[no exports used]` or `[only some exports used: bake]` in the terminal.
+Чтобы лучше понять, какие именно части модулей будут включены webpack, запустите сборку со следующим флагом: `npm run build -- --display-used-exports`. В терминале webpack вам должен вывести `[no exports used]` или `[only some exports used: bake]`.
 
-T> If you are using `UglifyJsPlugin`, enable warnings for a similar effect. In addition to other messages, you should see lines like `Dropping unused variable treeShakingDemo [./src/component.js:17,6]`.
+T> Если вы используете `UglifyJsPlugin`, для аналогичного эффекта включите предупреждения. В дополнение к другим сообщениям вы увидите сообщения, вроде `Dropping unused variable treeShakingDemo [./src/component.js:17,6]`.
 
-T> There is a CSS Modules related tree shaking proof of concept at [dead-css-loader](https://github.com/simlrh/dead-css-loader).
+T> Существует реализация встряски дерева, основанная на "проверке концепции" для CSS модулей - [dead-css-loader](https://github.com/simlrh/dead-css-loader).
 
-## Tree Shaking on Package Level
+## Встряхивание дерева на уровне пакетов
 
-The same idea works with dependencies that use the ES2015 module definition. Given the related packaging, standards are still emerging, you have to be careful when consuming such packages. Webpack tries to resolve *package.json* `module` field for this reason.
+Такой подход работает в том числе с зависимостями, которые используют определение модулей стандарта ES2015. Поскольку стандарты создания пакетов все еще появляются, вы должны быть осторожны при использовании таких пакетов. Именно по этой причине webpack пытается разрешить поле `module` в *package.json*.
 
-For tools like webpack to allow tree shake npm packages, you should generate a build that has transpiled everything else except the ES2015 module definitions and then point to it through *package.json* `module` field. In Babel terms, you have to let webpack to manage ES2015 modules by setting `"modules": false`.
+Чтобы позволить таким инструментам как webpack выполнить встряхивание npm пакетов, вам следует сгенерировать сборку таким образом, что все, кроме определений модулей ES2015, будет транспилировано, а затем сослаться на готовый модуль в поле `module` файла *package.json*. Для этого, вам необходимо позволить webpack управлять модулями ES2015 установив флаг `"modules": false` в настройках Babel.
 
-To get most out of tree shaking with external packages, you have to use [babel-plugin-transform-imports](https://www.npmjs.com/package/babel-plugin-transform-imports) to rewrite imports so that they work with webpack's tree shaking logic. See [webpack issue #2867](https://github.com/webpack/webpack/issues/2867) for more information.
+Чтобы получить максимальную выгоду от встряски дерева на уровне пакетов, вам необходимо использовать [babel-plugin-transform-imports](https://www.npmjs.com/package/babel-plugin-transform-imports), чтобы преобразовать импорты к такому виду, с которым работает логика встряски webpack. За дополнительной информацией, обратитесь к [webpack issue #2867](https://github.com/webpack/webpack/issues/2867).
 
-T> [SurviveJS - Maintenance](https://survivejs.com/maintenance/packaging/building/) covers how to write your packages so that it's possible to apply tree shaking against them.
+T> Руководство [SurviveJS - Maintenance](https://survivejs.com/maintenance/packaging/building/) более подробно описывает то, каким образом следует разрабатывать пакеты, чтобы к ним можно было применить встряску дерева.
 
-## Conclusion
+## Резюме
 
-Tree shaking is a potentially powerful technique. For the source to benefit from tree shaking, npm packages have to be implemented using the ES2015 module syntax, and they have to expose the ES2015 version through *package.json* `module` field tools like webpack can pick up.
+Встряхивание дерева - это потенциально мощная техника. Для получения максимальной выгоды от встряски, пакеты npm должны быть написаны с использованием синтаксиса модулей ES2015, и они должны ссылаться на такую форму объявления модулей ES2015 через поле `module` в файле *package.json* чтобы такие инструменты как webpack могли найти эти объявления.
 
-To recap:
+В итоге:
 
-* **Tree shaking** drops unused pieces of code based on static code analysis. Webpack performs this process for you as it traverses the dependency graph.
-* To benefit from tree shaking, you have to use ES2015 module definition.
-* As a package author, you can provide a version of your package that contains ES2015 modules, while the rest has been transpiled to ES5.
+* **Встряхивание дерева** удаляет неиспользуемые куски кода, основываясь на статическом анализе исходного кода. Webpack выполняет этот процесс во время построения графа зависимостей.
+* Для того чтобы получить выгоду от использования данной техники, вам нужно использовать определения модулей стандарта ES2015.
+* Как автор пакета, вы можете предоставить такую версию вашего пакета, которая содержит модули ES2015, в то время как все остальное может быть транспилировано к ES5.
 
-You'll learn how to manage environment variables using webpack in the next chapter.
+В следующей главе, вы научитесь управлять переменными окружения с помощью webpack.

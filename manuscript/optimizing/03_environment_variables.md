@@ -1,44 +1,48 @@
-# Environment Variables
+# Переменные окружения
 
-Sometimes a part of your code should execute only during development. Or you could have experimental features in your build that are not ready for production yet. Controlling **environment variables** becomes valuable as you can toggle functionality using them.
+Бывают такие ситуации, когда необходимо чтобы часть кода исполнялась только во время разработки. Или у вас могут быть экспериментальные функции в вашем приложении, которые еще не готовы к продакшену. В таких случаях, управление **переменными окружения** приходит на помощь, поскольку с их помощью вы можете включать или выключать функции вашего приложения.
 
-Since JavaScript minifiers can remove dead code (`if (false)`), you can build on top of this idea and write code that gets transformed into this form. Webpack's `DefinePlugin` enables replacing **free variables** so that you can convert `if (process.env.NODE_ENV === "development")` kind of code to `if (true)` or `if (false)` depending on the environment.
+Поскольку минификаторы JavaScript могут убирать неиспользуемый код (`if (false)`), на основании этого вы можете написать код который будет приведен к такой форме. `DefinePlugin` в webpack включает замену **свободных переменных**, таким образом вы можете конвертировать код, вроде `if (process.env.NODE_ENV === "development")` в форму `if (true)` или `if (false)` основываясь на окружении.
 
-You can find packages that rely on this behavior. React is perhaps the most known example of an early adopter of the technique. Using `DefinePlugin` can bring down the size of your React production build somewhat as a result, and you can see a similar effect with other packages as well.
+Вы можете найти пакеты, которые опираются на это поведение. React является, пожалуй, самым известным примером, ведь они внедрили эту технику довольно рано. Использование `DefinePlugin` в результате может привести к уменьшению размера продакшен сборки вашего React приложения, и вы можете заметить аналогичный эффект и при использовании других пакетов.
 
-Webpack 4 sets `process.env.NODE_ENV` based on the given mode. It's good to know the technique and how it works, though.
+Webpack 4 устанавливает `process.env.NODE_ENV` на основании режима, в котором он запущен. Так или иначе, лучше разобраться с этой техникой и с тем, как она работает.
 
 {pagebreak}
 
-## The Basic Idea of `DefinePlugin`
+## Основная идея `DefinePlugin`
 
-To understand the idea of `DefinePlugin` better, consider the example below:
+Чтобы лучше понять идею `DefinePlugin`, рассмотрим следующий код:
 
 ```javascript
 var foo;
 
-// Not free due to "foo" above, not ok to replace
+// Переменная не свободна, т.к. "foo" определена выше,
+// не будет заменена
 if (foo === "bar") {
   console.log("bar");
 }
 
-// Free since you don't refer to "bar", ok to replace
+// Свободная переменная, т.к. вы не обращаетесь к ранее 
+// определенной переменной "bar", будет заменена
 if (bar === "bar") {
   console.log("bar");
 }
 ```
 
-If you replaced `bar` with a string like `"foobar"`, then you would end up with the code as below:
+Если вы замените `bar` строкой, вроде `"foobar"`, у вас получится следующий код:
 
 ```javascript
 var foo;
 
-// Not free due to "foo" above, not ok to replace
+// Переменная не свободна, т.к. "foo" определена выше,
+// не будет заменена
 if (foo === "bar") {
   console.log("bar");
 }
 
-// Free since you don't refer to "bar", ok to replace
+// Свободная переменная, т.к. вы не обращаетесь к ранее 
+// определенной переменной "bar", будет заменена
 if ("foobar" === "bar") {
   console.log("bar");
 }
@@ -46,42 +50,45 @@ if ("foobar" === "bar") {
 
 {pagebreak}
 
-Further analysis shows that `"foobar" === "bar"` equals `false` so a minifier gives the following:
+Последующий анализ покажет, что `"foobar" === "bar"` эквивалентно `false`, и минификатор выдаст следующий код:
 
 ```javascript
 var foo;
 
-// Not free due to "foo" above, not ok to replace
+// Переменная не свободна, т.к. "foo" определена выше,
+// не будет заменена
 if (foo === "bar") {
   console.log("bar");
 }
 
-// Free since you don't refer to "bar", ok to replace
+// Свободная переменная, т.к. вы не обращаетесь к ранее 
+// определенной переменной "bar", будет заменена
 if (false) {
   console.log("bar");
 }
 ```
 
-A minifier eliminates the `if` statement as it has become dead code:
+Минификатор удалит второй `if` поскольку он является неиспользуемым кодом:
 
 ```javascript
 var foo;
 
-// Not free, not ok to replace
+// Переменная не свободна, не будет заменена
 if (foo === "bar") {
   console.log("bar");
 }
 
-// if (false) means the block can be dropped entirely
+// if (false) означает что весь блок кода может
+// быть удален целиком
 ```
 
-Elimination is the core idea of `DefinePlugin` and it allows toggling. A minifier performs analysis and toggles entire portions of the code.
+Удаление - это основная идея `DefinePlugin`, и она также позволяет переключаться между функциями приложения. Минификатор производит анализ и исключает целые куски кода.
 
 {pagebreak}
 
-## Setting `process.env.NODE_ENV`
+## Установка `process.env.NODE_ENV`
 
-As before, encapsulate this idea to a function. Due to the way webpack replaces the free variable, you should push it through `JSON.stringify`. You end up with a string like `'"demo"'` and then webpack inserts that into the slots it finds:
+Как и ранее, мы создадим на основании этой идеи функцию. Исходя из того, каким образом webpack преобразует свободные переменные, вам следует передавать их через `JSON.stringify`. В конечном итоге вы получите строку, вроде `'"demo"'`, после чего webpack вставит ее в место, которое найдет:
 
 **webpack.parts.js**
 
@@ -98,7 +105,7 @@ exports.setFreeVariable = (key, value) => {
 };
 ```
 
-Connect this with the configuration:
+Обьеденим этот код с конфигурацией:
 
 **webpack.config.js**
 
@@ -113,7 +120,7 @@ leanpub-end-insert
 
 {pagebreak}
 
-Finally, add something to replace:
+Наконец, добавьте эту переменную, которая должна быть заменена:
 
 **src/component.js**
 
@@ -130,21 +137,21 @@ leanpub-end-insert
 };
 ```
 
-If you run the application, you should see a new message on the button.
+Когда вы запустите приложение, вы должны увидеть новый текст на кнопке.
 
-T> [webpack-conditional-loader](https://www.npmjs.com/package/webpack-conditional-loader) performs something similar based on code comments. It can be used to eliminate entire blocks of code.
+T> [webpack-conditional-loader](https://www.npmjs.com/package/webpack-conditional-loader) работает примерно таким же образом, но основывается на комментариях к коду. Он может быть использован для удаления целых блоков кода.
 
-T> `webpack.EnvironmentPlugin(["NODE_ENV"])` is a shortcut that allows you to refer to environment variables. It uses `DefinePlugin` underneath, and you can achieve the same effect by passing `process.env.NODE_ENV`.
+T> `webpack.EnvironmentPlugin(["NODE_ENV"])` - это короткая ссылка, которая позволяет вам ссылаться на переменные окружения. Под капотом он использует `DefinePlugin`, и вы можете добиться того же эффекта передав `process.env.NODE_ENV`.
 
-## Replacing Free Variables Through Babel
+## Замена свободных переменных с помощью Babel
 
-[babel-plugin-transform-inline-environment-variables](https://www.npmjs.com/package/babel-plugin-transform-inline-environment-variables) can be used to achieve the same effect. [babel-plugin-transform-define](https://www.npmjs.com/package/babel-plugin-transform-define) and [babel-plugin-minify-replace](https://www.npmjs.com/package/babel-plugin-minify-replace) are other alternatives for Babel.
+[babel-plugin-transform-inline-environment-variables](https://www.npmjs.com/package/babel-plugin-transform-inline-environment-variables) может быть использован для достижения аналогичного эффекта. [babel-plugin-transform-define](https://www.npmjs.com/package/babel-plugin-transform-define) и [babel-plugin-minify-replace](https://www.npmjs.com/package/babel-plugin-minify-replace) являются альтернативными решениями для Babel.
 
 {pagebreak}
 
-## Choosing Which Module to Use
+## Выбор используемого модуля
 
-The techniques discussed in this chapter can be used to choose entire modules depending on the environment. As seen above, `DefinePlugin` based splitting allows you to choose which branch of code to use and which to discard. This idea can be used to implement branching on module level. Consider the file structure below:
+Техники о которых мы говорим в данной главе, могут быть использованы для того, что бы подключить целый модуль на основании окружения. Как было продемонстрировано выше, разделение на основании `DefinePlugin` позволяет вам выбрать, какую часть кода использовать, а какую - исключить. Этот подход может быть использован для того, что бы внедрить ветвление на уровне модулей. Рассмотрим данную структуру файлов:
 
 ```bash
 .
@@ -154,7 +161,7 @@ The techniques discussed in this chapter can be used to choose entire modules de
     └── store.prod.js
 ```
 
-The idea is that you choose either `dev` or `prod` version of the store depending on the environment. It's that *index.js* which does the hard work:
+Идея заключается в том, что бы выбрать между `dev` и `prod` версией хранилища (`store`), основываясь на окружении. В таком случае *index.js* должен выполнить всю грязную работу:
 
 ```javascript
 if (process.env.NODE_ENV === "production") {
@@ -164,22 +171,22 @@ if (process.env.NODE_ENV === "production") {
 }
 ```
 
-Webpack can pick the right code based on the `DefinePlugin` declaration and this code. You have to use CommonJS module definition style here as ES2015 `import`s don't allow dynamic behavior by design.
+Webpack теперь может взять нужный код основываясь на объявлении `DefinePlugin` и данного куска кода. Вам необходимо использовать вариант объявления модулей CommonJS, поскольку `import` в ES2015 не предусматривает динамического подключения модулей вообще.
 
-T> A related technique, **aliasing**, is discussed in the *Consuming Packages* chapter.
+T> Связанная с этим подходом техника **создания псевдонимов** обсуждается в главе *Обработка(???) пакетов*.
 
 {pagebreak}
 
-## Conclusion
+## Резюме
 
-Setting environment variables is a technique that allows you to control which paths of the source are included in the build.
+Установка переменных окружения это техника, которая позволяет управлять исходным кодом, путем опредления того, какие части кода или файлы будут включены в сборку.
 
-To recap:
+В итоге:
 
-* Webpack allows you to set **environment variables** through `DefinePlugin` and `EnvironmentPlugin`. Latter maps the system level environment variables to the source.
-* `DefinePlugin` operates based on **free variables** and it replaces them as webpack analyzes the source code. You can achieve similar results by using Babel plugins.
-* Given minifiers eliminate dead code, using the plugins allows you to remove the code from the resulting build.
-* The plugins enable module level patterns. By implementing a wrapper, you can choose which file webpack includes to the resulting build.
-* In addition to these plugins, you can find other optimization related plugins that allow you to control the build result in many ways.
+* Webpack позволяет вам устанавливать **переменные окружения** через `DefinePlugin` и `EnvironmentPlugin`. Последнее позволяет применить переменные окружения системного уровня к исходному коду.
+* `DefinePlugin` действует на основании **свободных переменных** и заменяет их когда webpack анализирует исходный код. Вы можете получить аналогичный результат с использованием плагинов для Babel.
+* Определенные минификаторы удаляют мертвый(???недостижимый,неиспользуемый) код. Использование этих плагинов позволяет вам удалять код из итоговой сборки.
+* Плагины позволяют использовать шаблоны уровня модулей. Путем внедрения обертки, вы можете выбрать какой файл webpack включит в итоговую сборку.
+* В дополнение к этим плагинам, вы можете найти и другие, нацеленные на оптимизацию кода, которые позволят вам управлять результатом сборки множеством других способов.
 
-To ensure the build has good cache invalidation behavior, you'll learn to include hashes to the generated filenames in the next chapter. This way the client notices if assets have changed and can fetch the updated versions.
+Чтобы убедиться, что сборка имеет возможность игнорирования кэша браузера, в следующей главе вы научитесь добавлять хэши к сгенерированым файлам. Таким образом клиент заметит что ресурсы изменились и сможет загрузить обновленные версии.

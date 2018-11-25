@@ -1,3 +1,3 @@
--# Optimizing
+-# Оптимизация
 
-In this part, you will learn about aspects like code minification, setting environment variables, adding hashing to filenames, webpack manifest, and analyzing build statistics. Understanding these techniques allows you to reach production level output. You also learn about tuning webpack performance.
+В этой части вы изучите такие аспекты работы, как минификация кода, установка переменных окружения, добавления хэшей к именам файлов, манифест webpack и анализ статистики сборки. Понимание данных техник позволит вам получить вывод продакшен-уровня. Вы также узнаете о настройке производительности webpack.

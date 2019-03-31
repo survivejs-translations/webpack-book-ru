@@ -237,6 +237,12 @@ WDS provides functionality beyond what was covered above. There are a couple of 
 
 T> [The official documentation](https://webpack.js.org/configuration/dev-server/) covers more options.
 
+## **webpack-plugin-serve** - Alternative to **webpack-dev-server**
+
+[webpack-plugin-serve](https://www.npmjs.com/package/webpack-plugin-serve) wraps the development related functionality within a webpack plugin. To work, it assumes you run webpack in the watch mode. It matches the features of **webpack-dev-server** closely while providing unique features such as fully functional **Hot Module Replacement** even when webpack is used in a multi-compiler mode (i.e., when you give an array of configurations to it). Status overlay is one of the convenience helpers included.
+
+{pagebreak}
+
 ## Development Plugins
 
 The webpack plugin ecosystem is diverse, and there are a lot of plugins that can help specifically with development:
@@ -245,8 +251,6 @@ The webpack plugin ecosystem is diverse, and there are a lot of plugins that can
 * [npm-install-webpack-plugin](https://www.npmjs.com/package/npm-install-webpack-plugin) allows webpack to install and wire the installed packages with your *package.json* as you import new packages to your project.
 * [react-dev-utils](https://www.npmjs.com/package/react-dev-utils) contains webpack utilities developed for [Create React App](https://www.npmjs.com/package/create-react-app). Despite its name, they can find use beyond React. If you want only webpack message formatting, consider [webpack-format-messages](https://www.npmjs.com/package/webpack-format-messages).
 * [start-server-webpack-plugin](https://www.npmjs.com/package/start-server-webpack-plugin) is able to start your server after webpack build completes.
-
-{pagebreak}
 
 ## Output Plugins
 
@@ -257,8 +261,6 @@ There are also plugins that make the webpack output easier to notice and underst
 * [nyan-progress-webpack-plugin](https://www.npmjs.com/package/nyan-progress-webpack-plugin) can be used to get tidier output during the build process. Take care if you are using Continuous Integration (CI) systems like Travis as they can clobber the output. Webpack provides `ProgressPlugin` for the same purpose. No nyan there, though.
 * [friendly-errors-webpack-plugin](https://www.npmjs.com/package/friendly-errors-webpack-plugin) improves on error reporting of webpack. It captures common errors and displays them in a friendlier manner.
 * [webpack-dashboard](https://www.npmjs.com/package/webpack-dashboard) gives an entire terminal based dashboard over the standard webpack output. If you prefer clear visual output, this one comes in handy.
-
-{pagebreak}
 
 ## Conclusion
 

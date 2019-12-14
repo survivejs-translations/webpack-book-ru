@@ -1,66 +1,66 @@
-# What is Webpack
+# Что Такое Webpack
 
-Webpack is a **module bundler**. Webpack can take care of bundling alongside a separate task runner. However, the line between bundler and task runner has become blurred thanks to community developed webpack plugins. Sometimes these plugins are used to perform tasks that are usually done outside of webpack, such as cleaning the build directory or deploying the build.
+Webpack — это **сброщик модулей**. Webpack может позабоиться о сборке проекта, вместе с отдельным менеджером задач. Однако, граница между сборщиком и менеджером задач ныне размыта, благодаря сообществу разработчков плагинов для webpack. Иногда эти плагины используются для выполнения задач, которые выходят за рамки изначального предназначения webpack'а, например — очистка папок сборки или деплой сборки.
 
-React, and **Hot Module Replacement** (HMR) helped to popularize webpack and led to its usage in other environments, such as [Ruby on Rails](https://github.com/rails/webpacker). Despite its name, webpack is not limited to the web alone. It can bundle with other targets as well, as discussed in the *Build Targets* chapter.
+React, и **Горячая Замена Модулей** (Hot Module Replacement — HMR) помогли популяризировать webpack, что привело к использованию webpack и в других окружениях, например в [Ruby on Rails](https://github.com/rails/webpacker). Несмотря на название, webpack, в своем применении, не ограничен вебом. Он может так-же хорошо справляться и со сборокой других проектов, о чем мы поговорим в главе *Целевые Платформы*.
 
-T> If you want to understand build tools and their history in better detail, check out the *Comparison of Build Tools* appendix.
+T> Если вы хотите более детально ознакомиться с разнообразными сброщиками, и их историей, ознакомтесь с приложением *Сравнение Инструментов Для Сборки*.
 
-## Webpack Relies on Modules
+## Webpack Опирается на Модули
 
-The smallest project you can bundle with webpack consists of **input** and **output**. The bundling process begins from user-defined **entries**. Entries themselves are **modules** and can point to other modules through **imports**.
+Даже самый скромный проект, который вы хотите собрать с использованием webpack содержит **ввод** и **вывод**. Процесс сборки начинается с опредленных пользователем **входов**. Входы, по своей сути, являются **модулями** и могут ссылаться на другие модули, через ключевое слово **import**.
 
-When you bundle a project using webpack, it traverses the imports, constructing a **dependency graph** of the project and then generates **output** based on the configuration. Additionally, it's possible to define **split points** to create separate bundles within the project code itself.
+Когда вы собираете свой проект с использованием webpack, он проходится по всем импортам, с целью постройки **графа зависимостей** проекта, и затем генерирует **вывод**, основаный на конфигурации. Дополнительно, вы можете определить, так называемые **точки разделения** *(split points)* что бы создать отдельные сборки внутри самого кода проекта.
 
-Webpack supports ES2015, CommonJS, and AMD module formats out of the box. The loader mechanism works for CSS as well, with `@import` and `url()` support through *css-loader*. You can also find plugins for specific tasks, such as minification, internationalization, HMR, and so on.
+Webpack из коробки поддерживает ES2015, CommonJS, и формат модулей AMD. Механизм загрузки работает так-же хорошо и с CSS, с поддержкой операторов `@import` и `url()` через css-загрузчик — *css-loader*. Вы так-же можете найти плагины для широко спектра задач, как, например, минификация, интернационализация, HMR и другие.
 
-T> A dependency graph is a directed graph that describes how nodes relate to each other. In this case, the graph definition is defined through references (`require`, `import`) between files. Webpack statically traverses these without executing the source to generate the graph it needs to create bundles.
+T> Граф зависимостей является ориентированым графом, который описывает, каким образом вершины графа связаны между собой. В таком случае, определение графа задается ссылками (`require`, `import`) между файлмаи. Webpack статически проходится по всем сслыкам без выполнения исходного кода для построения необходимого для сборки графа.
 
-## Webpack's Execution Process
+## Процесс Выполнения Webpack'а
 
 ![Webpack's execution process](images/webpack-process.png)
 
-Webpack begins its work from **entries**. Often these are JavaScript modules where webpack begins its traversal process. During this process, webpack evaluates entry matches against **loader** configurations that tell webpack how to transform each match.
+Webpack начинает свою работу с **входов**. Обычно ими являются JavaScript-модули, с которых webpack начинает процесс поиска зависимостей. Во время этого процесса, webpack ищет совпадения между входными файлами и настройками **загрузчиков** *(loaders)*, которые говорят webpack'у как обрабатывать такое совпадение.
 
 {pagebreak}
 
-### Resolution Process
+### Процесс Разрешения Зависимостей
 
-An entry itself is a module. When webpack encounters one, webpack tries to match the entry against the file system using the entry's `resolve` configuration. You can tell webpack to perform the lookup against specific directories in addition to *node_modules*. It's also possible to adjust the way webpack matches against file extensions, and you can define specific aliases for directories. The *Consuming Packages* chapter covers these ideas in greater detail.
+Вход, по своей сути, является модулем. Когда webpack таковой находит, он пытается сопоставить вход с файлом вашей файловой системы, используя конфигурацию входа `resolve`. Вы можете заставить webpack производить поиск по указаным папкам, в дополнение к папке *node_modules*. Кроме того, есть возможность настроить сам процесс поиска совпадения в расширениях файлов, а так-же определить свои особые псевдонимы для папок. Глава *Обработка Пакетов* объясняет эти идеи более детально.
 
-If the resolution pass failed, webpack raises a runtime error. If webpack managed to resolve a file correctly, webpack performs processing over the matched file based on the loader definition. Each loader applies a specific transformation against the module contents.
+Если процесс разрешения зависимостей прошел неудачно, webpack отображает ошибку выполнения *(runtime error)*. Если webpack разрешил все зависимости между файлами без проблем, он отправляет на обработку найденные файлы загрузчикам, основываясь на конфигурации этих самых загрузчиков. Каждый загрузчик преобразует содержимое модуля по-своему.
 
-The way a loader gets matched against a resolved file can be configured in multiple ways, including by file type and by location within the file system. Webpack's flexibility even allows you to apply a specific transformation to a file based on *where* it was imported into the project.
+Вы можете настроить процесс сопоставления файлов и загрузчиков как вам угодно, например, по типу файла или его местонахождении в вашей файловой системе. Гибкость Webpack'а даже позволяет вам применять специфичные преобразования к файлам, основываясь на информации о том, *в каком месте* файл был импортирован в проект.
 
-The same resolution process is performed against webpack's loaders. Webpack allows you to apply similar logic when determining which loader it should use. Loaders have resolve configurations of their own for this reason. If webpack fails to perform a loader lookup, it will raise a runtime error.
+Идентичный процесс разрешения зависимостей применяется webpack'ом и к загрузчикам. Webpack позволяет вам применять аналогичную логику к файлам, при определении того, какой загрузчик он должен использовать. По этой причине, у загрузчиков есть свои собственные настройки. Если webpack не может выполнить процесс поиска загрузчика, он так-же возвращает ошибку выполнения.
 
-T> To resolve, webpack relies on [enhanced-resolve](https://www.npmjs.com/package/enhanced-resolve) package underneath.
+T> Webpack под капотом опирается на пакет [enhanced-resolve](https://www.npmjs.com/package/enhanced-resolve) для разрешения зависимостей.
 
-### Webpack Resolves Against Any File Type
+### Webpack Производит Процесс Разрешения Зависимостей Для Файлов Любого Типа
 
-Webpack will resolve each module it encounters while constructing the dependency graph. If an entry contains dependencies, the process will be performed recursively against each dependency until the traversal has completed. Webpack can perform this process against any file type, unlike specialized tools like the Babel or Sass compiler.
+Webpack разрешает зависимости в любом модуле, который он находит во время построения графа зависимостей. Если вход содержит в себе зависимости, процесс будет выполнен рекурсивно для каждой из зависимостей до тех пор, пока процесс поиска зависимостей не будет завершен. Webpack может выполнить этот процесс с любым типом файла, в отличии от узконаправленных инструментов, вроде Babel или компилятора Sass.
 
-Webpack gives you control over how to treat different assets it encounters. For example, you can decide to **inline** assets to your JavaScript bundles to avoid requests. Webpack also allows you to use techniques like CSS Modules to couple styling with components, and to avoid issues of standard CSS styling. This flexibility is what makes webpack so valuable.
+Webpack дает вам возможность управлять обработкой различных ассетов, которые он находит. Например, вы можете разрешить **встраивать** ассеты в файлы вашей JavaScript сборки что бы избежать дополнительных запросов. Webpack так-же позволяет вам прибегать к различным техникам, как, например CSS-модули, что бы связать стили с компонентами, и избежать проблем обычных CSS стилей. Эта гибкость и сделала webpack таким востребованным.
 
-Although webpack is used mainly to bundle JavaScript, it can capture assets like images or fonts and emit separate files for them. Entries are only a starting point of the bundling process. What webpack emits depends entirely on the way you configure it.
+Несмотря на то, что webpack в большинстве случаев используется для сборки JavaScript, он может захватывать различные ассеты, такие как изображения или шрифты и выделять их в отдельные файлы. Входы — это только отправная точка для процесса сборки. То, что webpack отдаст вам на выходе, полностью зависит от того, как вы его настроите.
 
-### Evaluation Process
+### Процесс Выполнения
 
-Assuming all loaders were found, webpack evaluates the matched loaders from bottom to top and right to left (`styleLoader(cssLoader('./main.css'))`) while running the module through each loader in turn. As a result, you get output which webpack will inject in the resulting **bundle**. The *Loader Definitions* chapter covers the topic in detail.
+Когда все загрузчики найдены, webpack запускает выполнение совпадающих загрузчиков снизу вверх, и с права на лево (`styleLoader(cssLoader('./main.css'))`) вместе с тем, пропуская каждый модуль через найденный загрузчик по очереди. В результате, вы получаете вывод, который webpack вставит в окончательную **сборку**. Глава *Определение Загрузчиков* описывает это подробно.
 
-If all loader evaluation completed without a runtime error, webpack includes the source in the last bundle. **Plugins** allow you to intercept **runtime events** at different stages of the bundling process.
+Если выполнение всех загрузчиков было завершено без ошибок, webpack включает исходный код в итоговую сборку. **Плагины** позволяют вам перехватывать **события выполнения** *(runtime events)* на различных этапах процесса сборки.
 
-Although loaders can do a lot, they don’t provide enough power for advanced tasks. Plugins can intercept **runtime events** supplied by webpack. A good example is bundle extraction performed by the `MiniCssExtractPlugin` which, when used with a loader, extracts CSS files out of the bundle and into a separate file. Without this step, CSS would be inlined in the resulting JavaScript, as webpack treats all code as JavaScript by default. The extraction idea is discussed in the *Separating CSS* chapter.
+Несмотря на то, что загрузчики способны на многое, они не предоставляют достаточного функционала для дополнительных задач. В то время, как плагины  могут перехватывать **события выполнения** которые им предоставляет webpack. Хорошим примером является извлечение из сборки, которое выполнятеся плагином `MiniCssExtractPlugin` который, если используется с загрузчиком, извлекает CSS из сборки в отдельные файлы. Без него, CSS был бы встроен в итоговоый JavaScript, потому что webpack по-умолчанию воспринимает любой код как JavaScript. Идея подобного извлечения описана в главе *Разделение CSS*.
 
-### Finishing
+### Завершение
 
-After every module has been evaluated, webpack writes **output**. The output includes a bootstrap script with a manifest that describes how to begin executing the result in the browser. The manifest can be extracted to a file of its own, as discussed later in the book. The output differs based on the build target you are using (targeting web is not the only option).
+После того, как каждый модуль был обработан, webpack записывает **вывод**. Вывод включает в себя загрузочный скрипт с манифестом, который описывает каким образом запустить результат в браузере. Манифест может быть вынесен в отдельный файл, что будет описано далее в этой книге. Вывод может отличаться, в зависимости от платформы, которую вы используете (платформа web это не единственный вариант).
 
-That’s not all there is to the bundling process. For example, you can define specific **split points** where webpack generates separate bundles that are loaded based on application logic. This idea is discussed in the *Code Splitting* chapter.
+И это еще далеко не все, что связано с процессом сборки. Например, вы можете определить конкретные **точки разделения** *(split points)*, на которых webpack будет создаыать отдельные пакеты, которые загружаются на основе логики приложения. Эта идея описана в главе *Разделение кода*.
 
-## Webpack Is Configuration Driven
+## Сборка Через Конфигурацию
 
-At its core, webpack relies on configuration. Here is a sample configuration adapted from [the official webpack tutorial](https://webpack.js.org/get-started/) that covers the main points:
+По своей сути, webpack опирается на конфигурацию. Ниже представлен пример такой конфигурации, основанной на [официальном руководстве webpack](https://webpack.js.org/get-started/) который охватывает основные моменты:
 
 **webpack.config.js**
 
@@ -68,21 +68,21 @@ At its core, webpack relies on configuration. Here is a sample configuration ada
 const webpack = require("webpack");
 
 module.exports = {
-  // Where to start bundling
+  // Место начала сборки
   entry: {
     app: "./entry.js",
   },
 
-  // Where to output
+  // Место вывода
   output: {
-    // Output to the same directory
+    // Вывод в ту же самую папку
     path: __dirname,
 
-    // Capture name from the entry using a pattern
+    // Захватывать имя из входа, используя паттерн
     filename: "[name].js",
   },
-
-  // How to resolve encountered imports
+ 
+  // Каким образом разрешать зависимости в найденных ссылках (import)
   module: {
     rules: [
       {
@@ -97,51 +97,51 @@ module.exports = {
     ],
   },
 
-  // What extra processing to perform
+  // Какие дополнительные обработки необходимо выполнить
   plugins: [
     new webpack.DefinePlugin({ ... }),
   ],
 
-  // Adjust module resolution algorithm
+  // Настройка алгоритма разрешения модулей
   resolve: {
     alias: { ... },
   },
 };
 ```
 
-Webpack's configuration model can feel a bit opaque at times as the configuration file can appear monolithic. It can be difficult to understand what webpack is doing unless you know the ideas behind it. Providing means to tame configuration is one of the primary purposes why this book exists.
+Модель конфигурации webpack'а может показаться немного непрозрачной, а конфигурационный файл — монолитным и громоздким. Понимание того, что делает webpack может быть сложным, до тех пор, пока вы не понимаете идей, стоящих за ним. Предоставление знаний для ручной настройки webpack'а является одной из основных целей этой книги.
 
-## Asset Hashing
+## Хэширование Ассетов
 
-With webpack, you can inject a hash to each bundle name (e.g., *app.d587bbd6.js*) to invalidate bundles on the client side as changes are made. Bundle-splitting allows the client to reload only a small part of the data in the ideal case.
+С помощью webpack, вы можете вставить хэш в имя каждой сборки (например: *app.d587bbd6.js*) что бы сделать неактуальными сборки на стороне клиента при внесении изменений. В идеальном случае, разделение сборки (bundle-splitting) позволяет клиенту перезагрузить только небольшую часть данных.
 
-## Hot Module Replacement
+## Горячая Замена Модулей
 
-You are likely familiar with tools, such as [LiveReload](http://livereload.com/) or [BrowserSync](http://www.browsersync.io/), already. These tools refresh the browser automatically as you make changes. *Hot Module Replacement* (HMR) takes things one step further. In the case of React, it allows the application to maintain its state without forcing a refresh. While this does not sound all that special, it can make a big difference in practice.
+Вам скорее всего знакомы такие инструменты, как [LiveReload](http://livereload.com/) или [BrowserSync](http://www.browsersync.io/). Эти инструменты автоматически перезагружают страничку в браузере, когда вы сохраняете изменения в файлах. *Горячая Замена Модулей* (HMR) еще на шаг впереди. Если вы используете React, HMR позволяет приложению поддерживать свое состояние без принудительной перезагрузки. Несмотря на то, что звучит не очень воодушевляюще, на практике это может сыграть большую роль.
 
-HMR is also available in Browserify via [livereactload](https://github.com/milankinen/livereactload), so it’s not a webpack exclusive feature.
+HMR так-же может быть доступен в Browserify с помощью пакета [livereactload](https://github.com/milankinen/livereactload), так что HMR это не эксклюзивная особенность webpack.
 
-## Code Splitting
+## Разделение Кода
 
-In addition to HMR, webpack’s bundling capabilities are extensive. Webpack allows you to split code in various ways. You can even load code dynamically as your application gets executed. This sort of lazy loading comes in handy especially for broader applications, as dependencies can be loaded on the fly as needed.
+Кроме HMR, у webpack есть еще много обширных возможностей. Webpack позволяет вам разделять код различными способами. Вы можете даже загружать код динамически по мере запуска вашего приложения. Такая ленивая загрузка может пригодиться, особенно для крупных приложений, поскольку зависимости могут быть загружены «на лету» по мере необходимости.
 
-Even small applications can benefit from code splitting, as it allows the users to get something usable in their hands faster. Performance is a feature, after all. Knowing the basic techniques is worthwhile.
+Даже небольшие приложения могут извлечь выгоду из разделения кода, поскольку это позволяет пользователям быстрее получать в свои руки что-то рабочее. В конце концов, производительность — это особенность (англ. *Performance is a feature*). Базовые знания основных техник стоят того.
 
-## Conclusion
+## Заключение
 
-Webpack comes with a significant learning curve. However, it’s a tool worth learning, given how much time and effort it can save over the long term. To get a better idea how it compares to other tools, check out [the official comparison](https://webpack.js.org/comparison/).
+Webpack обладает очень длинной кривой обучения. Но не смотря на это, его стоит изучить, учитывая, сколько времени и усилий он может сэкономить в долгосрочной перспективе. Чтобы лучше понять, чем он отличается от других инструментов, ознакомтесь с [официальным сравнением с другими инструментами](https://webpack.js.org/comparison/).
 
-Webpack won’t solve everything. However, it does solve the problem of bundling. That’s one less worry during development. Using *package.json* and webpack alone can take you far.
+Webpack не решит всех проблем. Однако он решает проблему сборки. Это вызывает меньше беспокойства во время разработки. С использованием одних только *package.json* и webpack можно уйти очень далеко.
 
-To summarize:
+Резюмируем:
 
-* Webpack is a **module bundler**, but you can also use it running  tasks as well.
-* Webpack relies on a **dependency graph** underneath. Webpack traverses through the source to construct the graph, and it uses this information and configuration to generate bundles.
-* Webpack relies on **loaders** and **plugins**. Loaders operate on a module level, while plugins rely on hooks provided by webpack and have the best access to its execution process.
-* Webpack’s **configuration** describes how to transform assets of the graphs and what kind of output it should generate. Part of this information can be included in the source itself if features like **code splitting** are used.
-* **Hot Module Replacement** (HMR) helped to popularize webpack. It's a feature that can enhance the development experience by updating code in the browser without needing a full page refresh.
-* Webpack can generate **hashes** for filenames allowing you to invalidate past bundles as their contents change.
+* Webpack это **сборщик модулей**, но вы так-же хорошо можете использовать его в качестве менеджера задач.
+* Под капотом, webpack опирается на **граф зависимостей**. Webpack проходится по исходному коду что бы построить граф, и в последствии, использует полученную информацию вместе с конфигурацией что бы создать сборки.
+* Webpack опирается на **загрузчики** и **плагины**. Загрузчики исполняются на уровне модулей, в то время, как плагины опираются на хуки, предоставленные webpack'ом и имеют лучший доступ к самому процессу выполнения.
+* **Конфигурация** webpack'а описывает то, как именно ему необходимо преобразовывать части графа и какой результат сгенерировать. Части этой информации могут быть втроены в сам источник, если вы используете функции вроде **разделения кода**.
+* **Горячая Замена Модулей** (HMR) помогла популяризировать webpack. Эта особенность может улучшить процесс разработки, путем обновления кода в бразуре без необходимости полной перезагрузки страницы.
+* Webpack может генерировать **хэши** для имен ваших файлов, что позволяет вам сделать предыдущие сборки неактуальными, в то время как вы вносите изменения.
 
-In the next part of the book, you'll learn to construct a development configuration using webpack while learning more about its basic concepts.
+В следующей части книги вы научитесь создавать конфигурацию, используя webpack, и в тоже самое время, узнаете больше о его основных концепциях.
 
-T> If you are still unsure of webpack or why bundlers are required, read [Why would I use a Webpack?](http://tinselcity.net/whys/packers).
+T> Если вы до сих пор не уверены, зачем вам нужен webpack или почему сборщики необходимы, почитайте [Почему я должен использовать Webpack?](http://tinselcity.net/whys/packers).

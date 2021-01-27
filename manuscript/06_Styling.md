@@ -1,3 +1,3 @@
--# Styling
+-# Стилизация
 
-In this part, you will learn about styling-related concerns in detail including loading styles, refreshing styles during development, separating CSS, eliminating unused CSS, and autoprefixing.
+В этой части вы подробно узнаете о проблемах, связанных со стилями, включая загрузку стилей, обновление стилей во время разработки, разделение CSS, исключение неиспользуемого CSS и автоматическое добавление браузерных префиксов.

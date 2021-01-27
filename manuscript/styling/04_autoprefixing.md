@@ -1,16 +1,16 @@
-# Autoprefixing
+# Автоматическое добавление браузерных префиксов
 
-It can be challenging to remember which vendor prefixes you have to use for specific CSS rules to support a large variety of users. **Autoprefixing** solves this problem. It can be enabled through PostCSS and the [autoprefixer](https://www.npmjs.com/package/autoprefixer) plugin. *autoprefixer* uses [Can I Use](http://caniuse.com/) service to figure out which rules should be prefixed and its behavior can be tuned further.
+Может быть сложным вспомнить, какие префиксы браузеров вы должны использовать для определенных правил CSS, чтобы поддерживать большое количество пользователей. **Autoprefixing или автоматическое добавление браузерных префиксов** решает эту проблему. Он может быть включен через PostCSS и плагин [autoprefixer](https://www.npmjs.com/package/autoprefixer). *autoprefixer* использует сервис [Can I Use](http://caniuse.com/) для выяснения, какие правила должны быть с префиксом, и его поведение может быть настроено, как будет показано в этой главе. 
 
-## Setting Up Autoprefixing
+## Настройка автодобавления браузерных префиксов
 
-Achieving autoprefixing takes a small addition to the current setup. Install *postcss-loader* and *autoprefixer* first:
+Для включения этой возможности в текущую настройку нужно добавить небольшое дополнение. Сначала установите *postcss-loader* и *autoprefixer*:
 
 ```bash
 npm install postcss-loader autoprefixer --save-dev
 ```
 
-Add a fragment enabling autoprefixing:
+Затем добавьте фрагмент кода, включающий `autoprefixer`:
 
 **webpack.parts.js**
 
@@ -25,7 +25,7 @@ exports.autoprefix = () => ({
 
 {pagebreak}
 
-To connect the loader with CSS extraction, hook it up as follows:
+Для подключения загрузчика с извлечением CSS, подключите его следующим образом:
 
 **webpack.config.js**
 
@@ -43,7 +43,7 @@ leanpub-end-insert
 ]);
 ```
 
-To confirm that the setup works, we have to add something to autoprefix. Adjust the CSS:
+Чтобы проверить, что настройка работает, нам следует что-нибудь добавить, измените CSS, как показано ниже:
 
 **src/main.css**
 
@@ -58,13 +58,13 @@ leanpub-start-insert
 leanpub-end-insert
 ```
 
-If you know what browsers you prefer to support, it's possible to set up a [.browserslistrc](https://www.npmjs.com/package/browserslist) file. Different tools pick up this definition, *autoprefixer* included.
+Если вы знаете, какие браузеры вы предпочитаете поддерживать, можно создать файл [.browserslistrc](https://www.npmjs.com/package/browserslist). Различные инструменты учитывают конфигурацию, заданную в этом файле, включая *autoprefixer*.
 
-T> You can lint CSS through [Stylelint](http://stylelint.io/). It can be set up the same way through *postcss-loader* as autoprefixing above.
+T> Вы можете проверить CSS через [Stylelint](http://stylelint.io/). Его можно настроить таким же образом через *postcss-loader* как `autoprefixer` выше.
 
 {pagebreak}
 
-Set up a file as follows:
+Настройте файл следующим образом:
 
 **.browserslistrc**
 
@@ -74,7 +74,7 @@ Last 2 versions # Or last two versions
 IE 8 # Or IE 8
 ```
 
-If you build the application now (`npm run build`) and examine the built CSS, you should be able to find a declaration there without the webkit portion:
+Если теперь вы запустите сборку приложения (`npm run build`) и изучите встроенный CSS, вы сможете найти там CSS без части webkit:
 
 ```css
 ...
@@ -86,14 +86,14 @@ leanpub-start-insert
 leanpub-end-insert
 ```
 
-*autoprefixer* is able to **remove** unnecessary rules and also add rules which are required based on the browser definition.
+*autoprefixer* может **удалить** ненужные правила, а также добавить правила, которые требуются на основе определения браузера.
 
-## Conclusion
+## Заключение
 
-Autoprefixing is a convenient technique as it decreases the amount of work needed while crafting CSS. You can maintain minimum browser requirements within a *.browserslistrc* file. The tooling can then use that information to generate optimal output.
+Автодобавление браузерных префиксов — удобная техника, поскольку она уменьшает объем работы, необходимый при создании CSS. Вы можете поддерживать минимальные требования к браузеру в файле *.browserslistrc*. Этот инструмент может затем использовать эту информацию для генерации оптимального вывода (CSS).
 
-To recap:
+В итоге:
 
-* Autoprefixing can be enabled through the *autoprefixer* PostCSS plugin.
-* Autoprefixing writes missing CSS definitions based on your minimum browser definition.
-* *.browserslistrc* is a standard file that works with tooling beyond *autoprefixer*
+* Автоматическое добавление браузерных префиксов можно включить через PostCSS-плагин *autoprefixer*.
+* Автоматическое добавление браузерных префиксов дописывает недостающие определения CSS на основе минимального определения браузера.
+* *.browserslistrc* — стандартный файл, который работает с другими инструментами, а не только с *autoprefixer*
